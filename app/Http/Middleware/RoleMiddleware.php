@@ -3,16 +3,16 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
-use Symfony\Component\HttpFoundation\Response;
+use Illuminate\Support\Facades\Auth;
 
 class RoleMiddleware
 {
-    public function handle(Request $request, Closure $next, string $role): Response
+    public function handle(Request $request, Closure $next, $role)
     {
-        if ($request->user()?->role !== $role) {
-            abort(403); // Acceso denegado
+        if (Auth::check() && Auth::user()->role === $role) {
+            return $next($request);
         }
 
-        return $next($request);
+        return redirect('/'); // Redirigir a la ruta principal o personalizada si no tiene el rol adecuado
     }
 }
