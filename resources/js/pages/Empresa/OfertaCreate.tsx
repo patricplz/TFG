@@ -1,7 +1,7 @@
 import { useForm } from '@inertiajs/react';
 import React from 'react';
 
-const SolicitudCreate = () => {
+const OfertaCreate = () => {
   const { data, setData, post, processing, errors } = useForm({
     name: '',
     description: '',
@@ -10,14 +10,14 @@ const SolicitudCreate = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    post(route('empresa.solicitud.store'), {
+    post(route('empresa.oferta.store'), {
       forceFormData: true, // importante para subir imágenes
     });
   };
 
   return (
     <div className="p-6 max-w-2xl mx-auto">
-      <h1 className="text-2xl font-bold mb-4">Crear solicitud de prácticas</h1>
+      <h1 className="text-2xl font-bold mb-4">Crear oferta de prácticas</h1>
       <form onSubmit={handleSubmit} encType="multipart/form-data" className="space-y-4">
         <div>
           <label htmlFor="name" className="block font-medium">Nombre</label>
@@ -43,7 +43,7 @@ const SolicitudCreate = () => {
         </div>
 
         <div>
-          <label htmlFor="image" className="block font-medium">Imagen (opcional)</label>
+          <label htmlFor="image" className="block font-medium">Imagen</label>
           <input
             type="file"
             id="image"
@@ -64,4 +64,4 @@ const SolicitudCreate = () => {
   );
 };
 
-export default SolicitudCreate;
+export default OfertaCreate;

@@ -11,12 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('solicitud_practicas', function (Blueprint $table) {
+        Schema::create('ofertas_practicas', function (Blueprint $table) {
             $table->id();
             $table->foreignId('empresa_id')->constrained('users'); // o 'empresas' si es otro modelo
             $table->string('name');
             $table->text('description');
-            $table->string('image_path')->nullable();
+            $table->string('image_path');
             $table->timestamps(); // esto incluye created_at y updated_at
         });
     }
@@ -26,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('solicitud_practicas');
+        Schema::dropIfExists('ofertas_practicas');
     }
 };
