@@ -1,7 +1,7 @@
 // resources/js/Pages/Alumno/dashboard.tsx
 
 import { Head, usePage, Link } from '@inertiajs/react';
-import AppLayout from '@/layouts/app-layout';
+import AppLayout from '@/layouts/app-layout-alumno';
 import { BreadcrumbItem } from '@/types';
 
 interface OfertaPractica {

@@ -16,6 +16,8 @@ return new class extends Migration
             $table->foreignId('practica_id')->constrained('ofertas_practicas')->onDelete('cascade');
             $table->foreignId('alumno_id')->constrained('users')->onDelete('cascade');
             $table->timestamps();
+
+            $table->unique(['practica_id', 'alumno_id']);
         });        
     }
 
