@@ -17,8 +17,8 @@ const mainNavItems: NavItem[] = [
 
 const footerNavItems: NavItem[] = [
     {
-        title: 'Crear una nueva solicitud',
-        href: 'http://127.0.0.1:8000/empresa/solicitud/crear',
+        title: 'Crear una nueva oferta',
+        href: 'http://127.0.0.1:8000/empresa/oferta/crear',
         icon: BookOpen,
     },
 ];

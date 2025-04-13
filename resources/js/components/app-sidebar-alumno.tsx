@@ -17,10 +17,14 @@ const mainNavItems: NavItem[] = [
 
 const footerNavItems: NavItem[] = [
     {
-        title: 'Crear una nueva solicitud',
-        href: 'http://127.0.0.1:8000/empresa/solicitud/crear',
+        title: 'Ver tus solicitudes',
+        href: 'http://127.0.0.1:8000/alumno/solicitudes',
         icon: BookOpen,
     },
+    {
+        title: 'Editar Perfil',
+        href: 'http://127.0.0.1:8000/alumno/perfil/editar'
+    }
 ];
 
 export function AppSidebar() {

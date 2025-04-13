@@ -1,16 +1,17 @@
 <?php
-// app/Http/Controllers/EmpresaSolicitudController.php
+// app/Http/Controllers/EmpresaOfertaController.php 
+//Creacion de oferta por parte de la empresa en la url /empresa/oferta/crear
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Inertia\Inertia;
-use App\Models\SolicitudPractica;
+use App\Models\OfertaPractica;
 
-class EmpresaSolicitudController extends Controller
+class EmpresaOfertaController extends Controller
 {
     public function create()
     {
-        return Inertia::render('Empresa/SolicitudCreate');
+        return Inertia::render('Empresa/OfertaCreate');
     }
 
     public function store(Request $request)
@@ -21,15 +22,15 @@ class EmpresaSolicitudController extends Controller
             'image' => 'nullable|image|max:2048',
         ]);
 
-        $path = $request->file('image')?->store('solicitudes', 'public');
+        $path = $request->file('image')?->store('Ofertas', 'public');
 
-        SolicitudPractica::create([
+        OfertaPractica::create([
             'name' => $request->name,
             'description' => $request->description,
             'image_path' => $path,
             'empresa_id' => auth()->id(),
         ]);
 
-        return redirect()->route('empresa.dashboard')->with('success', 'Solicitud creada correctamente');
+        return redirect()->route('empresa.dashboard')->with('success', 'Oferta creada correctamente');
     }
 }
