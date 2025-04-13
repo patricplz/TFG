@@ -32,23 +32,23 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
 
 #Ruta para alumnos
-// Rutas para alumnos
 
-// Route::middleware(['auth', 'verified', 'role:alumno'])->group(function () {
-//     Route::get('/alumno/dashboard', [AlumnoController::class, 'dashboard'])->name('alumno.dashboard');
-//     Route::get('/alumno/oferta/{oferta}', [AlumnoController::class, 'ofertaShow'])->name('alumno.oferta.show');
-//     Route::post('/alumno/oferta/{practicaId}/inscribir', [SolicitudPracticaController::class, 'store'])->name('alumno.practica.inscribir');
+    Route::middleware(['auth', 'verified', 'role:alumno'])->group(function () {
+    Route::get('/alumno/dashboard', [DashboardAlumnoController::class, 'index'])->name('alumno.dashboard');
+    Route::get('/alumno/oferta/{id}', [AlumnoController::class, 'show'])->name('alumno.solicitud.show');
+    Route::post('/alumno/solicitar/{practicaId}', [SolicitudPracticaController::class, 'store'])->name('alumno.solicitar');
+    Route::post('/alumno/oferta/{practicaId}/inscribir', [SolicitudPracticaController::class, 'store'])->name('alumno.practica.inscribir');
+    Route::get('/alumno/solicitudes', [AlumnoController::class, 'solicitudesInscritas'])->name('alumno.solicitudes');
 
-//     // Nueva ruta para ver las solicitudes inscritas
-//     Route::get('/alumno/solicitudes', [AlumnoController::class, 'solicitudesInscritas'])->name('alumno.solicitudes');
-// });
+    // Ruta para mostrar el formulario de completar perfil
+    Route::get('/alumno/perfil', [AlumnoController::class, 'perfil'])->name('alumno.perfil');
 
-Route::middleware(['auth', 'role:alumno'])->get('/alumno/dashboard', [DashboardAlumnoController::class, 'index'])->name('alumno.dashboard');
-Route::middleware(['auth', 'role:alumno'])->get('/alumno/oferta/{id}', [AlumnoController::class, 'show'])->name('alumno.solicitud.show');
-Route::middleware(['auth', 'role:alumno'])->post('/alumno/solicitar/{practicaId}', [SolicitudPracticaController::class, 'store'])->name('alumno.solicitar');
-Route::post('/alumno/oferta/{practicaId}/inscribir', [SolicitudPracticaController::class, 'store'])->name('alumno.practica.inscribir');
-Route::get('/alumno/solicitudes', [AlumnoController::class, 'solicitudesInscritas'])->name('alumno.solicitudes');
+    // Ruta para mostrar el formulario de edición del perfil (GET)
+    Route::get('/alumno/perfil/editar', [AlumnoController::class, 'mostrarFormularioEditarPerfil'])->name('alumno.perfil.editar');
 
+    // Ruta para guardar los datos del formulario de perfil (esta es la que necesitas)
+    Route::post('/alumno/perfil/guardar', [AlumnoController::class, 'guardarPerfil'])->name('alumno.perfil.guardar');
+});
 #Ruta para empresas
 Route::middleware(['auth', 'role:empresa'])->get('/empresa/dashboard', function () {
     return Inertia::render('Empresa/dashboard');

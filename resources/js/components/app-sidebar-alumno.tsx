@@ -21,6 +21,10 @@ const footerNavItems: NavItem[] = [
         href: 'http://127.0.0.1:8000/alumno/solicitudes',
         icon: BookOpen,
     },
+    {
+        title: 'Editar Perfil',
+        href: 'http://127.0.0.1:8000/alumno/perfil/editar'
+    }
 ];
 
 export function AppSidebar() {
