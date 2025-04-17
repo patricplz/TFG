@@ -7,6 +7,7 @@ use App\Http\Controllers\EmpresaOfertaController;
 use App\Http\Controllers\DashboardAlumnoController;
 use App\Http\Controllers\AlumnoController;
 use App\Http\Controllers\SolicitudPracticaController;
+use App\Http\Controllers\EmpresaController;
 
 Route::get('/', function () {
     return Inertia::render('welcome');
@@ -50,14 +51,17 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/alumno/perfil/guardar', [AlumnoController::class, 'guardarPerfil'])->name('alumno.perfil.guardar');
 });
 #Ruta para empresas
-Route::middleware(['auth', 'role:empresa'])->get('/empresa/dashboard', function () {
-    return Inertia::render('Empresa/dashboard');
-})->name('empresa.dashboard');
+Route::middleware(['auth', 'role:empresa'])->get('/empresa/dashboard',[EmpresaController::class, 'index'])->name('empresa.dashboard');
 
  #todo: Juntarlos el de arriba y el de abajo
 Route::middleware(['auth', 'role:empresa'])->group(function () {
     Route::get('/empresa/oferta/crear', [EmpresaOfertaController::class, 'create'])->name('empresa.oferta.create');
     Route::post('/empresa/Oferta', [EmpresaOfertaController::class, 'store'])->name('empresa.oferta.store');
+    Route::get('/empresa/oferta/{oferta}/editar', [EmpresaOfertaController::class, 'edit'])->name('empresa.oferta.edit');
+    Route::get('/empresa/oferta/{oferta}', [EmpresaOfertaController::class, 'show'])->name('empresa.oferta.show');
+    Route::put('/empresa/oferta/{oferta}', [EmpresaOfertaController::class, 'update'])->name('empresa.oferta.update');
+    Route::delete('/empresa/oferta/{oferta}', [EmpresaOfertaController::class, 'destroy'])->name('empresa.oferta.destroy');
+    Route::get('/empresa/oferta/{oferta}/alumnos', [EmpresaOfertaController::class, 'inscritos'])->name('empresa.oferta.inscritos');
 });
 
 

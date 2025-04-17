@@ -16,7 +16,6 @@ return new class extends Migration
                   ->constrained('users')
                   ->onDelete('cascade'); // Si se elimina el usuario, se elimina el perfil del alumno
             $table->primary('alumno_id'); // Definimos alumno_id como clave primaria
-
             $table->string('cv_path')->nullable(); // Ruta al archivo CV
             $table->string('foto_perfil_path')->nullable(); // Ruta al archivo de foto de perfil
             $table->text('intereses')->nullable();

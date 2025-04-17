@@ -1,32 +1,56 @@
 import { useForm } from '@inertiajs/react';
 import React from 'react';
+import { Head } from '@inertiajs/react';
 
-const OfertaCreate = () => {
-    const { data, setData, post, processing, errors } = useForm({
-        name: '',
-        description: '',
-        image: null as File | null,
-        habilidades_blandas_requeridas: '',
-        habilidades_tecnicas_requeridas: '',
-        formacion_requerida: '',
-        experiencia_laboral_requerida: '',
-        disponibilidad_requerida: '',
-        modalidad_practicas_requerida: '',
-        idiomas_requeridos: '',
-        sector_interes_requerido: '',
+interface Oferta {
+    id: number;
+    name: string;
+    description: string;
+    image_path: string | null;
+    habilidades_blandas_requeridas: string | null;
+    habilidades_tecnicas_requeridas: string | null;
+    formacion_requerida: string | null;
+    experiencia_laboral_requerida: string | null;
+    disponibilidad_requerida: string | null;
+    modalidad_practicas_requerida: string | null;
+    idiomas_requeridos: string | null;
+    sector_interes_requerido: string | null;
+    // ... otras propiedades
+}
+
+interface Props {
+    oferta: Oferta;
+}
+
+const OfertaEdit = ({ oferta }: Props) => {
+    const { data, setData, put, processing, errors, } = useForm({
+        name: oferta.name,
+        description: oferta.description,
+        image: null as File | null, // Para permitir la actualización de la imagen
+        habilidades_blandas_requeridas: oferta.habilidades_blandas_requeridas || '',
+        habilidades_tecnicas_requeridas: oferta.habilidades_tecnicas_requeridas || '',
+        formacion_requerida: oferta.formacion_requerida || '',
+        experiencia_laboral_requerida: oferta.experiencia_laboral_requerida || '',
+        disponibilidad_requerida: oferta.disponibilidad_requerida || '',
+        modalidad_practicas_requerida: oferta.modalidad_practicas_requerida || '',
+        idiomas_requeridos: oferta.idiomas_requeridos || '',
+        sector_interes_requerido: oferta.sector_interes_requerido || '',
     });
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        post(route('empresa.oferta.store'), {
-            forceFormData: true, // importante para subir imágenes
+        put(route('empresa.oferta.update', oferta.id), {
+            method: 'put', // Necesario en algunos casos para forzar el método PUT
+            //forceFormData: true, // Importante para subir imágenes
         });
     };
 
     return (
         <div className="p-6 max-w-2xl mx-auto">
-            <h1 className="text-2xl font-bold mb-4">Crear oferta de prácticas</h1>
+            <Head title={`Editar oferta: ${oferta.name}`} />
+            <h1 className="text-2xl font-bold mb-4">Editar oferta de prácticas</h1>
             <form onSubmit={handleSubmit} encType="multipart/form-data" className="space-y-4">
+                {/* Campos del formulario - son los mismos que en OfertaCreate */}
                 <div>
                     <label htmlFor="name" className="block font-medium">Nombre</label>
                     <input
@@ -51,13 +75,20 @@ const OfertaCreate = () => {
                 </div>
 
                 <div>
-                    <label htmlFor="image" className="block font-medium">Imagen</label>
+                    <label htmlFor="image" className="block font-medium">Imagen (Dejar en blanco para no cambiar)</label>
                     <input
                         type="file"
                         id="image"
                         onChange={(e) => setData('image', e.target.files?.[0] ?? null)}
                     />
                     {errors.image && <div className="text-red-500">{errors.image}</div>}
+                    {oferta.image_path && (
+                        <img
+                            src={`/storage/${oferta.image_path}`}
+                            alt={oferta.name}
+                            className="mt-2 max-h-32 rounded-md"
+                        />
+                    )}
                 </div>
 
                 <div>
@@ -162,14 +193,14 @@ const OfertaCreate = () => {
 
                 <button
                     type="submit"
-                    className="bg-blue-600 text-white px-4 py-2 rounded"
+                    className="bg-green-600 text-white px-4 py-2 rounded"
                     disabled={processing}
                 >
-                    Crear
+                    Guardar Cambios
                 </button>
             </form>
         </div>
     );
 };
 
-export default OfertaCreate;
+export default OfertaEdit;
