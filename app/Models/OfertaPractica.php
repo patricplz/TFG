@@ -12,5 +12,13 @@ class OfertaPractica extends Model
         'name',
         'description',
         'image_path',
+        'habilidades_blandas_requeridas',
+        'habilidades_tecnicas_requeridas',
+        'formacion_requerida',
+        'experiencia_laboral_requerida',
+        'disponibilidad_requerida',
+        'modalidad_practicas_requerida',
+        'idiomas_requeridos',
+        'sector_interes_requerido',
     ];
 }

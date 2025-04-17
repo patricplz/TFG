@@ -18,6 +18,14 @@ return new class extends Migration
             $table->text('description');
             $table->string('image_path');
             $table->timestamps(); // esto incluye created_at y updated_at
+            $table->text('habilidades_blandas_requeridas')->nullable();
+            $table->text('habilidades_tecnicas_requeridas')->nullable();
+            $table->text('formacion_requerida')->nullable();
+            $table->text('experiencia_laboral_requerida')->nullable();
+            $table->string('disponibilidad_requerida')->nullable();
+            $table->string('modalidad_practicas_requerida')->nullable();
+            $table->string('idiomas_requeridos')->nullable();
+            $table->string('sector_interes_requerido')->nullable();
         });
     }
 
