@@ -26,6 +26,6 @@ class SolicitudPracticaAlumno extends Model
     // Relación con el modelo User (para obtener el alumno)
     public function alumno()
     {
-        return $this->belongsTo(User::class, 'id');
+        return $this->belongsTo(Alumno::class, 'alumno_id', 'alumno_id'); // Especifica la clave foránea local y la clave relacionada
     }
 }

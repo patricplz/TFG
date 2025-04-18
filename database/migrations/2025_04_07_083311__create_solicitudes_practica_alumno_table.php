@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('solicitudes_practica_alumno', function (Blueprint $table) {
             $table->id();
             $table->foreignId('practica_id')->constrained('ofertas_practicas')->onDelete('cascade');
-            $table->foreignId('alumno_id')->constrained('users')->onDelete('cascade');
+            $table->foreignId('alumno_id')->constrained('alumnos', 'alumno_id')->onDelete('cascade');
             $table->timestamps();
 
             $table->unique(['practica_id', 'alumno_id']);

@@ -19,6 +19,8 @@ class AlumnoController extends Controller
             'oferta' => $oferta
         ]);
     }
+
+
     public function solicitudesInscritas()
     {
         $alumnoId = Auth::id();
@@ -53,6 +55,10 @@ class AlumnoController extends Controller
             'certificaciones' => 'nullable|string|max:1000',
             'premios' => 'nullable|string|max:1000',
             'referencias' => 'nullable|string|max:1000',
+            'nombre' => 'required|string|max:255', 
+            'apellidos' => 'required|string|max:255',
+            'fecha_nacimiento' => 'nullable|date',
+            'localidad' => 'nullable|string|max:255',
         ])->validate();
 
         $alumnoId = Auth::id();
@@ -90,7 +96,10 @@ class AlumnoController extends Controller
         $alumno->certificaciones = $request->input('certificaciones');
         $alumno->premios = $request->input('premios');
         $alumno->referencias = $request->input('referencias');
-
+        $alumno->nombre = $request->input('nombre');
+        $alumno->apellidos = $request->input('apellidos');
+        $alumno->fecha_nacimiento = $request->input('fecha_nacimiento');
+        $alumno->localidad = $request->input('localidad');
         $alumno->save();
 
         return redirect()->route('alumno.dashboard')->with('success', 'Perfil actualizado con éxito.');
