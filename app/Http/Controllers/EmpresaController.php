@@ -4,6 +4,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\OfertaPractica;
+use App\Models\Alumno;
 use Inertia\Inertia;
 
 use Illuminate\Support\Facades\Auth;
@@ -23,6 +24,15 @@ class EmpresaController extends Controller
         // Devuelve la vista con las ofertas de la empresa
         return Inertia::render('Empresa/dashboard', [
             'ofertas' => $ofertas,
+        ]);
+    }
+
+    public function verPerfilAlumno($id)
+    {
+        $alumno = Alumno::findOrFail($id);
+
+        return Inertia::render('Empresa/VerPerfilAlumno', [
+            'alumno' => $alumno,
         ]);
     }
 }

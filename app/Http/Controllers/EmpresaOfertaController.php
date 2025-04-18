@@ -7,6 +7,7 @@ use Inertia\Inertia;
 use App\Models\OfertaPractica;
 use App\Models\User;
 use App\Models\SolicitudPracticaAlumno;
+use App\Models\Alumno;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
@@ -127,38 +128,36 @@ class EmpresaOfertaController extends Controller
         return redirect()->route('empresa.dashboard')->with('success', 'Oferta actualizada con éxito.');
     }
 
+
     public function inscritos(OfertaPractica $oferta)
-{
-    if ($oferta->empresa_id !== Auth::id()) {
-        abort(403, 'No estás autorizado a ver los alumnos inscritos en esta oferta.');
-    }
-
-    // Cargar las solicitudes de práctica junto con la información del usuario (a través de la relación 'alumno' en SolicitudPracticaAlumno)
-    $solicitudes = SolicitudPracticaAlumno::where('practica_id', $oferta->id)
-        ->with('alumno:id,name') // Cargar solo id y name del usuario
-        ->get();
-
-    $alumnosInscritos = $solicitudes->map(function ($solicitud) {
-        // Para cada solicitud, buscar la información adicional del alumno en la tabla 'alumnos'
-        $alumnoInfo = Alumno::where('alumno_id', $solicitud->alumno_id)->first();
-
-        if ($solicitud->alumno && $alumnoInfo) {
-            return [
-                'alumno_id' => $solicitud->alumno->id,
-                'nombre' => $solicitud->alumno->name,
-                'foto_perfil' => $alumnoInfo->foto_perfil_path ?? null,
-                'formacion' => $alumnoInfo->formacion ?? null,
-                
-                // Puedes añadir más campos de la tabla 'alumnos' aquí
-            ];
-        } else {
-            return null;
+    {
+        if ($oferta->empresa_id !== Auth::id()) {
+            abort(403, 'No estás autorizado a ver los alumnos inscritos en esta oferta.');
         }
-    })->filter(fn ($alumno) => $alumno !== null);
 
-    return Inertia::render('Empresa/OfertaInscritos', [
-        'oferta' => $oferta,
-        'alumnosInscritos' => $alumnosInscritos,
-    ]);
-}
+        // Cargar las solicitudes de práctica junto con la información del usuario (a través de la relación 'alumno' en SolicitudPracticaAlumno)
+        $solicitudes = SolicitudPracticaAlumno::where('practica_id', $oferta->id)
+            ->with('alumno') // Carga la relación 'alumno' (ahora con el modelo Alumno)
+            ->get();
+
+        $alumnosInscritos = $solicitudes->map(function ($solicitud) {
+            if ($solicitud->alumno) {
+                return [
+                    'alumno_id' => $solicitud->alumno->alumno_id, // Usa el ID correcto de la tabla 'alumnos'
+                    'nombre' => $solicitud->alumno->nombre ?? null, // Accede al nombre desde la relación cargada
+                    'apellidos' => $solicitud->alumno->apellidos ?? null, // Accede a los apellidos
+                    'foto_perfil' => $solicitud->alumno->foto_perfil_path ?? null, // Accede a la foto de perfil
+                    'formacion' => $solicitud->alumno->formacion ?? null, // Accede a la formación
+                    // Puedes añadir más campos del alumno aquí directamente desde $solicitud->alumno
+                ];
+            } else {
+                return null;
+            }
+        })->filter(fn ($alumno) => $alumno !== null);
+
+        return Inertia::render('Empresa/OfertaInscritos', [
+            'oferta' => $oferta,
+            'alumnosInscritos' => $alumnosInscritos,
+        ]);
+    }
 }

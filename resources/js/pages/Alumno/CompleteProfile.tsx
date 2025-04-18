@@ -1,8 +1,6 @@
 import { Head, useForm } from '@inertiajs/react';
 import React, { useState } from 'react';
 
-
-
 interface FormData {
     cv: File | null;
     foto_perfil: File | null;
@@ -21,7 +19,11 @@ interface FormData {
     portafolio: string;
     certificaciones: string;
     premios: string;
-    referencias: string;
+    referencias: string; 
+    nombre: string; 
+    apellidos: string;
+    fecha_nacimiento: string; 
+    localidad: string; 
     [key: string]: string | number | boolean | File | null;
 }
 
@@ -45,6 +47,10 @@ export default function CompletaPerfil() {
         certificaciones: '',
         premios: '',
         referencias: '',
+        nombre: '', 
+        apellidos: '',
+        fecha_nacimiento: '',
+        localidad:'',
     });
 
     const [cvName, setCvName] = useState<string | null>(null);
@@ -86,6 +92,61 @@ export default function CompletaPerfil() {
                 <h1 className="text-2xl font-bold mb-4">Completa tu Perfil</h1>
 
                 <form onSubmit={submit} className="space-y-6">
+                <div>
+                        <label htmlFor="nombre" className="block text-gray-700 text-sm font-bold mb-2">
+                            Nombre
+                        </label>
+                        <input
+                            type="text"
+                            id="nombre"
+                            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                            value={data.nombre}
+                            onChange={e => setData('nombre', e.currentTarget.value)}
+                        />
+                        {errors.nombre && <p className="text-red-500 text-xs italic">{errors.nombre}</p>}
+                    </div>
+
+                    <div>
+                        <label htmlFor="apellidos" className="block text-gray-700 text-sm font-bold mb-2">
+                            Apellidos
+                        </label>
+                        <input
+                            type="text"
+                            id="apellidos"
+                            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                            value={data.apellidos}
+                            onChange={e => setData('apellidos', e.currentTarget.value)}
+                        />
+                        {errors.apellidos && <p className="text-red-500 text-xs italic">{errors.apellidos}</p>}
+                    </div>
+
+                    <div>
+                        <label htmlFor="fecha_nacimiento" className="block text-gray-700 text-sm font-bold mb-2">
+                            Fecha de Nacimiento
+                        </label>
+                        <input
+                            type="date"
+                            id="fecha_nacimiento"
+                            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                            value={data.fecha_nacimiento}
+                            onChange={e => setData('fecha_nacimiento', e.currentTarget.value)}
+                        />
+                        {errors.fecha_nacimiento && <p className="text-red-500 text-xs italic">{errors.fecha_nacimiento}</p>}
+                    </div>
+
+                    <div>
+                        <label htmlFor="localidad" className="block text-gray-700 text-sm font-bold mb-2">
+                            Localidad
+                        </label>
+                        <input
+                            type="text"
+                            id="localidad"
+                            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                            value={data.localidad}
+                            onChange={e => setData('localidad', e.currentTarget.value)}
+                        />
+                        {errors.localidad && <p className="text-red-500 text-xs italic">{errors.localidad}</p>}
+                    </div>
                     <div>
                         <label htmlFor="cv" className="block text-gray-700 text-sm font-bold mb-2">
                             CV (PDF)

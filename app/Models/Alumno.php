@@ -33,6 +33,10 @@ class Alumno extends Model
         'certificaciones',
         'premios',
         'referencias',
+        'nombre', 
+        'apellidos', 
+        'fecha_nacimiento', 
+        'localidad', 
     ];
 
     /**

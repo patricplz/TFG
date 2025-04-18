@@ -1,4 +1,4 @@
-import { Head } from '@inertiajs/react';
+import { Head, Link } from '@inertiajs/react';
 
 interface OfertaType {
     id: number;
@@ -18,24 +18,9 @@ interface OfertaType {
 interface AlumnoType {
     alumno_id: number;
     nombre: string;
-    cv: File | null;
-    foto_perfil: File | null;
-    intereses: string;
-    descripcion: string;
+    apellidos: string;
+    foto_perfil: File | null; //todo: quitar null
     formacion: string;
-    experiencia_laboral: string;
-    habilidades_tecnicas: string;
-    habilidades_blandas: string;
-    practicas_interes: string;
-    sectores_interes: string;
-    disponibilidad: string;
-    modalidad_practicas: string;
-    expectativas_aprendizaje: string;
-    idiomas: string;
-    portafolio: string;
-    certificaciones: string;
-    premios: string;
-    referencias: string;
 }
 
 interface Props {
@@ -53,20 +38,24 @@ export default function OfertaInscritos({ oferta, alumnosInscritos }: Props) {
                 {alumnosInscritos.length > 0 ? (
                     <div className="grid auto-rows-min gap-4 md:grid-cols-3">
                         {alumnosInscritos.map((alumno) => (
-                            <div key={alumno.alumno_id} className="border-sidebar-border/70 dark:border-sidebar-border relative overflow-hidden rounded-xl border p-4">
+                            <Link
+                                key={alumno.alumno_id}
+                                href={route('empresa.perfilAlumno.ver', { id: alumno.alumno_id })}
+                                className="border-sidebar-border/70 dark:border-sidebar-border relative overflow-hidden rounded-xl border p-4 block hover:shadow-md transition duration-200"
+                            >
                                 {alumno.foto_perfil && (
                                     <img
                                         src={`/storage/${alumno.foto_perfil}`}
-                                        alt={`${alumno.nombre}`}
+                                        alt={`${alumno.nombre} ${alumno.apellidos}`}
                                         className="w-24 h-24 object-cover rounded-full mx-auto mb-2"
                                     />
                                 )}
-                                <h3 className="text-lg font-semibold text-center">{`${alumno.nombre} ${alumno}`}</h3>
+                                <h3 className="text-lg font-semibold text-center">{`${alumno.nombre} ${alumno.apellidos}`}</h3>
                                 {alumno.formacion && (
                                     <p className="text-sm text-center text-neutral-600 dark:text-neutral-400">{alumno.formacion}</p>
                                 )}
-                                {/* Puedes añadir más información del alumno aquí si lo deseas */}
-                            </div>
+                                {/* Puedes añadir más información básica del alumno aquí si lo deseas */}
+                            </Link>
                         ))}
                     </div>
                 ) : (
