@@ -1,14 +1,21 @@
 // resources/js/Pages/Alumno/dashboard.tsx
 
-import { Head, usePage, Link } from '@inertiajs/react';
+import { Head, Link } from '@inertiajs/react';
 import AppLayout from '@/layouts/app-layout-alumno';
 import { BreadcrumbItem } from '@/types';
+import FiltroOfertas from '@/components/FiltroBusquedaOfertas';
+import { OfertaType } from '@/types/oferta'
 
-interface OfertaPractica {
-  id: number;
-  name: string;
-  description: string;
-  image_path: string;
+
+interface Props {
+  ofertas: OfertaType[];
+  sectoresFP: string[]; // El array de sectores FP que viene del backend
+  modalidades: string[]; // El array de modalidades que viene del backend
+  filtros: {
+      palabra_clave?: string;
+      sector?: string;
+      modalidad?: string;
+  };
 }
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -18,13 +25,16 @@ const breadcrumbs: BreadcrumbItem[] = [
   },
 ];
 
-export default function Dashboard() {
-  const { ofertas } = usePage().props as unknown as { ofertas: OfertaPractica[] };
+export default function Dashboard({ ofertas, sectoresFP, modalidades }: Props) {
 
   return (
     <AppLayout breadcrumbs={breadcrumbs}>
       <Head title="Dashboard" />
       <div className="flex h-full flex-1 flex-col gap-4 rounded-xl p-4">
+        <FiltroOfertas 
+          sectoresFP={sectoresFP} // Pasando el array de sectores como prop
+          modalidades={modalidades} // Pasando el array de modalidades como prop
+        />
         <div className="grid auto-rows-min gap-6 md:grid-cols-3">
           {ofertas.map((oferta) => (
             <Link href={`/alumno/oferta/${oferta.id}`} key={oferta.id}>
