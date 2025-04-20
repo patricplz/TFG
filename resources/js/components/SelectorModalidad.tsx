@@ -1,20 +1,12 @@
 import React from 'react';
-import { useForm } from '@inertiajs/react';
-
-interface FormData {
-    modalidad: string;
-    [key: string]: string | number | boolean | null | undefined;
-}
 
 interface Props {
     modalidades: string[];
+    setData: (key: 'modalidad', value: string) => void; // Tipo más específico para setData
+    initialValue?: string;
 }
 
-export default function SelectorModalidad({ modalidades }: Props) {
-    const { data, setData } = useForm<FormData>({
-        modalidad: ''
-    }); // Accedemos al form del componente padre
-
+export default function SelectorModalidad({ modalidades, setData, initialValue = '' }: Props) {
     const handleInputChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
         setData('modalidad', event.target.value);
     };
@@ -24,7 +16,7 @@ export default function SelectorModalidad({ modalidades }: Props) {
             <select
                 name="modalidad"
                 className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
-                value={data.modalidad}
+                value={initialValue}
                 onChange={handleInputChange}
             >
                 <option value="">Todas las modalidades</option>

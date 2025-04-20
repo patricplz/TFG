@@ -9,27 +9,33 @@ interface Props {
     modalidades: string[];
 }
 
+interface InertiaGetProps {
+    preserveState?: boolean;
+    replace?: boolean;
+    [key: string]: string | number | boolean | null | undefined; // Permite otras propiedades (como los datos del formulario)
+}
+
 export default function FiltroOfertas({ sectoresFP, modalidades }: Props) {
-    const { data, get } = useForm({
+    const { data, setData, get } = useForm({
         palabra_clave: '',
         sector: '',
         modalidad: '',
     });
 
     useEffect(() => {
-        get(route('alumno.dashboard'), {
+        get(route("alumno.dashboard"), {
             ...data,
             preserveState: true,
             replace: true,
-        });
+        } as InertiaGetProps); // Casteamos el objeto de opciones
     }, [data, get]);
 
     return (
         <div className="mb-4">
             <div className="flex flex-col space-y-2 sm:space-y-0 sm:flex-row sm:space-x-2 items-center">
-                <BuscadorPalabraClave />
-                <SelectorSector sectoresFP={sectoresFP} />
-                <SelectorModalidad modalidades={modalidades} />
+                <BuscadorPalabraClave setData={setData} initialValue={data.palabra_clave} />
+                <SelectorSector sectoresFP={sectoresFP} setData={setData} initialValue={data.sector} />
+                <SelectorModalidad modalidades={modalidades} setData={setData} initialValue={data.modalidad} />
             </div>
         </div>
     );

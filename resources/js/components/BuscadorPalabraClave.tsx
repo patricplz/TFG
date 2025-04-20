@@ -1,16 +1,11 @@
 import React from 'react';
-import { useForm } from '@inertiajs/react';
 
-interface FormData {
-    palabra_clave: string;
-    [key: string]: string | number | boolean | null | undefined;
+interface Props {
+    setData: (key: string, value: string) => void; // Define el tipo de setData como una función
+    initialValue?: string;
 }
 
-export default function BuscadorPalabraClave() {
-    const { data, setData } = useForm<FormData>({ // Especificamos el tipo FormData
-        palabra_clave: '',
-    });
-
+export default function BuscadorPalabraClave({ setData, initialValue = '' }: Props) {
     const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setData('palabra_clave', event.target.value);
     };
@@ -22,7 +17,7 @@ export default function BuscadorPalabraClave() {
                 name="palabra_clave"
                 placeholder="Buscar por palabra clave"
                 className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
-                value={data.palabra_clave}
+                value={initialValue}
                 onChange={handleInputChange}
             />
         </div>

@@ -40,6 +40,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/alumno/solicitar/{practicaId}', [SolicitudPracticaController::class, 'store'])->name('alumno.solicitar');
     Route::post('/alumno/oferta/{practicaId}/inscribir', [SolicitudPracticaController::class, 'store'])->name('alumno.practica.inscribir');
     Route::get('/alumno/solicitudes', [AlumnoController::class, 'solicitudesInscritas'])->name('alumno.solicitudes');
+    Route::delete('/alumno/solicitudes/{solicitud}', [SolicitudPracticaController::class, 'retirarSolicitud'])->name('alumno.solicitudes.retirar');
 
     // Ruta para mostrar el formulario de completar perfil
     Route::get('/alumno/perfil', [AlumnoController::class, 'perfil'])->name('alumno.perfil');

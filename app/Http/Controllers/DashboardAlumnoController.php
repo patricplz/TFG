@@ -21,13 +21,13 @@ class DashboardAlumnoController extends Controller
         // Filtrado por sector
         if ($request->has('sector') && $request->filled('sector')) {
             $sector = $request->input('sector');
-            $query->where('sector', $sector);
+            $query->where('sector_interes_requerido', $sector);
         }
 
         // Filtrado por modalidad
         if ($request->has('modalidad') && $request->filled('modalidad')) {
             $modalidad = $request->input('modalidad');
-            $query->where('modalidad', $modalidad);
+            $query->where('modalidad_practicas_requerida', $modalidad);
         }
 
         $ofertasFiltradas = $query->get(); // Obtiene las ofertas filtradas
