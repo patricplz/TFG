@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Models\Empresa;
+use App\Models\Alumno;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -49,9 +51,19 @@ class RegisteredUserController extends Controller
         Auth::login($user);
 
         if ($user->role == 'alumno') {
-            return redirect()->route('alumno.dashboard');
+            $alumnoExists = Alumno::where('user_id', $user->id)->exists();
+            if (!$alumnoExists) {
+                return redirect()->route('alumno.perfil.editar');
+            } else {
+                return redirect()->route('alumno.dashboard');
+            }
         } elseif ($user->role == 'empresa') {
-            return redirect()->route('empresa.dashboard');
+            $empresaExists = Empresa::where('user_id', $user->id)->exists();
+            if (!$empresaExists) {
+                return redirect()->route('empresa.perfil.editar');
+            } else {
+                return redirect()->route('empresa.dashboard');
+            }
         }
 
         return to_route('dashboard');

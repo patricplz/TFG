@@ -1,29 +1,39 @@
 import React from 'react';
+import StyledSelect from './StyledSelect';
 
 interface Props {
     modalidades: string[];
-    setData: (key: 'modalidad', value: string) => void; // Tipo más específico para setData
+    setData: (key: 'modalidad', value: string) => void;
     initialValue?: string;
 }
 
+
 export default function SelectorModalidad({ modalidades, setData, initialValue = '' }: Props) {
-    const handleInputChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-        setData('modalidad', event.target.value);
+    const handleSelectChange = (selectedOption: { value: string; label: string }) => {
+        setData('modalidad', selectedOption.value);
     };
+
+    // Formatea las modalidades para que coincidan con la estructura de options de StyledSelect
+    const options = modalidades.map((modalidad) => ({
+        value: modalidad,
+        label: modalidad,
+        style: 'text-red-500 bg-transparent',
+        highlightStyle: 'bg-blue-300',
+        focusStyle: 'bg-blue-200'
+    }));
 
     return (
         <div>
-            <select
-                name="modalidad"
+            <StyledSelect
                 className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                options={options}
                 value={initialValue}
-                onChange={handleInputChange}
-            >
-                <option value="">Todas las modalidades</option>
-                {modalidades.map((modalidad) => (
-                    <option key={modalidad} value={modalidad}>{modalidad}</option>
-                ))}
-            </select>
+                onChange={handleSelectChange}
+                placeholder="Todas las modalidades"
+                isSearchable={true} // Puedes cambiarlo a true si deseas la funcionalidad de búsqueda
+                SeleccionadoDiv={true} // Puedes cambiarlo a true si deseas que la opción seleccionada permanezca visible con un overlay
+                borderColor="border-blue-500" // Puedes personalizar el color del borde si SeleccionadoDiv es true
+            />
         </div>
     );
 }

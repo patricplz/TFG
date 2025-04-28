@@ -1,14 +1,26 @@
-import AppLogoIcon from './app-logo-icon';
-
 export default function AppLogo() {
     return (
-        <>
-            <div className="bg-sidebar-primary text-sidebar-primary-foreground flex aspect-square size-8 items-center justify-center rounded-md">
-                <AppLogoIcon className="size-5 fill-current text-white dark:text-black" />
-            </div>
-            <div className="ml-1 grid flex-1 text-left text-sm">
-                <span className="mb-0.5 truncate leading-none font-semibold">Laravel Starter Kit</span>
-            </div>
-        </>
+      <a className="flex items-center" href=""> 
+        <div>
+          <img
+            src="/storage/images/logo.png"
+            style={{ width: '60px', height: 'auto', objectFit: 'cover' }}
+          />
+        </div>
+        <div className="ml-0 text-left text-sm">
+          <span
+            className="truncate leading-none font-semibold"
+            style={{
+              fontFamily: "'Montserrat', sans-serif",
+              fontWeight: 700,
+              fontSize: '1.5rem',
+              color: 'white',
+              textDecoration: 'none', 
+            }}
+          >
+            ConectaPro
+          </span>
+        </div>
+      </a>
     );
-}
+  }

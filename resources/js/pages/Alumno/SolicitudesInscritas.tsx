@@ -42,31 +42,46 @@ export default function SolicitudesInscritas({ solicitudes }: Props) {
   return (
     <>
     <AppLayout breadcrumbs={breadcrumbs}>
-      <Head title="Mis Solicitudes" />
-        <div className="max-w-3xl mx-auto p-6">
-          <h1 className="text-2xl font-bold mb-4">Mis Solicitudes de Práctica</h1>
+      <Head title="Tus Solicitudes" />
+        <div className="max-w-3xl w-full mx-auto p-6">
+          <h1 className="text-2xl font-bold mb-4">Tus Solicitudes de Práctica</h1>
 
           {solicitudes.length === 0 ? (
             <p>No has realizado ninguna solicitud de práctica.</p>
           ) : (
             <ul className="space-y-4">
               {solicitudes.map((solicitud) => (
-                <li key={solicitud.id} className="bg-white rounded-md shadow-md p-4">
-                  <h2 className="text-xl font-semibold mb-2">{solicitud.oferta_practica.name}</h2>
-                  <p className="text-neutral-700 dark:text-neutral-300 mb-2">{solicitud.oferta_practica.description.substring(0, 100)}...</p>
-                  <p className="text-sm text-gray-500">Solicitado el: {new Date(solicitud.created_at).toLocaleDateString()}</p>
-                  <p className="text-sm text-gray-500">Estado: <span className='text-black-500 font-bold'>{solicitud.estado}</span></p>
-                  {/* Opcional: Enlace para ver la oferta completa */}
-                  <Link  href={`/alumno/oferta/${solicitud.oferta_practica?.id}`} className="text-blue-500 hover:underline mt-2 block">
-                    Ver detalles de la práctica
-                  </Link>
-                  <button
+                <li
+                  key={solicitud.id}
+                  className="bg-white dark:bg-[oklch(0.28_0.03_232)] rounded-md shadow-md p-4 flex items-center justify-between"
+                >
+                  <div className="flex-grow"> 
+                    <h2 className="text-xl font-semibold mb-2">{solicitud.oferta_practica.name}</h2>
+                    <p className="text-neutral-700 dark:text-neutral-300 mb-2">
+                      {solicitud.oferta_practica.description.substring(0, 100)}...
+                    </p>
+                    <p className="text-sm text-gray-500">
+                      Solicitado el: {new Date(solicitud.created_at).toLocaleDateString()}
+                    </p>
+                    <p className="text-sm text-gray-500">
+                      Estado: <span className="text-black-500 font-bold">{solicitud.estado}</span>
+                    </p>
+                  </div>
+                  <div className="flex flex-col space-y-2"> 
+                    <Link
+                      href={`/alumno/oferta/${solicitud.oferta_practica?.id}`}
+                      className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline text-center"
+                    >
+                      Ver detalles
+                    </Link>
+                    <button
                       onClick={() => handleRetirarSolicitud(solicitud.id)}
-                      className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                      className="bg-blue-800 hover:bg-blue-900 text-white cursor-pointer font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
                       disabled={processing}
-                  >
+                    >
                       Retirar
-                  </button>
+                    </button>
+                  </div>
                 </li>
               ))}
             </ul>
