@@ -1,13 +1,13 @@
 import AppLayout from '@/layouts/app-layout-empresa';
 import { type BreadcrumbItem } from '@/types';
 import { Head, Link } from '@inertiajs/react';
+import { motion } from 'framer-motion';
 
 interface Oferta {
     id: number;
     name: string;
     description: string;
     image_path: string | null;
-    // ... otras propiedades de la oferta
 }
 
 interface Props {
@@ -29,52 +29,60 @@ export default function Dashboard({ ofertas }: Props) {
                 <h1 className="text-2xl font-bold mb-4">Tus Ofertas Publicadas</h1>
 
                 {ofertas.length === 0 ? (
-                    <div>
-                    <p>No has publicado ninguna oferta de prácticas.</p>
-                    <Link href='http://127.0.0.1:8000/empresa/oferta/crear'>Haz click aquí para crear una</Link>
+                    <div className="border-sidebar-border/70 dark:border-sidebar-border rounded-xl border bg-white dark:bg-[oklch(0.28_0.03_232)] p-6 shadow-md">
+                        <p className="mb-4">No has publicado ninguna oferta de prácticas.</p>
+                        <Link 
+                            href='http://127.0.0.1:8000/empresa/oferta/crear'
+                            className="inline-block px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors duration-300"
+                        >
+                            Crear nueva oferta
+                        </Link>
                     </div>
                 ) : (
-                    <div className="grid auto-rows-min gap-4 md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3">
-                        {ofertas.map((oferta) => (
-                            <div key={oferta.id} className="bg-white rounded-md shadow-md p-4">
+                    <motion.div 
+                        className="grid auto-rows-min gap-4 md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3"
+                        initial={{ opacity: 0, scale: 0.9 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ duration: 0.5 }}
+                        >
+                        {ofertas.map((oferta, index) => (
+                            <div 
+                                key={oferta.id} 
+                                className={` transition-transform duration-300 hover:scale-104 border-sidebar-border/70 dark:border-sidebar-border rounded-xl border bg-white dark:bg-[oklch(0.28_0.03_232)] p-6 shadow-md hover:shadow-lg transition-all duration-500 transform`}
+                                style={{ 
+                                    transitionDelay: `${index * 100}ms` 
+                                }}
+                            >
                                 <h2 className="text-xl font-semibold mb-2">{oferta.name}</h2>
                                 {oferta.image_path && (
-                                    <img
-                                        src={`/storage/${oferta.image_path}`}
-                                        alt={oferta.name}
-                                        className="w-full h-32 object-cover rounded-md mb-2"
-                                    />
+                                    <div className="overflow-hidden rounded-md mb-2">
+                                        <img
+                                            src={`/storage/${oferta.image_path}`}
+                                            alt={oferta.name}
+                                            className="w-full h-40 object-cover rounded-md"
+                                        />
+                                    </div>
                                 )}
-                                <p className="text-neutral-700 dark:text-neutral-300 mb-2">{oferta.description.substring(0, 100)}...</p>
-                                <Link href={route('empresa.oferta.show', oferta.id)} className="text-blue-500 hover:underline mt-2 block">
-                                    Ver detalles
-                                </Link>
-                                <Link href={`/empresa/oferta/${oferta.id}/alumnos`} className="text-green-500 hover:underline mt-1 block">
-                                    Ver alumnos inscritos
-                                </Link> 
-                                {/*<button className="text-red-500 hover:underline mt-1 block">
-                                    Eliminar
-                                </button> */}
+                                <p className="text-neutral-700 dark:text-neutral-300 mb-4 line-clamp-3">{oferta.description}</p>
+                                
+                                <div className="flex flex-wrap gap-2 mt-4">
+                                    <Link 
+                                        href={route('empresa.oferta.show', oferta.id)} 
+                                        className="flex-1 text-center px-3 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors duration-300"
+                                    >
+                                        Ver detalles
+                                    </Link>
+                                    <Link 
+                                        href={`/empresa/oferta/${oferta.id}/alumnos`} 
+                                        className="flex-1 text-center px-3 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 transition-colors duration-300"
+                                    >
+                                        Ver alumnos
+                                    </Link>
+                                </div>
                             </div>
                         ))}
-                    </div>
+                    </motion.div>
                 )}
-
-                {/* Puedes mantener o eliminar este div si no lo necesitas */}
-                {/* <div className="grid auto-rows-min gap-4 md:grid-cols-3">
-                    <div className="border-sidebar-border/70 dark:border-sidebar-border relative aspect-video overflow-hidden rounded-xl border">
-                        <PlaceholderPattern className="absolute inset-0 size-full stroke-neutral-900/20 dark:stroke-neutral-100/20" />
-                    </div>
-                    <div className="border-sidebar-border/70 dark:border-sidebar-border relative aspect-video overflow-hidden rounded-xl border">
-                        <PlaceholderPattern className="absolute inset-0 size-full stroke-neutral-900/20 dark:stroke-neutral-100/20" />
-                    </div>
-                    <div className="border-sidebar-border/70 dark:border-sidebar-border relative aspect-video overflow-hidden rounded-xl border">
-                        <PlaceholderPattern className="absolute inset-0 size-full stroke-neutral-900/20 dark:stroke-neutral-100/20" />
-                    </div>
-                </div>
-                <div className="border-sidebar-border/70 dark:border-sidebar-border relative min-h-[100vh] flex-1 overflow-hidden rounded-xl border md:min-h-min">
-                    <PlaceholderPattern className="absolute inset-0 size-full stroke-neutral-900/20 dark:stroke-neutral-100/20" />
-                </div> */}
             </div>
         </AppLayout>
     );

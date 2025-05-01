@@ -1,6 +1,6 @@
 export default function AppLogo() {
     return (
-      <a className="flex items-center" href=""> 
+      <div className="flex items-center"> 
         <div>
           <img
             src="/storage/images/logo.png"
@@ -21,6 +21,6 @@ export default function AppLogo() {
             ConectaPro
           </span>
         </div>
-      </a>
+      </div>
     );
   }

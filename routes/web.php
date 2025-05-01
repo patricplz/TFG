@@ -35,7 +35,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
 #Ruta para alumnos
 
 Route::middleware(['auth', 'verified', 'role:alumno'])->group(function () {
-    Route::get('/alumno/dashboard', [DashboardAlumnoController::class, 'index'])->name('alumno.dashboard');
+    // Route::get('/alumno/dashboard', [DashboardAlumnoController::class, 'index'])->name('alumno.dashboard');
+    Route::get('/alumno/dashboard', [DashboardAlumnoController::class, 'mostrarSectores'])->name('alumno.dashboard');
+    Route::get('/alumno/dashboard/sector/{sector}', [DashboardAlumnoController::class, 'mostrarOfertasPorSector'])->name('alumno.dashboard.sector');
     Route::get('/alumno/oferta/{id}', [AlumnoController::class, 'show'])->name('alumno.solicitud.show');
     Route::post('/alumno/solicitar/{practicaId}', [SolicitudPracticaController::class, 'store'])->name('alumno.solicitar');
     Route::post('/alumno/oferta/{practicaId}/inscribir', [SolicitudPracticaController::class, 'store'])->name('alumno.practica.inscribir');
