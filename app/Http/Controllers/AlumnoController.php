@@ -8,6 +8,7 @@ use App\Models\Alumno;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Storage;
 
 class AlumnoController extends Controller
 {
@@ -26,7 +27,7 @@ class AlumnoController extends Controller
         $alumnoId = Auth::id();
 
         $solicitudes = SolicitudPracticaAlumno::where('alumno_id', $alumnoId)
-            ->with('ofertaPractica') // Carga la información de la práctica relacionada
+            ->with('ofertaPractica') 
             ->latest()
             ->get();
 

@@ -1,32 +1,28 @@
-// filtrobusquedaOfertas.tsx
-
 import React, { useEffect } from 'react';
 import { useForm } from '@inertiajs/react';
 import BuscadorPalabraClave from './BuscadorPalabraClave';
-import SelectorModalidad from './SelectorModalidad';
+import SelectorSector from './selectorSector';
 
 interface Props {
-    modalidades: string[];
-    sector: string; // Aunque lo recibes como array, en la lógica lo trataremos como un string
+    sectores: string[],
+    initialSector?: string;
 }
 
 interface InertiaGetProps {
     preserveState?: boolean;
     replace?: boolean;
-    [key: string]: string | number | boolean | null | undefined;
+    [key: string]: string | number | boolean | null | undefined; // Permite otras propiedades (como los datos del formulario)
 }
 
-export default function FiltroOfertas({ modalidades, sector }: Props) {
+export default function FiltroSectores({ sectores }: Props) {
     const { data, setData, get } = useForm({
         palabra_clave: '',
-        modalidad: '',
-        sector: sector || '',
+        sector: '',
     });
 
     useEffect(() => {
-        get(route("alumno.dashboard.sector", { sector: data.sector }), { // Usa data.sector en la ruta
-            palabra_clave: data.palabra_clave,
-            modalidad: data.modalidad,
+        get(route("alumno.dashboard"), {
+            ...data,
             preserveState: true,
             replace: true,
         } as InertiaGetProps);
@@ -36,8 +32,10 @@ export default function FiltroOfertas({ modalidades, sector }: Props) {
         <div className="mb-4">
             <div className="flex flex-col space-y-2 sm:space-y-0 sm:flex-row sm:space-x-2 items-center">
                 <BuscadorPalabraClave setData={setData} initialValue={data.palabra_clave} />
-                <SelectorModalidad modalidades={modalidades} setData={setData} initialValue={data.modalidad} />
+                <SelectorSector sectoresFP={sectores} setData={setData} initialValue={data.sector} />
             </div>
         </div>
     );
 }
+
+export { FiltroSectores };
