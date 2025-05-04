@@ -38,7 +38,7 @@ export default function OfertaShow({ oferta }: { oferta: Oferta }) {
   const [showDetails, setShowDetails] = useState<boolean>(false);
 
   useEffect(() => {
-    // Mostrar detalles con un pequeño retraso para la animación
+
     const timer = setTimeout(() => {
       setShowDetails(true);
     }, 300);

@@ -11,7 +11,7 @@ interface Props {
 interface InertiaGetProps {
     preserveState?: boolean;
     replace?: boolean;
-    [key: string]: string | number | boolean | null | undefined; // Permite otras propiedades (como los datos del formulario)
+    [key: string]: string | number | boolean | null | undefined; 
 }
 
 export default function FiltroSectores({ sectores }: Props) {

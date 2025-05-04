@@ -8,6 +8,7 @@ use App\Http\Controllers\DashboardAlumnoController;
 use App\Http\Controllers\AlumnoController;
 use App\Http\Controllers\SolicitudPracticaController;
 use App\Http\Controllers\EmpresaController;
+use App\Http\Controllers\AIPredictionController;
 
 Route::get('/', function () {
     return Inertia::render('welcome');
@@ -68,6 +69,7 @@ Route::middleware(['auth', 'role:empresa'])->group(function () {
     Route::get('/empresa//perfilAlumno/{id}', [EmpresaController::class, 'verPerfilAlumno'])->name('empresa.perfilAlumno.ver');
     Route::get('/empresa/perfil', [EmpresaController::class, 'mostrarPerfil'])->name('empresa.perfil.editar');
     Route::post('/empresa/perfil', [EmpresaController::class, 'guardarPerfil'])->name('empresa.perfil.guardar');
+    Route::get('/api/ofertas/{ofertaId}/compatibilidad-ia', [AIPredictionController::class, 'obtenerPuntuacionesCompatibilidad'])->name('api.ofertas.compatibilidad-ia');
 });
 
 

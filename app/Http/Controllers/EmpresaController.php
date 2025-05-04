@@ -11,44 +11,27 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
-class EmpresaController extends Controller
-{
-    public function index()
-    {
-        // Obtén el ID de la empresa autenticada
+class EmpresaController extends Controller{
+    public function index(){
         $empresaId = Auth::id();
+        $ofertas = OfertaPractica::where('empresa_id', $empresaId)->latest()->get();
 
-        // Obtén todas las ofertas que pertenecen a esta empresa
-        $ofertas = OfertaPractica::where('empresa_id', $empresaId)
-            ->latest() // Opcional: Ordenar por la más reciente
-            ->get();
-
-        // Devuelve la vista con las ofertas de la empresa
         return Inertia::render('Empresa/dashboard', [
             'ofertas' => $ofertas,
         ]);
     }
 
-    public function verPerfilAlumno($id)
-    {
+    public function verPerfilAlumno($id){
         $alumno = Alumno::findOrFail($id);
-
-        return Inertia::render('Empresa/VerPerfilAlumno', [
-            'alumno' => $alumno,
-        ]);
+        return Inertia::render('Empresa/VerPerfilAlumno', ['alumno' => $alumno]);
     }
 
-    public function mostrarPerfil()
-    {
+    public function mostrarPerfil(){
         $empresa = Empresa::where('empresa_id', Auth::id())->first();
-
-        return Inertia::render('Empresa/CompleteProfile', [
-            'empresa' => $empresa,
-        ]);
+        return Inertia::render('Empresa/CompleteProfile', ['empresa' => $empresa]);
     }
 
-    public function guardarPerfil(Request $request)
-    {
+    public function guardarPerfil(Request $request) {
         Validator::make($request->all(), [
             'nombre' => 'required|string|max:255',
             'cif_nif' => 'required|string|max:20|unique:empresas,cif_nif,' . optional(Empresa::where('user_id', Auth::id())->first())->id,
@@ -80,7 +63,6 @@ class EmpresaController extends Controller
         $empresa->areas_practicas = $request->input('areas_practicas');
 
         $empresa->save();
-
         return redirect()->route('empresa.dashboard')->with('success', 'Perfil de empresa actualizado con éxito.');
     }
 }

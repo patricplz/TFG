@@ -23,7 +23,7 @@ export default function Dashboard({ sectoresFP_select, sectoresFP, filtros }: Pr
     <AppLayout breadcrumbs={breadcrumbs}>
       <Head title="Dashboard" />
       <div className="flex h-full flex-1 flex-col gap-4 rounded-xl p-4">
-        <FiltroSectores sectores={sectoresFP_select} initialSector={filtros.sector} /> {/* Usa el componente de filtro */}
+        <FiltroSectores sectores={sectoresFP_select} initialSector={filtros.sector} />
         <h1 className="text-xl font-semibold text-neutral-800 dark:text-neutral-100 mb-4">
           Sectores
         </h1>

@@ -10,37 +10,24 @@ use Inertia\Inertia;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
 
-class AlumnoController extends Controller
-{
-    public function show($id)
-    {
-        $oferta = OfertaPractica::findOrFail($id);
-
-        return Inertia::render('Alumno/OfertaShow', [
-            'oferta' => $oferta
-        ]);
+class AlumnoController extends Controller{
+    public function show($id){
+        $oferta= OfertaPractica::findOrFail($id);
+        return Inertia::render('Alumno/OfertaShow', ['oferta' => $oferta]);
     }
 
 
-    public function solicitudesInscritas()
-    {
+    public function solicitudesInscritas(){
         $alumnoId = Auth::id();
-
-        $solicitudes = SolicitudPracticaAlumno::where('alumno_id', $alumnoId)
-            ->with('ofertaPractica') 
-            ->latest()
-            ->get();
-
-        return Inertia::render('Alumno/SolicitudesInscritas', [
-            'solicitudes' => $solicitudes,
-        ]);
+        $solicitudes = SolicitudPracticaAlumno::where('alumno_id', $alumnoId)->with('ofertaPractica')->latest()->get();
+        return Inertia::render('Alumno/SolicitudesInscritas', ['solicitudes' => $solicitudes]);
     }
 
     public function guardarPerfil(Request $request){
         Validator::make($request->all(), [
             'cv' => 'nullable|mimes:pdf|max:2048',
             'foto_perfil' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'intereses' => 'nullable|string|max:255',
+            'intereses' => "nullable|string|max:255",
             'descripcion' => 'nullable|string|max:500',
             'formacion' => 'nullable|string|max:1000',
             'experiencia_laboral' => 'nullable|string|max:1000',
@@ -67,7 +54,7 @@ class AlumnoController extends Controller
 
         if ($request->hasFile('cv')) {
             if ($alumno->cv_path) {
-                Storage::delete($alumno->cv_path); // Eliminar el CV anterior si existe
+                Storage::delete($alumno->cv_path); // Elimino el CV anterior si existe para insertar el nuevo y no tener cvs obsoletos guardados, lo mismo con las fotos de perfil
             }
             $path = $request->file('cv')->store('cvs', 'public');
             $alumno->cv_path = $path;
@@ -75,9 +62,9 @@ class AlumnoController extends Controller
 
         if ($request->hasFile('foto_perfil')) {
             if ($alumno->foto_perfil_path) {
-                Storage::delete($alumno->foto_perfil_path); // Eliminar la foto anterior si existe
+                Storage::delete($alumno->foto_perfil_path); 
             }
-            $path = $request->file('foto_perfil')->store('fotos_perfil', 'public');
+            $path= $request->file('foto_perfil')->store('fotos_perfil', 'public');
             $alumno->foto_perfil_path = $path;
         }
 
@@ -103,22 +90,19 @@ class AlumnoController extends Controller
         $alumno->localidad = $request->input('localidad');
         $alumno->save();
 
-        return redirect()->route('alumno.dashboard')->with('success', 'Perfil actualizado con éxito.');
+        return redirect()->route('alumno.dashboard')->with('success', 'perfil exitosamente actualizado');
     }
 
     public function perfil() {
         $alumno = Alumno::where('alumno_id', Auth::id())->first();
         return Inertia::render('Alumno/perfil', [
-            'alumno' => $alumno, // Pasar los datos existentes al formulario
+            'alumno' => $alumno, 
         ]);
     }
-
-    public function mostrarFormularioEditarPerfil()
-    {
+    public function mostrarFormularioEditarPerfil(){
         $alumno = Alumno::where('alumno_id', Auth::id())->first();
         return Inertia::render('Alumno/CompleteProfile', [ 
             'alumno' => $alumno,
         ]);
     }
-
 }
