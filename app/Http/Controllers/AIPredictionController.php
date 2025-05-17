@@ -19,12 +19,30 @@ class AIPredictionController extends Controller{
         $oferta = OfertaPractica::findOrFail($ofertaId);
         $alumnoIds = SolicitudPracticaAlumno::where('practica_id', $ofertaId)->pluck('alumno_id')->toArray();
 
+        $ofertaSeleccionada = [
+            'name' => $oferta->name,
+            'description' => $oferta->description,
+            'habilidades_blandas_requeridas' => $oferta->habilidades_blandas_requeridas,
+            'habilidades_tecnicas_requeridas' => $oferta->habilidades_tecnicas_requeridas,
+            'formacion_requerida' => $oferta->formacion_requerida,
+            'idiomas_requeridos' => $oferta->idiomas_requeridos,
+        ];
+
         if (empty($alumnoIds)) return response()->json(['message' => 'no hay solicitudes para esta oferta'], 200);
 
-        $alumnos = Alumno::whereIn('alumno_id', $alumnoIds)->get()->toArray();
+        $alumnos = Alumno::whereIn('alumno_id', $alumnoIds)
+        ->select(['alumno_id','formacion', 'habilidades_tecnicas', 'habilidades_blandas', 'idiomas', 'intereses', 'certificaciones'])
+        ->get()
+        ->toArray();
         if (empty($alumnos)) return response()->json(['message' => 'no se encontró ningún perfil'], 200);
 
-        $scores = $this->geminiAIService->getCompatibilityScores($oferta->toArray(), $alumnos);
+        \Log::info("Datos de la oferta:", $ofertaSeleccionada);
+        \Log::info("Datos de los alumnos:", $alumnos);
+
+        $scores = $this->geminiAIService->getCompatibilityScores($ofertaSeleccionada, $alumnos);
+        
+        \Log::info("Puntuaciones de Gemini:", $scores);
+        
         $matches = [];
         foreach ($alumnos as $alumno) {
             if (isset($scores[$alumno['alumno_id']])){
@@ -42,8 +60,6 @@ class AIPredictionController extends Controller{
         usort($matches, function ($a, $b) {
             return ($b['puntuacion'] ?? -1) <=> ($a['puntuacion'] ?? -1); 
         });
-
-
 
         return response()->json($matches);
     }

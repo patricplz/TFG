@@ -21,9 +21,11 @@ class EmpresaController extends Controller{
         ]);
     }
 
-    public function verPerfilAlumno($id){
+    public function verPerfilAlumno($id, Request $request){
         $alumno = Alumno::findOrFail($id);
-        return Inertia::render('Empresa/VerPerfilAlumno', ['alumno' => $alumno]);
+        $oferta_id = $request->oferta_id;
+
+        return Inertia::render('Empresa/VerPerfilAlumno', ['alumno' => $alumno, 'oferta_id' => $oferta_id]);
     }
 
     public function mostrarPerfil(){

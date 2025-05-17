@@ -104,7 +104,7 @@ export default function OfertaInscritos({ oferta, alumnosInscritos: initialAlumn
                         {alumnosAMostrar.map((alumno) => (
                             <Link
                                 key={alumno.alumno_id}
-                                href={route('empresa.perfilAlumno.ver', { id: alumno.alumno_id })}
+                                href={route('empresa.perfilAlumno.ver', { id: alumno.alumno_id, oferta_id: ofertaId })}
                                 className="border-sidebar-border/70 dark:border-sidebar-border relative overflow-hidden rounded-xl border p-4 block hover:shadow-md transition duration-200"
                             >
                                 {alumno.foto_perfil && (

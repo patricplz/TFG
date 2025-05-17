@@ -14,8 +14,6 @@ class SolicitudPracticaController extends Controller
     public function store(Request $request, $practicaId)
     {
         $alumnoId = Auth::id();
- 
-        // Comprobar si ya existe una solicitud para esta práctica
         if (SolicitudPracticaAlumno::where('practica_id', $practicaId)->where('alumno_id', $alumnoId)->exists()) {
             return back()->with('error', 'Ya estás inscrito en esta práctica.');
         }
@@ -48,5 +46,38 @@ class SolicitudPracticaController extends Controller
         return Inertia::render('Alumno/SolicitudesInscritas', [
             'solicitudes' => $solicitudes,
         ]);
+    }
+
+    public function actualizarEstado(Request $request, $oferta, $alumno)
+    {
+        $estado = $request->input('estado');
+
+        try {
+            $solicitud = SolicitudPracticaAlumno::where('practica_id', $oferta)
+                ->where('alumno_id', $alumno)
+                ->first();
+
+            if ($solicitud && $solicitud->estado != $estado) {
+                $solicitud->estado = $estado;
+                $solicitud->save();
+
+                
+                if ($solicitud->estado == 'seleccionado'){
+                    return response()->json(['message' => 'Estado de la solicitud actualizado correctamente a seleccionado'], 200);
+                } else {
+                    return response()->json(['message' => 'Estado de la solicitud actualizado correctamente a rechazado'], 200);
+                }
+            } else if ($solicitud && $solicitud->estado == 'seleccionado'){
+                return response()->json(['message' => 'La solicitud ya está aprobada'], 200);
+            } else if ($solicitud && $solicitud->estado == 'rechazado'){
+                return response()->json(['message' => 'La solicitud ya está rechazada'], 200);
+            } else {
+                return response()->json(['message' => 'No se encontró la solicitud de práctica para este alumno y oferta'], 404);
+            }
+
+        } catch (\Exception $e) {
+        
+            return response()->json(['message' => 'Error al actualizar el estado de la solicitud', 'error' => $e->getMessage()], 500);
+        }
     }
 }
