@@ -7,7 +7,7 @@ import SelectorModalidad from './SelectorModalidad';
 
 interface Props {
     modalidades: string[];
-    sector: string; // Aunque lo recibes como array, en la lógica lo trataremos como un string
+    sector: string;
 }
 
 interface InertiaGetProps {
@@ -24,7 +24,7 @@ export default function FiltroOfertas({ modalidades, sector }: Props) {
     });
 
     useEffect(() => {
-        get(route("alumno.dashboard.sector", { sector: data.sector }), { // Usa data.sector en la ruta
+        get(route("alumno.dashboard.sector", { sector: data.sector }), { 
             palabra_clave: data.palabra_clave,
             modalidad: data.modalidad,
             preserveState: true,

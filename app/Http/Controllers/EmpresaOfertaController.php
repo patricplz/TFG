@@ -11,48 +11,40 @@ use App\Models\Alumno;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
-class EmpresaOfertaController extends Controller
-{
-    public function destroy(OfertaPractica $oferta)
-    {
+class EmpresaOfertaController extends Controller{
+    public function destroy(OfertaPractica $oferta){
         if ($oferta->empresa_id !== Auth::id()) {
             abort(403, 'No estás autorizado a eliminar esta oferta.');
         }
-
         if ($oferta->image_path) {
             Storage::delete('public/' . $oferta->image_path);
         }
-
         $oferta->delete();
 
-        return redirect()->route('empresa.dashboard')->with('success', 'Oferta eliminada con éxito.');
+        return redirect()->route('empresa.dashboard')->with('success', 'Oferta eliminada con éxito');
     }
 
     public function show(OfertaPractica $oferta){
         if ($oferta->empresa_id !== Auth::id()) {
-            abort(403, 'No estás autorizado a ver los detalles de esta oferta.');
+            abort(403, 'No estás autorizado para poder ver los detalles de esta oferta');
         }
 
-        // Renderizar una vista Inertia con los detalles de la oferta
-        return Inertia::render('Empresa/OfertaShow', [ // Crea este componente React
+        return Inertia::render('Empresa/OfertaShow', [
             'oferta' => $oferta,
         ]);
     }
 
-    public function create()
-    {
+    public function create(){
         return Inertia::render('Empresa/OfertaCreate');
     }
 
-    public function edit(OfertaPractica $oferta)
-    {
+    public function edit(OfertaPractica $oferta){
         return Inertia::render('Empresa/OfertaEdit', [
             'oferta' => $oferta,
         ]);
     }
 
-    public function store(Request $request)
-    {
+    public function store(Request $request){
         $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'required|string',
@@ -87,8 +79,7 @@ class EmpresaOfertaController extends Controller
         return redirect()->route('empresa.dashboard')->with('success', 'Oferta creada correctamente');
     }
 
-    public function update(Request $request, OfertaPractica $oferta)
-    {
+    public function update(Request $request, OfertaPractica $oferta){
         $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'required|string',
@@ -115,40 +106,33 @@ class EmpresaOfertaController extends Controller
         $oferta->sector_interes_requerido = $request->input('sector_interes_requerido');
 
         if ($request->hasFile('image')) {
-            // Eliminar la imagen anterior si existe (opcional)
             if ($oferta->image_path) {
                 Storage::delete($oferta->image_path);
             }
             $path = $request->file('image')->store('public/ofertas');
             $oferta->image_path = str_replace('public/', '', $path);
         }
-
         $oferta->save();
 
         return redirect()->route('empresa.dashboard')->with('success', 'Oferta actualizada con éxito.');
     }
 
 
-    public function inscritos(OfertaPractica $oferta)
-    {
+    public function inscritos(OfertaPractica $oferta){
         if ($oferta->empresa_id !== Auth::id()) {
             abort(403, 'No estás autorizado a ver los alumnos inscritos en esta oferta.');
         }
 
-        // Cargar las solicitudes de práctica junto con la información del usuario (a través de la relación 'alumno' en SolicitudPracticaAlumno)
-        $solicitudes = SolicitudPracticaAlumno::where('practica_id', $oferta->id)
-            ->with('alumno') // Carga la relación 'alumno' (ahora con el modelo Alumno)
-            ->get();
+        $solicitudes = SolicitudPracticaAlumno::where('practica_id', $oferta->id)->with('alumno') ->get();
 
         $alumnosInscritos = $solicitudes->map(function ($solicitud) {
             if ($solicitud->alumno) {
                 return [
-                    'alumno_id' => $solicitud->alumno->alumno_id, // Usa el ID correcto de la tabla 'alumnos'
-                    'nombre' => $solicitud->alumno->nombre ?? null, // Accede al nombre desde la relación cargada
-                    'apellidos' => $solicitud->alumno->apellidos ?? null, // Accede a los apellidos
-                    'foto_perfil' => $solicitud->alumno->foto_perfil_path ?? null, // Accede a la foto de perfil
-                    'formacion' => $solicitud->alumno->formacion ?? null, // Accede a la formación
-                    // Puedes añadir más campos del alumno aquí directamente desde $solicitud->alumno
+                    'alumno_id' => $solicitud->alumno->alumno_id, 
+                    'nombre' => $solicitud->alumno->nombre ?? null, 
+                    'apellidos' => $solicitud->alumno->apellidos ?? null, 
+                    'foto_perfil' => $solicitud->alumno->foto_perfil_path ?? null,
+                    'formacion' => $solicitud->alumno->formacion ?? null,
                 ];
             } else {
                 return null;
