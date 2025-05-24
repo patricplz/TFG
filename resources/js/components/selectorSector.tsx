@@ -15,9 +15,10 @@ export default function SelectorSector({ sectoresFP, setData, initialValue = '' 
   const options = sectoresFP.map((sector) => ({
     value: sector,
     label: sector,
-    style: 'text-red-500 bg-transparent',
-    highlightStyle: 'bg-blue-300',
-    focusStyle: 'bg-blue-200'
+    style: 'text-white dark:bg-[oklch(0.28_0.03_232)]',
+    highlightStyle: 'text-black',
+    focusStyle: 'text-black',
+    hoverStyle: 'text-black',
   }));
 
   const initialSelectedOption = options.find(option => option.value === initialValue);
@@ -26,14 +27,14 @@ export default function SelectorSector({ sectoresFP, setData, initialValue = '' 
     <div>
       <StyledSelect
         name="sector"
-        className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
+        className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 dark:bg-[oklch(0.28_0.03_232)] rounded-md"
         options={options}
         value={initialSelectedOption?.value}
         onChange={handleSelectChange}
         placeholder="Todos los sectores"
-        isSearchable={true} // Puedes cambiarlo a true si deseas la funcionalidad de búsqueda
-        SeleccionadoDiv={true} // Puedes cambiarlo a true si deseas que la opción seleccionada permanezca visible
-        borderColor="border-blue-500" // Puedes personalizar el color del borde si SeleccionadoDiv es true
+        isSearchable={true}
+        SeleccionadoDiv={true} 
+        borderColor="border-blue-500" 
       />
     </div>
   );

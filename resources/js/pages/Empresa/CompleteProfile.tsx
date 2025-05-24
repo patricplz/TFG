@@ -19,6 +19,7 @@ interface InputFieldProps {
     error?: string;
     min?: string;
     placeholder?: string;
+    disabled?: boolean;
 }
 
 const InputField: React.FC<InputFieldProps> = ({ 
@@ -30,7 +31,8 @@ const InputField: React.FC<InputFieldProps> = ({
     required = false, 
     error, 
     min,
-    placeholder
+    placeholder,
+    disabled = false,
 }) => {
     return (
         <div>
@@ -47,6 +49,7 @@ const InputField: React.FC<InputFieldProps> = ({
                 required={required}
                 min={min}
                 placeholder={placeholder}
+                disabled={disabled}
             />
             {error && <p className="mt-1 text-xs text-red-500">{error}</p>}
         </div>
@@ -171,6 +174,7 @@ export default function CompletaPerfil({ empresa }: Props) {
         contacto_telefono: empresa?.contacto_telefono || '',
         practicas_remuneradas: empresa?.practicas_remuneradas || false,
         areas_practicas: empresa?.areas_practicas || '',
+        foto_perfil_path: empresa?.foto_perfil_path ||'',
     });
 
     const [progress, setProgress] = useState<number>(0);
@@ -179,6 +183,9 @@ export default function CompletaPerfil({ empresa }: Props) {
         e.preventDefault();
         post(route('empresa.perfil.guardar'));
     };
+
+    const isDisabledCif = !!empresa; 
+    const isRequiredCif = !empresa; 
 
     useEffect(() => {
         const form = formRef.current;
@@ -303,15 +310,14 @@ export default function CompletaPerfil({ empresa }: Props) {
                                             required={true}
                                             error={errors.nombre}
                                         />
-                                        
                                         <InputField
                                             id="cif_nif"
                                             label="CIF/NIF"
                                             value={data.cif_nif}
                                             onChange={(value) => setData('cif_nif', value)}
-                                            required={true}
+                                            required={isRequiredCif}
                                             error={errors.cif_nif}
-                                            
+                                            disabled={isDisabledCif}
                                         />
                                         
                                         <InputField

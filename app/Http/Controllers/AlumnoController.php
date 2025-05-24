@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\OfertaPractica;
 use App\Models\SolicitudPracticaAlumno;
 use App\Models\Alumno;
+use App\Models\Empresa;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Validator;
@@ -12,10 +13,15 @@ use Illuminate\Support\Facades\Storage;
 
 class AlumnoController extends Controller{
     public function show($id){
-        $oferta= OfertaPractica::findOrFail($id);
+        $oferta= OfertaPractica::with('empresa')->findOrFail($id);
+
         return Inertia::render('Alumno/OfertaShow', ['oferta' => $oferta]);
     }
 
+    public function verPerfilEmpresa($id){
+        $empresa = Empresa::findOrFail($id);
+        return Inertia::render('Alumno/EmpresaShow', ['empresa'=> $empresa]);
+    }
 
     public function solicitudesInscritas(){
         $alumnoId = Auth::id();
@@ -47,6 +53,8 @@ class AlumnoController extends Controller{
             'apellidos' => 'required|string|max:255',
             'fecha_nacimiento' => 'nullable|date',
             'localidad' => 'nullable|string|max:255',
+            'telefono' => 'nullable|string|max:255',
+            'email' => 'nullable|string|max:255',
         ])->validate();
 
         $alumnoId = Auth::id();
@@ -54,7 +62,7 @@ class AlumnoController extends Controller{
 
         if ($request->hasFile('cv')) {
             if ($alumno->cv_path) {
-                Storage::delete($alumno->cv_path); // Elimino el CV anterior si existe para insertar el nuevo y no tener cvs obsoletos guardados, lo mismo con las fotos de perfil
+                Storage::delete($alumno->cv_path);
             }
             $path = $request->file('cv')->store('cvs', 'public');
             $alumno->cv_path = $path;
@@ -88,8 +96,10 @@ class AlumnoController extends Controller{
         $alumno->apellidos = $request->input('apellidos');
         $alumno->fecha_nacimiento = $request->input('fecha_nacimiento');
         $alumno->localidad = $request->input('localidad');
-        $alumno->save();
+        $alumno->telefono = $request->input('telefono');
+        $alumno->email = $request->input('email');
 
+        $alumno->save();
         return redirect()->route('alumno.dashboard')->with('success', 'perfil exitosamente actualizado');
     }
 
@@ -101,6 +111,15 @@ class AlumnoController extends Controller{
     }
     public function mostrarFormularioEditarPerfil(){
         $alumno = Alumno::where('alumno_id', Auth::id())->first();
+        if ($alumno) {
+            if ($alumno->cv_path) {
+                $alumno->cv_url = Storage::url($alumno->cv_path);
+            }
+            if ($alumno->foto_perfil_path) {
+                $alumno->foto_perfil_url = Storage::url($alumno->foto_perfil_path);
+            }
+        }
+
         return Inertia::render('Alumno/CompleteProfile', [ 
             'alumno' => $alumno,
         ]);

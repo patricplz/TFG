@@ -1,6 +1,5 @@
 export interface EmpresaType {
-    id?: number; // El ID es opcional ya que puede no existir al crear el perfil
-    user_id?: number;
+    empresa_id?: number;
     nombre: string;
     cif_nif: string;
     sector_actividad: string;
@@ -15,4 +14,5 @@ export interface EmpresaType {
     areas_practicas?: string | null;
     created_at?: string;
     updated_at?: string;
+    foto_perfil_path?: string;
 }

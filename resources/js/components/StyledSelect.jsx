@@ -274,7 +274,7 @@ const StyledSelect = ({
 
       {isOpen && (
         <ul
-          className="absolute w-full border border-gray-300 bg-white mt-1 rounded-md shadow-lg z-10 max-h-60 overflow-y-auto flex flex-col gap-1"
+          className="absolute w-full border border-gray-300 bg-white mt-1 rounded-md shadow-lg z-10 max-h-60 overflow-y-auto flex flex-col"
           onMouseLeave={() => setHighlightedIndex(-1)}
         >
           {filteredOptions.length > 0 ? (

@@ -21,4 +21,9 @@ class OfertaPractica extends Model
         'idiomas_requeridos',
         'sector_interes_requerido',
     ];
+
+     public function empresa()
+    {
+        return $this->belongsTo(Empresa::class, 'empresa_id', 'empresa_id');
+    }
 }

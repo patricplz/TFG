@@ -5,9 +5,10 @@ export default function AppLogo() {
           <img
             src="/storage/images/logo.png"
             style={{ width: '60px', height: 'auto', objectFit: 'cover' }}
+            alt="ConectaPro Logo"
           />
         </div>
-        <div className="ml-0 text-left text-sm">
+        <div className="ml-0 text-left text-sm md:block hidden">
           <span
             className="truncate leading-none font-semibold"
             style={{

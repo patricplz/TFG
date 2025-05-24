@@ -22,4 +22,6 @@ export interface AlumnoType {
     apellidos: string;
     fecha_nacimiento: string;
     localidad: string;
+    telefono: string;
+    email: string;
 }

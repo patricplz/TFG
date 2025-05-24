@@ -17,15 +17,16 @@ export default function SelectorModalidad({ modalidades, setData, initialValue =
     const options = modalidades.map((modalidad) => ({
         value: modalidad,
         label: modalidad,
-        style: 'text-red-500 bg-transparent',
-        highlightStyle: 'bg-blue-300',
-        focusStyle: 'bg-blue-200'
+        style: 'text-white dark:bg-[oklch(0.28_0.03_232)]',
+        highlightStyle: 'text-black',
+        focusStyle: 'text-black',
+        hoverStyle: 'text-black',
     }));
 
     return (
         <div>
             <StyledSelect
-                className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 rounded-md"
+                className="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm border-gray-300 dark:bg-[oklch(0.28_0.03_232)] rounded-md"
                 options={options}
                 value={initialValue}
                 onChange={handleSelectChange}

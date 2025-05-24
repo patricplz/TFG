@@ -14,7 +14,6 @@ class AIPredictionController extends Controller{
         $this->geminiAIService =$geminiAIService;
     }
 
-    //función que recibe mi petición HTTP de ofertaInscritos.php, obtiene la oferta, los alumnos inscritos a esa oferta y su información, se la pasa a GeminiAIService, formatea la respuesta, ordena los alumnos de mayor a menor calificación y devuelve el json ordenado
     public function obtenerPuntuacionesCompatibilidad(Request $request, $ofertaId): JsonResponse{
         $oferta = OfertaPractica::findOrFail($ofertaId);
         $alumnoIds = SolicitudPracticaAlumno::where('practica_id', $ofertaId)->pluck('alumno_id')->toArray();

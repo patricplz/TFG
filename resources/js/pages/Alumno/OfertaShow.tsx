@@ -4,6 +4,11 @@ import AppLayout from '@/layouts/app-layout-alumno';
 import { BreadcrumbItem } from '@/types';
 import { motion } from 'framer-motion';
 
+interface Empresa {
+  empresa_id: number;
+  nombre: string;
+}
+
 interface Oferta {
   id: number;
   name: string;
@@ -17,6 +22,7 @@ interface Oferta {
   modalidad_practicas_requerida: string | null;
   idiomas_requeridos: string | null;
   sector_interes_requerido: string | null;
+  empresa: Empresa | null;
 }
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -30,12 +36,14 @@ const breadcrumbs: BreadcrumbItem[] = [
   }
 ];
 
-export default function OfertaShow({ oferta }: { oferta: Oferta }) {
+export default function OfertaShow({ oferta }: { oferta: Oferta}) {
   const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '';
   const [mensajeExito, setMensajeExito] = useState<string | null>(null);
   const [mensajeError, setMensajeError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [showDetails, setShowDetails] = useState<boolean>(false);
+
+  const nombreEmpresa = oferta.empresa ? oferta.empresa.nombre : 'Empresa Desconocida';
 
   useEffect(() => {
 
@@ -135,8 +143,22 @@ export default function OfertaShow({ oferta }: { oferta: Oferta }) {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
-            className="prose dark:prose-invert max-w-none mb-8"
-          >
+            className="prose dark:prose-invert max-w-none mb-8">
+            {oferta.empresa?.nombre ? (
+              <a
+                href={`/alumno/empresa/${oferta.empresa?.empresa_id}`}
+                className="group inline-block relative w-full"
+              >
+                <span className="text-lg text-blue-400 underline absolute transition-opacity duration-200 group-hover:opacity-0">
+                  {nombreEmpresa.toUpperCase()}
+                </span>
+                <span className="text-lg text-blue-400 opacity-0 transition-opacity duration-200 group-hover:opacity-100">
+                  Ver empresa
+                </span>
+              </a>
+            ) : (
+              <span className="text-lg text-gray-400 italic">Empresa desconocida</span>
+            )}
             <p className="text-lg">{oferta.description}</p>
           </motion.div>
 

@@ -92,6 +92,7 @@ class EmpresaOfertaController extends Controller{
             'modalidad_practicas_requerida' => 'nullable|string',
             'idiomas_requeridos' => 'nullable|string',
             'sector_interes_requerido' => 'nullable|string',
+            'ubicacion' => 'nullable|string',
         ]);
 
         $oferta->name = $request->input('name');
@@ -104,6 +105,7 @@ class EmpresaOfertaController extends Controller{
         $oferta->modalidad_practicas_requerida = $request->input('modalidad_practicas_requerida');
         $oferta->idiomas_requeridos = $request->input('idiomas_requeridos');
         $oferta->sector_interes_requerido = $request->input('sector_interes_requerido');
+        $oferta->ubicacion = $request->input('ubicacion');
 
         if ($request->hasFile('image')) {
             if ($oferta->image_path) {

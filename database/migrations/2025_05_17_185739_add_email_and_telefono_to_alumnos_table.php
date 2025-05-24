@@ -12,7 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('alumnos', function (Blueprint $table) {
-            //
+            $table->string('email')->nullable()->unique(); // Añade la columna email, puede ser nula y debe ser única
+            $table->string('telefono')->nullable();
         });
     }
 
@@ -22,7 +23,8 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('alumnos', function (Blueprint $table) {
-            //
+            $table->dropColumn('email');
+            $table->dropColumn('telefono');
         });
     }
 };

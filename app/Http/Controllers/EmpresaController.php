@@ -34,9 +34,10 @@ class EmpresaController extends Controller{
     }
 
     public function guardarPerfil(Request $request) {
+
         Validator::make($request->all(), [
             'nombre' => 'required|string|max:255',
-            'cif_nif' => 'required|string|max:20|unique:empresas,cif_nif,' . optional(Empresa::where('user_id', Auth::id())->first())->id,
+            'cif_nif' => 'string|max:20',
             'sector_actividad' => 'required|string|max:255',
             'descripcion' => 'nullable|string|max:1000',
             'ubicacion' => 'nullable|string|max:255',
@@ -49,8 +50,13 @@ class EmpresaController extends Controller{
             'areas_practicas' => 'nullable|string|max:1000',
         ])->validate();
 
-        $empresa = Empresa::firstOrNew(['empresa_id' => Auth::id()]);
+        $empresaID = Auth::id();
+        $empresa = Empresa::where('empresa_id', $empresaID)->first();
 
+        if (!$empresa) {
+            $empresa = new Empresa();
+            $empresa->empresa_id = $empresaID;
+        }
         $empresa->nombre = $request->input('nombre');
         $empresa->cif_nif = $request->input('cif_nif');
         $empresa->sector_actividad = $request->input('sector_actividad');
@@ -64,7 +70,11 @@ class EmpresaController extends Controller{
         $empresa->practicas_remuneradas = $request->input('practicas_remuneradas') ?? false;
         $empresa->areas_practicas = $request->input('areas_practicas');
 
-        $empresa->save();
-        return redirect()->route('empresa.dashboard')->with('success', 'Perfil de empresa actualizado con éxito.');
+        if ($empresa->save()){
+            \Log::info("EMPRESA ACTUALIZADA:". $empresa );
+            return redirect()->route('empresa.dashboard')->with('success', 'Perfil de empresa actualizado con éxito.');
+        } else {
+            \log::error('NO SE ACTUALIZÓ'. $empresa );
+        }
     }
 }

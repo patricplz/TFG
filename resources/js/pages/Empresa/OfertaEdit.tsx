@@ -19,6 +19,7 @@ interface Oferta {
     modalidad_practicas_requerida: string | null;
     idiomas_requeridos: string | null;
     sector_interes_requerido: string | null;
+    ubicacion: string | null;
     // ... otras propiedades
 }
 const breadcrumbs: BreadcrumbItem[] = [
@@ -53,6 +54,7 @@ const OfertaEdit = ({ oferta }: Props) => {
         modalidad_practicas_requerida: oferta.modalidad_practicas_requerida || '',
         idiomas_requeridos: oferta.idiomas_requeridos || '',
         sector_interes_requerido: oferta.sector_interes_requerido || '',
+        ubicacion: oferta.ubicacion || '',
     });
 
     const handleSubmit = (e: React.FormEvent) => {
@@ -236,6 +238,8 @@ const OfertaEdit = ({ oferta }: Props) => {
                                 <p className="text-sm text-gray-600 dark:text-gray-400">Especifica condiciones adicionales como disponibilidad, modalidad e idiomas.</p>
                             </div>
 
+                            {renderInputField('ubicacion', 'Ubicacion', data.ubicacion, (e) => setData('ubicacion', e.target.value), 'Ubicación de las prácticas')}
+                            
                             {renderInputField('disponibilidad_requerida', 'Disponibilidad', data.disponibilidad_requerida, (e) => setData('disponibilidad_requerida', e.target.value), 'Ej: Inmediata, Flexible, A partir de Septiembre...')}
                             
                             {renderInputField('modalidad_practicas_requerida', 'Modalidad de Prácticas', data.modalidad_practicas_requerida, (e) => setData('modalidad_practicas_requerida', e.target.value), 'Ej: Presencial, Remoto, Híbrido...')}

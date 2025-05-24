@@ -17,16 +17,14 @@ Route::get('/', function () {
 // Rutas generales para usuarios autenticados
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('dashboard', function () {
-        $user = auth()->user(); // Obtiene el usuario autenticado
+        $user = auth()->user(); 
         
-        // Comprobar el rol del usuario y redirigir en consecuencia
         if ($user->role == 'alumno') {
             return redirect()->route('alumno.dashboard');
         } elseif ($user->role == 'empresa') {
             return redirect()->route('empresa.dashboard');
         }
         
-        // Si no tiene rol o no coincide, puedes devolver una respuesta predeterminada o un error
         return redirect()->route('home');
     })->name('dashboard');
 });
@@ -44,15 +42,10 @@ Route::middleware(['auth', 'verified', 'role:alumno'])->group(function () {
     Route::post('/alumno/oferta/{practicaId}/inscribir', [SolicitudPracticaController::class, 'store'])->name('alumno.practica.inscribir');
     Route::get('/alumno/solicitudes', [AlumnoController::class, 'solicitudesInscritas'])->name('alumno.solicitudes');
     Route::delete('/alumno/solicitudes/{solicitud}', [SolicitudPracticaController::class, 'retirarSolicitud'])->name('alumno.solicitudes.retirar');
-
-    // Ruta para mostrar el formulario de completar perfil
     Route::get('/alumno/perfil', [AlumnoController::class, 'perfil'])->name('alumno.perfil');
-
-    // Ruta para mostrar el formulario de edición del perfil (GET)
     Route::get('/alumno/perfil/editar', [AlumnoController::class, 'mostrarFormularioEditarPerfil'])->name('alumno.perfil.editar');
-
-    // Ruta para guardar los datos del formulario de perfil (esta es la que necesitas)
     Route::post('/alumno/perfil/guardar', [AlumnoController::class, 'guardarPerfil'])->name('alumno.perfil.guardar');
+    Route::get('/alumno/empresa/{empresa_id}', [AlumnoController::class, 'verPerfilEmpresa'])->name('alumno.empresa.ver');
 });
 #Ruta para empresas
 Route::middleware(['auth', 'role:empresa'])->get('/empresa/dashboard',[EmpresaController::class, 'index'])->name('empresa.dashboard');

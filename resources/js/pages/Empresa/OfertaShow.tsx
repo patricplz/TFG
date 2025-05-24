@@ -19,6 +19,7 @@ interface Oferta {
     modalidad_practicas_requerida: string | null;
     idiomas_requeridos: string | null;
     sector_interes_requerido: string | null;
+    ubicacion: string | null;
 }
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -107,6 +108,9 @@ export default function OfertaShow({ oferta }: Props) {
                             className="prose dark:prose-invert max-w-none mb-8"
                         >
                             <p className="text-lg">{oferta.description}</p>
+                            <br></br>
+                            <p className="text-lg"><span className='text-bold'>Ubicación de la oferta: </span>{oferta.ubicacion}</p>
+
                         </motion.div>
 
                         {/* Condiciona la renderización de los detalles */}

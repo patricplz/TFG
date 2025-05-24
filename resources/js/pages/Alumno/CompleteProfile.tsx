@@ -3,6 +3,34 @@ import { BreadcrumbItem } from '@/types';
 import { Head, useForm } from '@inertiajs/react';
 import React, { useEffect, useRef, useState } from 'react';
 
+interface AlumnoData {
+    nombre: string;
+    apellidos: string;
+    fecha_nacimiento: string;
+    localidad: string;
+    email: string;
+    telefono: string;
+    intereses: string;
+    descripcion: string;
+    formacion: string;
+    experiencia_laboral: string;
+    habilidades_tecnicas: string;
+    habilidades_blandas: string;
+    practicas_interes: string;
+    sectores_interes: string;
+    disponibilidad: string;
+    modalidad_practicas: string;
+    expectativas_aprendizaje: string;
+    idiomas: string;
+    portafolio: string;
+    certificaciones: string;
+    premios: string;
+    referencias: string;
+    cv_url?: string;
+    foto_perfil_url?: string; 
+}
+
+
 interface FormData {
     cv: File | null;
     foto_perfil: File | null;
@@ -26,11 +54,13 @@ interface FormData {
     apellidos: string;
     fecha_nacimiento: string;
     localidad: string;
+    email: string;
+    telefono: string;
     [key: string]: string | number | boolean | File | null;
 }
 
 interface CompleteProfileProps {
-    alumno: FormData | null; // La prop 'alumno' puede ser FormData o null si no existe
+    alumno: AlumnoData | null;
 }
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -43,9 +73,15 @@ const breadcrumbs: BreadcrumbItem[] = [
 export default function CompletaPerfil({ alumno }: CompleteProfileProps) {
     const formRef = useRef<HTMLFormElement>(null);
 
+    const [cvPreviewUrl, setCvPreviewUrl] = useState<string | null>(null);
+    const [fotoPerfilPreviewUrl, setFotoPerfilPreviewUrl] = useState<string | null>(null);
+    const [cvDisplayName, setCvDisplayName] = useState<string | null>(null); // Para mostrar el nombre del CV (existente o nuevo)
+    const [fotoPerfilDisplayName, setFotoPerfilDisplayName] = useState<string | null>(null); // Para mostrar el nombre de la foto (existente o nueva)
+
     const { data, setData, post, processing, errors } = useForm<FormData>({
-        cv: alumno?.cv || null,
-        foto_perfil: alumno?.foto_perfil || null,
+
+        cv: null,
+        foto_perfil: null,
         intereses: alumno?.intereses || '',
         descripcion: alumno?.descripcion || '',
         formacion: alumno?.formacion || '',
@@ -66,65 +102,104 @@ export default function CompletaPerfil({ alumno }: CompleteProfileProps) {
         apellidos: alumno?.apellidos || '',
         fecha_nacimiento: alumno?.fecha_nacimiento || '',
         localidad: alumno?.localidad || '',
+        telefono: alumno?.telefono || '',
+        email: alumno?.email || '',
     });
 
-    const [cvName, setCvName] = useState<string | null>(null);
-    const [fotoPerfilName, setFotoPerfilName] = useState<string | null>(null);
-    const [progress, setProgress] = useState<number>(0);
+    useEffect(() => {
+        if (alumno) {
+            if (alumno.cv_url) {
+                setCvPreviewUrl(alumno.cv_url);
+                setCvDisplayName(alumno.cv_url.split('/').pop() || 'CV existente');
+            }
+            if (alumno.foto_perfil_url) {
+                setFotoPerfilPreviewUrl(alumno.foto_perfil_url);
+                setFotoPerfilDisplayName(alumno.foto_perfil_url.split('/').pop() || 'Foto existente');
+            }
+        }
+    }, [alumno]); 
 
     const handleCvChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        if (event.currentTarget.files && event.currentTarget.files.length > 0) {
-            setData('cv', event.currentTarget.files[0]);
-            setCvName(event.currentTarget.files[0].name);
+        const file = event.currentTarget.files?.[0] || null;
+        setData('cv', file); 
+
+        if (file) {
+            setCvDisplayName(file.name); 
+            
         } else {
-            setData('cv', null);
-            setCvName(null);
+          
+            if (alumno?.cv_url) {
+                setCvDisplayName(alumno.cv_url.split('/').pop() || 'CV existente');
+                setCvPreviewUrl(alumno.cv_url);
+            } else {
+                setCvDisplayName(null);
+                setCvPreviewUrl(null);
+            }
         }
     };
 
     const handleFotoPerfilChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        if (event.currentTarget.files && event.currentTarget.files.length > 0) {
-            setData('foto_perfil', event.currentTarget.files[0]);
-            setFotoPerfilName(event.currentTarget.files[0].name);
+        const file = event.currentTarget.files?.[0] || null;
+        setData('foto_perfil', file); 
+
+        if (file) {
+            setFotoPerfilDisplayName(file.name);
+            setFotoPerfilPreviewUrl(URL.createObjectURL(file)); 
         } else {
-            setData('foto_perfil', null);
-            setFotoPerfilName(null);
+
+            if (alumno?.foto_perfil_url) {
+                setFotoPerfilDisplayName(alumno.foto_perfil_url.split('/').pop() || 'Foto existente');
+                setFotoPerfilPreviewUrl(alumno.foto_perfil_url);
+            } else {
+                setFotoPerfilDisplayName(null);
+                setFotoPerfilPreviewUrl(null);
+            }
         }
     };
 
     const submit = (e: React.FormEvent) => {
         e.preventDefault();
-        // Envía el objeto data y fuerza la conversión a FormData
         post(route('alumno.perfil.guardar'), {
-            forceFormData: true, // forzar la conversión a FormData
+            forceFormData: true, 
         });
     };
+
+    const [progress, setProgress] = useState<number>(0);
+
 
     useEffect(() => {
         const form = formRef.current;
         if (form) {
             const inputs = Array.from(form.querySelectorAll('input:not([type="file"]), textarea, select'));
-            const totalFields = inputs.length;
             let filledFields = 0;
+            let totalFields = inputs.length;
 
             inputs.forEach((input) => {
                 if (
                     (input as HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement).value.trim() !== '' ||
-                    (input as HTMLInputElement).type === 'date'
+                    (input as HTMLInputElement).type === 'date' 
                 ) {
                     filledFields++;
                 }
             });
 
-            // Considerar los archivos como llenos si tienen un nombre
-            if (cvName) filledFields++;
-            if (fotoPerfilName) filledFields++;
-            const totalConsideredFields = totalFields + (data.cv !== null ? 1 : 0) + (data.foto_perfil !== null ? 1 : 0);
+           
+            if (cvPreviewUrl || data.cv) {
+                filledFields++;
+            }
+            totalFields++; 
 
-            const newProgress = totalConsideredFields > 0 ? Math.round((filledFields / totalConsideredFields) * 100) : 0;
+           
+            if (fotoPerfilPreviewUrl || data.foto_perfil) {
+                filledFields++;
+            }
+            totalFields++; 
+
+
+            const newProgress = totalFields > 0 ? Math.round((filledFields / totalFields) * 100) : 0;
             setProgress(newProgress);
         }
-    }, [data, cvName, fotoPerfilName]);
+    }, [data, cvPreviewUrl, fotoPerfilPreviewUrl]);
 
     const progressBarColorClass = progress < 30 ? 'bg-red-500' : progress < 70 ? 'bg-yellow-500' : 'bg-green-500';
 
@@ -135,8 +210,8 @@ export default function CompletaPerfil({ alumno }: CompleteProfileProps) {
                 <div className="min-h-screen w-full ">
                     <div className="mx-auto max-w-4xl p-6 bg-">
                         <div className="overflow-hidden rounded-lg shadow-xl">
-                            {/* Header con imagen decorativa */}
-                            <div className="relative p-6 text-white" style={{ backgroundColor: '#328c8c'}}>
+
+                            <div className="relative p-6 text-white font-bold" style={{ backgroundColor: '#328c8c'}}>
                                 <div className="flex items-center justify-between">
                                     <div>
                                         <h1 className="text-3xl font-bold">Completa tu Perfil</h1>
@@ -144,7 +219,7 @@ export default function CompletaPerfil({ alumno }: CompleteProfileProps) {
                                     </div>
                                     <div className="hidden md:block">
                                         <svg
-                                            className="h-24 w-24 text-white/20"
+                                            className="h-24 w-24 text-white font-bold/20"
                                             fill="currentColor"
                                             xmlns="http://www.w3.org/2000/svg"
                                             viewBox="0 0 24 24"
@@ -167,7 +242,7 @@ export default function CompletaPerfil({ alumno }: CompleteProfileProps) {
                                 <form onSubmit={submit} className="space-y-6" ref={formRef}>
                                     {/* Sección de información personal */}
                                     <div className="rounded-lg border border-black p-4" style={{ backgroundColor: 'oklch(0.28 0.03 232)' }}>
-                                        <h2 className="mb-4 flex items-center text-lg font-semibold text-white">
+                                        <h2 className="mb-4 flex items-center text-lg font-semibold text-white font-bold">
                                             <svg
                                                 className="mr-2 h-5 w-5 text-blue-500"
                                                 fill="none"
@@ -186,14 +261,14 @@ export default function CompletaPerfil({ alumno }: CompleteProfileProps) {
                                         </h2>
                                         <div className="grid gap-4 md:grid-cols-2">
                                             <div>
-                                                <label htmlFor="nombre" className="mb-1 block text-sm font-medium text-white-700">
+                                                <label htmlFor="nombre" className="mb-1 block text-sm font-medium text-white font-bold-700">
                                                     Nombre *
                                                 </label>
                                                 <input
                                                     type="text"
                                                     name = 'nombre'
                                                     id="nombre"
-                                                    className="w-full rounded-md border border-gray-300 px-3 py-2 text-gray-700 transition-all duration-200 focus:border-transparent focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                                                    className="w-full rounded-md border border-gray-300 px-3 py-2 text-white transition-all duration-200 focus:border-transparent focus:ring-2 focus:ring-blue-500 focus:outline-none"
                                                     value={data.nombre}
                                                     onChange={(e) => setData('nombre', e.currentTarget.value)}
                                                     required
@@ -202,14 +277,14 @@ export default function CompletaPerfil({ alumno }: CompleteProfileProps) {
                                             </div>
 
                                             <div>
-                                                <label htmlFor="apellidos" className="mb-1 block text-sm font-medium text-white">
+                                                <label htmlFor="apellidos" className="mb-1 block text-sm font-medium text-white font-bold">
                                                     Apellidos *
                                                 </label>
                                                 <input
                                                     type="text"
                                                     id="apellidos"
                                                     name = 'apellidos'
-                                                    className="w-full rounded-md border border-gray-300 px-3 py-2 text-gray-700 transition-all duration-200 focus:border-transparent focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                                                    className="w-full rounded-md border border-gray-300 px-3 py-2 text-white transition-all duration-200 focus:border-transparent focus:ring-2 focus:ring-blue-500 focus:outline-none"
                                                     value={data.apellidos}
                                                     onChange={(e) => setData('apellidos', e.currentTarget.value)}
                                                     required
@@ -218,14 +293,14 @@ export default function CompletaPerfil({ alumno }: CompleteProfileProps) {
                                             </div>
 
                                             <div>
-                                                <label htmlFor="fecha_nacimiento" className="mb-1 block text-sm font-medium text-white-700">
+                                                <label htmlFor="fecha_nacimiento" className="mb-1 block text-sm font-medium text-white font-bold-700">
                                                     Fecha de Nacimiento *
                                                 </label>
                                                 <input
                                                     type="date"
                                                     id="fecha_nacimiento"
                                                     name="apellidos"
-                                                    className="w-full rounded-md border border-gray-300 px-3 py-2 text-gray-700 transition-all duration-200 focus:border-transparent focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                                                    className="w-full rounded-md border border-gray-300 px-3 py-2 text-white transition-all duration-200 focus:border-transparent focus:ring-2 focus:ring-blue-500 focus:outline-none"
                                                     value={data.fecha_nacimiento}
                                                     onChange={(e) => setData('fecha_nacimiento', e.currentTarget.value)}
                                                     required
@@ -234,26 +309,56 @@ export default function CompletaPerfil({ alumno }: CompleteProfileProps) {
                                             </div>
 
                                             <div>
-                                                <label htmlFor="localidad" className="mb-1 block text-sm font-medium text-white-700">
+                                                <label htmlFor="localidad" className="mb-1 block text-sm font-medium text-white font-bold-700">
                                                     Localidad *
                                                 </label>
                                                 <input
                                                     type="text"
                                                     id="localidad"
                                                     name="localidad"
-                                                    className="w-full rounded-md border border-gray-300 px-3 py-2 text-gray-700 transition-all duration-200 focus:border-transparent focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                                                    className="w-full rounded-md border border-gray-300 px-3 py-2 text-white transition-all duration-200 focus:border-transparent focus:ring-2 focus:ring-blue-500 focus:outline-none"
                                                     value={data.localidad}
                                                     onChange={(e) => setData('localidad', e.currentTarget.value)}
                                                     required
                                                 />
                                                 {errors.localidad && <p className="mt-1 text-xs text-red-500">{errors.localidad}</p>}
                                             </div>
+                                            <div>
+                                                <label htmlFor="telefono" className="mb-1 block text-sm font-medium text-white font-bold-700">
+                                                    telefono *
+                                                </label>
+                                                <input
+                                                    type="text"
+                                                    id="telefono"
+                                                    name="telefono"
+                                                    className="w-full rounded-md border border-gray-300 px-3 py-2 text-white transition-all duration-200 focus:border-transparent focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                                                    value={data.telefono}
+                                                    onChange={(e) => setData('telefono', e.currentTarget.value)}
+                                                    required
+                                                />
+                                                {errors.telefono && <p className="mt-1 text-xs text-red-500">{errors.telefono}</p>}
+                                            </div>
+                                            <div>
+                                                <label htmlFor="email" className="mb-1 block text-sm font-medium text-white font-bold-700">
+                                                    email *
+                                                </label>
+                                                <input
+                                                    type="text"
+                                                    id="email"
+                                                    name="email"
+                                                    className="w-full rounded-md border border-gray-300 px-3 py-2 text-white transition-all duration-200 focus:border-transparent focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                                                    value={data.email}
+                                                    onChange={(e) => setData('email', e.currentTarget.value)}
+                                                    required
+                                                />
+                                                {errors.email && <p className="mt-1 text-xs text-red-500">{errors.email}</p>}
+                                            </div>
                                         </div>
                                     </div>
 
                                     {/* Sección de archivos */}
-                                    <div className="rounded-lg border border-gray-100 p-4" style={{ backgroundColor: 'oklch(0.28 0.03 232)' }}>
-                                        <h2 className="mb-4 flex items-center text-lg font-semibold text-white">
+                                    <div className="rounded-lg border border-gray-100" style={{ backgroundColor: 'oklch(0.28 0.03 232)' }}>
+                                        <h2 className="mb-4 flex items-center m-4 text-lg font-semibold text-white font-bold">
                                             <svg
                                                 className="mr-2 h-5 w-5 text-blue-500"
                                                 fill="none"
@@ -270,68 +375,102 @@ export default function CompletaPerfil({ alumno }: CompleteProfileProps) {
                                             </svg>
                                             Documentos
                                         </h2>
-                                        <div className="grid gap-6 md:grid-cols-2">
+                                    
+                                        {/* CV y Foto de Perfil */}
+                                            {/* Campo de CV */}
+                                        <div className=' md:grid-cols-2 flex gap-1 max-w-max'>
                                             <div className="rounded-lg border-2 border-dashed border-gray-300 p-4 text-center transition-colors hover:border-blue-400">
                                                 <label htmlFor="cv" className="block cursor-pointer">
-                                                    <svg
-                                                        className="mx-auto h-8 w-8 text-gray-400"
-                                                        fill="none"
-                                                        stroke="currentColor"
-                                                        viewBox="0 0 24 24"
-                                                        xmlns="http://www.w3.org/2000/svg"
-                                                    >
-                                                        <path
-                                                            strokeLinecap="round"
-                                                            strokeLinejoin="round"
-                                                            strokeWidth="2"
-                                                            d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M9 19l3 3m0 0l3-3m-3 3V10"
-                                                        />
-                                                    </svg>
-                                                    <span className="mt-2 block font-medium text-white">CV (PDF)</span>
-                                                    <span className="text-sm text-gray-500">Haz clic para subir o arrastra tu archivo</span>
-                                                    <input type="file" name='cv' id="cv" style={{ color: 'transparent' }} onChange={handleCvChange} accept=".pdf" required />
-                                                </label>
-                                                {cvName && <p className="mt-2 text-sm font-medium text-blue-600">{cvName}</p>}
-                                                {errors.cv && <p className="mt-1 text-xs text-red-500">{errors.cv}</p>}
-                                            </div>
+                                                    {cvPreviewUrl && !data.cv ? ( 
+                                                    <div className='flex flex-col justify-center align-center justify-items-center col-span-6'>
+                                                        <span className="mt-2 block mb-4 font-medium text-white font-bold">CV (PDF)</span>
+                                                        <span className="text-sm text-gray-500 mb-4">Haz clic para subir o arrastra tu archivo</span>
+                                                        <a href={cvPreviewUrl} target="_blank" rel="noopener noreferrer" className="block text-blue-500 hover:underline">
+                                                            <span className="mt-2 block font-medium text-white font-bold">Ver CV actual</span>
+                                                            <span className='block text-sm text-gray-400 **truncate** max-w-full'>{cvDisplayName}</span>
+                                                        </a>
+                                                    </div>
+                                                ) : ( 
+                                                    <>
+                                                        <svg
+                                                            className="mx-auto h-8 w-8 text-gray-400"
+                                                            fill="none"
+                                                            stroke="currentColor"
+                                                            viewBox="0 0 24 24"
+                                                            xmlns="http://www.w3.org/2000/svg"
+                                                        >
+                                                            <path
+                                                                strokeLinecap="round"
+                                                                strokeLinejoin="round"
+                                                                strokeWidth="2"
+                                                                d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M9 19l3 3m0 0l3-3m-3 3V10"
+                                                            />
+                                                        </svg>
+                                                        <span className="mt-2 block font-medium text-white font-bold">CV (PDF)</span>
+                                                        <span className="text-sm text-gray-500">Haz clic para subir o arrastra tu archivo</span>
+                                                    </>
+                                                )}
+                                                <input
+                                                    type="file"
+                                                    name='cv'
+                                                    id="cv"
+                                                    style={{ color: 'transparent' }}
+                                                    onChange={handleCvChange}
+                                                    accept=".pdf"
+                                                    // `required` solo si no hay un CV existente
+                                                    required={!alumno?.cv_url}
+                                                />
+                                            </label>
+                                            {errors.cv && <p className="mt-1 text-xs text-red-500">{errors.cv}</p>}
+                                        </div>
+                                    
+                                {/* Campo de Foto de Perfil */}
+                                <div className="rounded-lg border-2 border-dashed border-gray-300 p-4 text-center transition-colors hover:border-blue-400">
+                                    <label htmlFor="foto_perfil" className="block cursor-pointer">
+                                        {/* Previsualización de la Foto de Perfil existente o nueva */}
+                                        {fotoPerfilPreviewUrl && !data.foto_perfil ? ( 
+                                            <img src={fotoPerfilPreviewUrl} alt="Previsualización de Foto de Perfil" className="mx-auto h-24 w-24 rounded-full object-cover" />
+                                                ) : data.foto_perfil ? ( 
+                                                    <img src={URL.createObjectURL(data.foto_perfil)} alt="Previsualización de Nueva Foto" className="mx-auto h-24 w-24 rounded-full object-cover" />
+                                                ) : ( 
+                                                    <>
+                                                        <svg
+                                                            className="mx-auto h-8 w-8 text-gray-400"
+                                                            fill="none"
+                                                            stroke="currentColor"
+                                                            viewBox="0 0 24 24"
+                                                            xmlns="http://www.w3.org/2000/svg"
+                                                        >
+                                                            <path
+                                                                strokeLinecap="round"
+                                                                strokeLinejoin="round"
+                                                                strokeWidth="2"
+                                                                d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
+                                                            />
+                                                        </svg>
+                                                        <span className="mt-2 block font-medium text-white font-bold">Foto de Perfil</span>
+                                                    </>
+                                                )}
+                                                <span className="text-sm text-gray-500">Imagen en formato JPG, PNG</span>
+                                                <input
+                                                    type="file"
+                                                    id="foto_perfil"
+                                                    name="foto_perfil"
+                                                    style={{ color: 'transparent' }}
+                                                    onChange={handleFotoPerfilChange}
+                                                    accept="image/*"
 
-                                            <div className="rounded-lg border-2 border-dashed border-gray-300 p-4 text-center transition-colors hover:border-blue-400">
-                                                <label htmlFor="foto_perfil" className="block cursor-pointer">
-                                                    <svg
-                                                        className="mx-auto h-8 w-8 text-gray-400"
-                                                        fill="none"
-                                                        stroke="currentColor"
-                                                        viewBox="0 0 24 24"
-                                                        xmlns="http://www.w3.org/2000/svg"
-                                                    >
-                                                        <path
-                                                            strokeLinecap="round"
-                                                            strokeLinejoin="round"
-                                                            strokeWidth="2"
-                                                            d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
-                                                        />
-                                                    </svg>
-                                                    <span className="mt-2 block font-medium text-white">Foto de Perfil</span>
-                                                    <span className="text-sm text-gray-500">Imagen en formato JPG, PNG</span>
-                                                    <input
-                                                        type="file"
-                                                        id="foto_perfil"
-                                                        name="foto_perfil"  
-                                                        style={{ color: 'transparent' }}
-                                                        onChange={handleFotoPerfilChange}
-                                                        accept="image/*"
-                                                        required
-                                                    />
-                                                </label>
-                                                {fotoPerfilName && <p className="mt-2 text-sm font-medium text-blue-600">{fotoPerfilName}</p>}
-                                                {errors.foto_perfil && <p className="mt-1 text-xs text-red-500">{errors.foto_perfil}</p>}
-                                            </div>
+                                                    required={!alumno?.foto_perfil_url}
+                                                />
+                                            </label>
+                                            {fotoPerfilDisplayName && <p className="mt-2 text-sm font-medium text-blue-600">{fotoPerfilDisplayName}</p>}
+                                            {errors.foto_perfil && <p className="mt-1 text-xs text-red-500">{errors.foto_perfil}</p>}
                                         </div>
                                     </div>
-
+                                </div>
                                     {/* Sección sobre ti */}
                                     <div className="rounded-lg border border-gray-100 p-4" style={{ backgroundColor: 'oklch(0.28 0.03 232)' }}>
-                                        <h2 className="mb-4 flex items-center text-lg font-semibold text-white">
+                                        <h2 className="mb-4 flex items-center text-lg font-semibold text-white font-bold">
                                             <svg
                                                 className="mr-2 h-5 w-5 text-blue-500"
                                                 fill="none"
@@ -350,12 +489,12 @@ export default function CompletaPerfil({ alumno }: CompleteProfileProps) {
                                         </h2>
                                         <div className="space-y-4">
                                             <div>
-                                                <label htmlFor="intereses" className="mb-1 block text-sm font-medium text-white">
+                                                <label htmlFor="intereses" className="mb-1 block text-sm font-medium text-white font-bold">
                                                     Define tus Intereses *
                                                 </label>
                                                 <textarea
                                                     id="intereses"
-                                                    className="w-full rounded-md border border-gray-300 px-3 py-2 text-gray-700 transition-all duration-200 focus:border-transparent focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                                                    className="w-full rounded-md border border-gray-300 px-3 py-2 text-white transition-all duration-200 focus:border-transparent focus:ring-2 focus:ring-blue-500 focus:outline-none"
                                                     value={data.intereses}
                                                     onChange={(e) => setData('intereses', e.currentTarget.value)}
                                                     rows={3}
@@ -365,13 +504,13 @@ export default function CompletaPerfil({ alumno }: CompleteProfileProps) {
                                             </div>
 
                                             <div>
-                                                <label htmlFor="descripcion" className="mb-1 block text-sm font-medium text-white">
+                                                <label htmlFor="descripcion" className="mb-1 block text-sm font-medium text-white font-bold">
                                                     Breve Descripción de Ti *
                                                 </label>
                                                 <textarea
                                                     id="descripcion"
                                                     name='descripcion'
-                                                    className="w-full rounded-md border border-gray-300 px-3 py-2 text-gray-700 transition-all duration-200 focus:border-transparent focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                                                    className="w-full rounded-md border border-gray-300 px-3 py-2 text-white transition-all duration-200 focus:border-transparent focus:ring-2 focus:ring-blue-500 focus:outline-none"
                                                     value={data.descripcion}
                                                     onChange={(e) => setData('descripcion', e.currentTarget.value)}
                                                     rows={4}
@@ -385,7 +524,7 @@ export default function CompletaPerfil({ alumno }: CompleteProfileProps) {
 
                                     {/* Sección académica y profesional */}
                                     <div className="rounded-lg border border-gray-100 p-4" style={{ backgroundColor: 'oklch(0.28 0.03 232)' }}>
-                                        <h2 className="mb-4 flex items-center text-lg font-semibold text-white">
+                                        <h2 className="mb-4 flex items-center text-lg font-semibold text-white font-bold">
                                             <svg
                                                 className="mr-2 h-5 w-5 text-blue-500"
                                                 fill="none"
@@ -406,13 +545,13 @@ export default function CompletaPerfil({ alumno }: CompleteProfileProps) {
                                         </h2>
                                         <div className="space-y-4">
                                             <div>
-                                                <label htmlFor="formacion" className="mb-1 block text-sm font-medium text-white">
+                                                <label htmlFor="formacion" className="mb-1 block text-sm font-medium text-white font-bold">
                                                     Formación Académica *
                                                 </label>
                                                 <textarea
                                                     id="formacion"
                                                     name="formacion"
-                                                    className="w-full rounded-md border border-gray-300 px-3 py-2 text-gray-700 transition-all duration-200 focus:border-transparent focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                                                    className="w-full rounded-md border border-gray-300 px-3 py-2 text-white transition-all duration-200 focus:border-transparent focus:ring-2 focus:ring-blue-500 focus:outline-none"
                                                     value={data.formacion}
                                                     onChange={(e) => setData('formacion', e.currentTarget.value)}
                                                     rows={3}
@@ -423,13 +562,13 @@ export default function CompletaPerfil({ alumno }: CompleteProfileProps) {
                                             </div>
 
                                             <div>
-                                                <label htmlFor="experiencia_laboral" className="mb-1 block text-sm font-medium text-white">
+                                                <label htmlFor="experiencia_laboral" className="mb-1 block text-sm font-medium text-white font-bold">
                                                     Experiencia Laboral *
                                                 </label>
                                                 <textarea
                                                     id="experiencia_laboral"
                                                     name="experiencia_laboral"
-                                                    className="w-full rounded-md border border-gray-300 px-3 py-2 text-gray-700 transition-all duration-200 focus:border-transparent focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                                                    className="w-full rounded-md border border-gray-300 px-3 py-2 text-white transition-all duration-200 focus:border-transparent focus:ring-2 focus:ring-blue-500 focus:outline-none"
                                                     value={data.experiencia_laboral}
                                                     onChange={(e) => setData('experiencia_laboral', e.currentTarget.value)}
                                                     rows={3}
@@ -445,7 +584,7 @@ export default function CompletaPerfil({ alumno }: CompleteProfileProps) {
 
                                     {/* Sección de habilidades */}
                                     <div className="rounded-lg border border-gray-100 p-4" style={{ backgroundColor: 'oklch(0.28 0.03 232)' }}>
-                                        <h2 className="mb-4 flex items-center text-lg font-semibold text-white">
+                                        <h2 className="mb-4 flex items-center text-lg font-semibold text-white font-bold">
                                             <svg
                                                 className="mr-2 h-5 w-5 text-blue-500"
                                                 fill="none"
@@ -464,14 +603,14 @@ export default function CompletaPerfil({ alumno }: CompleteProfileProps) {
                                         </h2>
                                         <div className="grid gap-4 md:grid-cols-2">
                                             <div>
-                                                <label htmlFor="habilidades_tecnicas" className="mb-1 block text-sm font-medium text-white">
+                                                <label htmlFor="habilidades_tecnicas" className="mb-1 block text-sm font-medium text-white font-bold">
                                                     Habilidades Técnicas (Hard Skills) *
                                                 </label>
                                                 <input
                                                     type="text"
                                                     id="habilidades_tecnicas"
                                                     name="habilidades_tecnicas"
-                                                    className="w-full rounded-md border border-gray-300 px-3 py-2 text-gray-700 transition-all duration-200 focus:border-transparent focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                                                    className="w-full rounded-md border border-gray-300 px-3 py-2 text-white transition-all duration-200 focus:border-transparent focus:ring-2 focus:ring-blue-500 focus:outline-none"
                                                     value={data.habilidades_tecnicas}
                                                     onChange={(e) => setData('habilidades_tecnicas', e.currentTarget.value)}
                                                     placeholder="Ej: Python, SQL, JavaScript, Diseño UX/UI"
@@ -483,14 +622,14 @@ export default function CompletaPerfil({ alumno }: CompleteProfileProps) {
                                             </div>
 
                                             <div>
-                                                <label htmlFor="habilidades_blandas" className="mb-1 block text-sm font-medium text-white">
+                                                <label htmlFor="habilidades_blandas" className="mb-1 block text-sm font-medium text-white font-bold">
                                                     Habilidades Blandas (Soft Skills) *
                                                 </label>
                                                 <input
                                                     type="text"
                                                     id="habilidades_blandas"
                                                     name="habilidades_blandas"
-                                                    className="w-full rounded-md border border-gray-300 px-3 py-2 text-gray-700 transition-all duration-200 focus:border-transparent focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                                                    className="w-full rounded-md border border-gray-300 px-3 py-2 text-white transition-all duration-200 focus:border-transparent focus:ring-2 focus:ring-blue-500 focus:outline-none"
                                                     value={data.habilidades_blandas}
                                                     onChange={(e) => setData('habilidades_blandas', e.currentTarget.value)}
                                                     placeholder="Ej: Trabajo en equipo, Liderazgo, Comunicación"
@@ -502,14 +641,14 @@ export default function CompletaPerfil({ alumno }: CompleteProfileProps) {
                                             </div>
 
                                             <div>
-                                                <label htmlFor="idiomas" className="mb-1 block text-sm font-medium text-white">
+                                                <label htmlFor="idiomas" className="mb-1 block text-sm font-medium text-white font-bold">
                                                     Idiomas (Nivel) *
                                                 </label>
                                                 <input
                                                     type="text"
                                                     id="idiomas"
                                                     name="idiomas"
-                                                    className="w-full rounded-md border border-gray-300 px-3 py-2 text-gray-700 transition-all duration-200 focus:border-transparent focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                                                    className="w-full rounded-md border border-gray-300 px-3 py-2 text-white transition-all duration-200 focus:border-transparent focus:ring-2 focus:ring-blue-500 focus:outline-none"
                                                     value={data.idiomas}
                                                     onChange={(e) => setData('idiomas', e.currentTarget.value)}
                                                     placeholder="Ej: Inglés (B2), Francés (A1)"
@@ -519,13 +658,13 @@ export default function CompletaPerfil({ alumno }: CompleteProfileProps) {
                                             </div>
 
                                             <div>
-                                                <label htmlFor="certificaciones" className="mb-1 block text-sm font-medium text-white">
+                                                <label htmlFor="certificaciones" className="mb-1 block text-sm font-medium text-white font-bold">
                                                     Certificaciones y Cursos *
                                                 </label>
                                                 <textarea
                                                     id="certificaciones"
                                                     name="certificaciones"
-                                                    className="w-full rounded-md border border-gray-300 px-3 py-2 text-gray-700 transition-all duration-200 focus:border-transparent focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                                                    className="w-full rounded-md border border-gray-300 px-3 py-2 text-white transition-all duration-200 focus:border-transparent focus:ring-2 focus:ring-blue-500 focus:outline-none"
                                                     value={data.certificaciones}
                                                     onChange={(e) => setData('certificaciones', e.currentTarget.value)}
                                                     rows={2}
@@ -539,7 +678,7 @@ export default function CompletaPerfil({ alumno }: CompleteProfileProps) {
 
                                     {/* Sección de intereses profesionales */}
                                     <div className="rounded-lg border border-gray-100 p-4" style={{ backgroundColor: 'oklch(0.28 0.03 232)' }}>
-                                        <h2 className="mb-4 flex items-center text-lg font-semibold text-white">
+                                        <h2 className="mb-4 flex items-center text-lg font-semibold text-white font-bold">
                                             <svg
                                                 className="mr-2 h-5 w-5 text-blue-500"
                                                 fill="none"
@@ -558,14 +697,14 @@ export default function CompletaPerfil({ alumno }: CompleteProfileProps) {
                                         </h2>
                                         <div className="grid gap-4 md:grid-cols-2">
                                             <div>
-                                                <label htmlFor="practicas_interes" className="mb-1 block text-sm font-medium text-white">
+                                                <label htmlFor="practicas_interes" className="mb-1 block text-sm font-medium text-white font-bold">
                                                     Tipos de Prácticas de Interés *
                                                 </label>
                                                 <input
                                                     type="text"
                                                     id="practicas_interes"
                                                     name="practicas_interes"
-                                                    className="w-full rounded-md border border-gray-300 px-3 py-2 text-gray-700 transition-all duration-200 focus:border-transparent focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                                                    className="w-full rounded-md border border-gray-300 px-3 py-2 text-white transition-all duration-200 focus:border-transparent focus:ring-2 focus:ring-blue-500 focus:outline-none"
                                                     value={data.practicas_interes}
                                                     onChange={(e) => setData('practicas_interes', e.currentTarget.value)}
                                                     placeholder="Ej: Desarrollo Web, Marketing Digital, Investigación"
@@ -575,14 +714,14 @@ export default function CompletaPerfil({ alumno }: CompleteProfileProps) {
                                             </div>
 
                                             <div>
-                                                <label htmlFor="sectores_interes" className="mb-1 block text-sm font-medium text-white">
+                                                <label htmlFor="sectores_interes" className="mb-1 block text-sm font-medium text-white font-bold">
                                                     Sectores o Industrias de Interés *
                                                 </label>
                                                 <input
                                                     type="text"
                                                     id="sectores_interes"
                                                     name="sectores_interes"
-                                                    className="w-full rounded-md border border-gray-300 px-3 py-2 text-gray-700 transition-all duration-200 focus:border-transparent focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                                                    className="w-full rounded-md border border-gray-300 px-3 py-2 text-white transition-all duration-200 focus:border-transparent focus:ring-2 focus:ring-blue-500 focus:outline-none"
                                                     value={data.sectores_interes}
                                                     onChange={(e) => setData('sectores_interes', e.currentTarget.value)}
                                                     placeholder="Ej: Tecnología, Salud, Finanzas
@@ -592,12 +731,12 @@ export default function CompletaPerfil({ alumno }: CompleteProfileProps) {
                                             </div>
 
                                             <div>
-                                                <label htmlFor="expectativas_aprendizaje" className="mb-1 block text-sm font-medium text-white">
+                                                <label htmlFor="expectativas_aprendizaje" className="mb-1 block text-sm font-medium text-white font-bold">
                                                     Expectativas de Aprendizaje (Opcional)
                                                 </label>
                                                 <textarea
                                                     id="expectativas_aprendizaje"
-                                                    className="w-full rounded-md border border-gray-300 px-3 py-2 text-gray-700 transition-all duration-200 focus:border-transparent focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                                                    className="w-full rounded-md border border-gray-300 px-3 py-2 text-white transition-all duration-200 focus:border-transparent focus:ring-2 focus:ring-blue-500 focus:outline-none"
                                                     value={data.expectativas_aprendizaje}
                                                     onChange={(e) => setData('expectativas_aprendizaje', e.currentTarget.value)}
                                                     rows={3}
@@ -609,12 +748,12 @@ export default function CompletaPerfil({ alumno }: CompleteProfileProps) {
                                             </div>
 
                                             <div>
-                                                <label htmlFor="premios" className="mb-1 block text-sm font-medium text-white">
+                                                <label htmlFor="premios" className="mb-1 block text-sm font-medium text-white font-bold">
                                                     Premios y Reconocimientos (Opcional) 
                                                 </label>
                                                 <textarea
                                                     id="premios"
-                                                    className="w-full rounded-md border border-gray-300 px-3 py-2 text-gray-700 transition-all duration-200 focus:border-transparent focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                                                    className="w-full rounded-md border border-gray-300 px-3 py-2 text-white transition-all duration-200 focus:border-transparent focus:ring-2 focus:ring-blue-500 focus:outline-none"
                                                     value={data.premios}
                                                     onChange={(e) => setData('premios', e.currentTarget.value)}
                                                     rows={2}
@@ -627,7 +766,7 @@ export default function CompletaPerfil({ alumno }: CompleteProfileProps) {
 
                                     {/* Sección de disponibilidad */}
                                     <div className="rounded-lg border border-gray-100 p-4" style={{ backgroundColor: 'oklch(0.28 0.03 232)' }}>
-                                        <h2 className="mb-4 flex items-center text-lg font-semibold text-white">
+                                        <h2 className="mb-4 flex items-center text-lg font-semibold text-white font-bold">
                                             <svg
                                                 className="mr-2 h-5 w-5 text-blue-500"
                                                 fill="none"
@@ -646,14 +785,14 @@ export default function CompletaPerfil({ alumno }: CompleteProfileProps) {
                                         </h2>
                                         <div className="grid gap-4 md:grid-cols-2">
                                             <div>
-                                                <label htmlFor="disponibilidad" className="mb-1 block text-sm font-medium text-white">
+                                                <label htmlFor="disponibilidad" className="mb-1 block text-sm font-medium text-white font-bold">
                                                     Disponibilidad para Prácticas *
                                                 </label>
                                                 <input
                                                     type="text"
                                                     id="disponibilidad"
                                                     name="disponibilidad"
-                                                    className="w-full rounded-md border border-gray-300 px-3 py-2 text-gray-700 transition-all duration-200 focus:border-transparent focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                                                    className="w-full rounded-md border border-gray-300 px-3 py-2 text-white transition-all duration-200 focus:border-transparent focus:ring-2 focus:ring-blue-500 focus:outline-none"
                                                     value={data.disponibilidad}
                                                     onChange={(e) => setData('disponibilidad', e.currentTarget.value)}
                                                     placeholder="Ej: Junio-Agosto 2025, 3 meses"
@@ -663,13 +802,13 @@ export default function CompletaPerfil({ alumno }: CompleteProfileProps) {
                                             </div>
 
                                             <div>
-                                                <label htmlFor="modalidad_practicas" className="mb-1 block text-sm font-medium text-white">
+                                                <label htmlFor="modalidad_practicas" className="mb-1 block text-sm font-medium text-white font-bold">
                                                     Modalidad de Prácticas Preferida *
                                                 </label>
                                                 <select
                                                     id="modalidad_practicas"
                                                     name="modalidad_practicas"
-                                                    className="w-full rounded-md border border-gray-300 px-3 py-2 text-gray-700 transition-all duration-200 focus:ring-2 focus:outline-none"
+                                                    className="w-full rounded-md border border-gray-300 px-3 py-2 text-white transition-all duration-200 focus:ring-2 focus:outline-none"
                                                     value={data.modalidad_practicas}
                                                     onChange={(e) => setData('modalidad_practicas', e.currentTarget.value)}
                                                     required
@@ -688,7 +827,7 @@ export default function CompletaPerfil({ alumno }: CompleteProfileProps) {
 
                                     {/* Sección de enlaces y otros */}
                                     <div className="rounded-lg border border-gray-100 p-4" style={{ backgroundColor: 'oklch(0.28 0.03 232)' }}>
-                                        <h2 className="mb-4 flex items-center text-lg font-semibold text-white">
+                                        <h2 className="mb-4 flex items-center text-lg font-semibold text-white font-bold">
                                             <svg
                                                 className="mr-2 h-5 w-5 text-blue-500"
                                                 fill="none"
@@ -707,12 +846,12 @@ export default function CompletaPerfil({ alumno }: CompleteProfileProps) {
                                         </h2>
                                         <div className="space-y-4">
                                             <div>
-                                                <label htmlFor="referencias" className="mb-1 block text-sm font-medium text-white">
+                                                <label htmlFor="referencias" className="mb-1 block text-sm font-medium text-white font-bold">
                                                     Referencias (Opcional)
                                                 </label>
                                                 <textarea
                                                     id="referencias"
-                                                    className="w-full rounded-md border border-gray-300 px-3 py-2 text-gray-700 transition-all duration-200 focus:border-transparent focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                                                    className="w-full rounded-md border border-gray-300 px-3 py-2 text-white transition-all duration-200 focus:border-transparent focus:ring-2 focus:ring-blue-500 focus:outline-none"
                                                     value={data.referencias}
                                                     onChange={(e) => setData('referencias', e.currentTarget.value)}
                                                     rows={3}
@@ -727,13 +866,13 @@ export default function CompletaPerfil({ alumno }: CompleteProfileProps) {
                                     <div className="flex justify-center pt-5">
                                         <button
                                             type="submit"
-                                            className="focus:ring-opacity-50 transform rounded-lg bg-gradient-to-r from-blue-600 to-indigo-600 px-8 py-3 font-bold text-white shadow-md transition-all duration-300 hover:scale-105 hover:from-blue-700 hover:to-indigo-700 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                                            className="focus:ring-opacity-50 transform rounded-lg bg-gradient-to-r from-blue-600 to-indigo-600 px-8 py-3 font-bold text-white font-bold shadow-md transition-all duration-300 hover:scale-105 hover:from-blue-700 hover:to-indigo-700 focus:ring-2 focus:ring-blue-500 focus:outline-none"
                                             disabled={processing}
                                         >
                                             {processing ? (
                                                 <span className="flex items-center">
                                                     <svg
-                                                        className="mr-2 -ml-1 h-4 w-4 animate-spin text-white"
+                                                        className="mr-2 -ml-1 h-4 w-4 animate-spin text-white font-bold"
                                                         xmlns="http://www.w3.org/2000/svg"
                                                         fill="none"
                                                         viewBox="0 0 24 24"

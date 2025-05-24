@@ -4,7 +4,7 @@ import { Container, Row, Col, Button, Image } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import styles from '../../css/Welcome.module.css'; // Importa los estilos del módulo
 import { useEffect, useState } from 'react';
-
+import { router } from '@inertiajs/react';
 
 
 export default function Welcome() {
@@ -46,9 +46,16 @@ export default function Welcome() {
                             </div>
 
                             {auth?.user ? (
-                                <Link href={route('dashboard')} className="btn btn-outline-primary me-2">
+                                <button
+                                    onClick={() =>
+                                        router.visit(route('dashboard'), {
+                                            onSuccess: () => window.location.reload()
+                                        })
+                                    }
+                                    className="btn btn-outline-primary me-2"
+                                >
                                     Dashboard
-                                </Link>
+                                </button>
                             ) : (
                                 <>
                                     <div className='d-flex align-items-center'>
