@@ -4,8 +4,9 @@ import { NavUser } from '@/components/nav-user';
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
 import { type NavItem } from '@/types';
 import { Link } from '@inertiajs/react';
-import { BookOpen, LayoutGrid } from 'lucide-react';
+import { BookOpen, LayoutGrid, UserRoundPen } from 'lucide-react';
 import AppLogo from './app-logo';
+import { MessageCircle } from 'lucide-react';
 
 const mainNavItems: NavItem[] = [
     {
@@ -13,17 +14,26 @@ const mainNavItems: NavItem[] = [
         href: '/dashboard',
         icon: LayoutGrid,
     },
-];
-
-const footerNavItems: NavItem[] = [
+    {
+        title: 'Mensajes',
+        href: '/mensajes',
+        icon: MessageCircle,
+    },
     {
         title: 'Ver tus solicitudes',
         href: 'http://127.0.0.1:8000/alumno/solicitudes',
         icon: BookOpen,
     },
+    
+];
+
+
+
+const footerNavItems: NavItem[] = [
     {
         title: 'Editar Perfil',
-        href: 'http://127.0.0.1:8000/alumno/perfil/editar'
+        href: 'http://127.0.0.1:8000/alumno/perfil/editar',
+        icon: UserRoundPen
     }
 ];
 

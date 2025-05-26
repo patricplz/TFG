@@ -9,6 +9,7 @@ use App\Http\Controllers\AlumnoController;
 use App\Http\Controllers\SolicitudPracticaController;
 use App\Http\Controllers\EmpresaController;
 use App\Http\Controllers\AIPredictionController;
+use App\Events\PusherBroadcast;
 
 Route::get('/', function () {
     return Inertia::render('welcome');
@@ -46,6 +47,13 @@ Route::middleware(['auth', 'verified', 'role:alumno'])->group(function () {
     Route::get('/alumno/perfil/editar', [AlumnoController::class, 'mostrarFormularioEditarPerfil'])->name('alumno.perfil.editar');
     Route::post('/alumno/perfil/guardar', [AlumnoController::class, 'guardarPerfil'])->name('alumno.perfil.guardar');
     Route::get('/alumno/empresa/{empresa_id}', [AlumnoController::class, 'verPerfilEmpresa'])->name('alumno.empresa.ver');
+    Route::get('/mensajes', function () {
+        return Inertia::render('mensajes');
+    });
+    Route::get('/alumno/chat', 'App\Http\Controllers\PusherController@index');
+    Route::get('/mensajes/broadcast', 'App\Http\Controllers\PusherController@broadcast');
+    Route::get('/mensajes/receive', 'App\Http\Controllers\PusherController@receive');
+    
 });
 #Ruta para empresas
 Route::middleware(['auth', 'role:empresa'])->get('/empresa/dashboard',[EmpresaController::class, 'index'])->name('empresa.dashboard');
