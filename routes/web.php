@@ -9,6 +9,7 @@ use App\Http\Controllers\AlumnoController;
 use App\Http\Controllers\SolicitudPracticaController;
 use App\Http\Controllers\EmpresaController;
 use App\Http\Controllers\AIPredictionController;
+use App\Livewire\Chat;
 
 Route::get('/', function () {
     return Inertia::render('welcome');
@@ -27,6 +28,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
         
         return redirect()->route('home');
     })->name('dashboard');
+
+    Route::get("chat", Chat::class)->name("chat");
 });
 
 
