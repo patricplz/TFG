@@ -12,28 +12,50 @@ class Chat extends Component
     public $users;
     public $selectedUser;
     public $newMessage;
+    public $messages;
 
     public function mount(){
-        $this->users = User::whereNot("id", Auth::id())->get();
-        $this->selectedUser = $this->users->first();
-        //todo: cambiar solo a los que tenga chat con el, no todos los usuarios
-    }
+    $this->users = User::whereNot("id", Auth::id())->get();
+    $this->selectedUser = $this->users->first();
+    $this->loadMessages();
+}
 
-    public function submit(){
-        if (!$this->newMessage) return;
+private function loadMessages(){
+    $this->messages = ChatMessage::query()
+        ->where(function($q){
+            $q->where("sender_id", Auth::id())
+                ->where("receiver_id", $this->selectedUser->id);
+        })
+        ->orWhere(function($q){
+            $q->where("receiver_id", Auth::id())
+                ->where("sender_id", $this->selectedUser->id);
+        })
+        ->orderBy('created_at', 'asc') // Cambiar a ASC para orden cronológico
+        ->get();
+}
 
-        ChatMessage::create([
-            "sender_id" => Auth::id(),
-            "receiver_id" => $this->selectedUser->id,
-            "message" => $this->newMessage
-        ]);
+public function submit(){
+    if (!$this->newMessage) return;
 
-        $this->newMessage = '';
-    }
+    $message = ChatMessage::create([
+        "sender_id" => Auth::id(),
+        "receiver_id" => $this->selectedUser->id,
+        "message" => $this->newMessage
+    ]);
 
-    public function selectUser($id){
-        $this->selectedUser = User::find($id);
-    }
+    // Opción 1: Recargar todos los mensajes
+    $this->loadMessages();
+    
+    // Opción 2: Solo añadir el nuevo mensaje al final
+    // $this->messages->push($message);
+    
+    $this->newMessage = '';
+}
+
+public function selectUser($id){
+    $this->selectedUser = User::find($id);
+    $this->loadMessages(); // Cargar mensajes del usuario seleccionado
+}
 
     public function render()
     {
