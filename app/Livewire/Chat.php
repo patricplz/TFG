@@ -14,7 +14,7 @@ class Chat extends Component
     public $newMessage;
     public $messages;
 
-    public function mount($userId = null)
+    public function mount()
 {
     $authUserId = Auth::id();
 
@@ -30,13 +30,12 @@ class Chat extends Component
                 ->unique()
                 ->values();
 
-    // Traer usuarios basados en esos IDs
     $this->users = User::whereIn('id', $userIds)->get();
+    $userId = request()->query('user');
 
     if ($userId) {
         $this->selectedUser = $this->users->firstWhere('id', $userId);
         if (!$this->selectedUser) {
-            // Si no está en la lista, búscalo directamente y agrégalo
             $user = User::find($userId);
             if ($user) {
                 $this->users->push($user);
@@ -50,7 +49,7 @@ class Chat extends Component
     if ($this->selectedUser) {
         $this->loadMessages();
     } else {
-        $this->messages = collect(); // vacío
+        $this->messages = collect();
     }
 }
 
@@ -64,7 +63,7 @@ private function loadMessages(){
             $q->where("receiver_id", Auth::id())
                 ->where("sender_id", $this->selectedUser->id);
         })
-        ->orderBy('created_at', 'asc') // Cambiar a ASC para orden cronológico
+        ->orderBy('created_at', 'asc') 
         ->get();
 }
 
@@ -77,18 +76,14 @@ public function submit(){
         "message" => $this->newMessage
     ]);
 
-    // Opción 1: Recargar todos los mensajes
     $this->loadMessages();
-    
-    // Opción 2: Solo añadir el nuevo mensaje al final
-    // $this->messages->push($message);
     
     $this->newMessage = '';
 }
 
 public function selectUser($id){
     $this->selectedUser = User::find($id);
-    $this->loadMessages(); // Cargar mensajes del usuario seleccionado
+    $this->loadMessages(); 
 }
 
     public function render()
