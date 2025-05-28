@@ -67,6 +67,7 @@ Route::middleware(['auth', 'role:empresa'])->group(function () {
     Route::post('/empresa/perfil', [EmpresaController::class, 'guardarPerfil'])->name('empresa.perfil.guardar');
     Route::get('/api/ofertas/{ofertaId}/compatibilidad-ia', [AIPredictionController::class, 'obtenerPuntuacionesCompatibilidad'])->name('api.ofertas.compatibilidad-ia');
     Route::post('/empresa/alumno/{oferta}/{alumno}/actualizarEstado', [SolicitudPracticaController::class, 'actualizarEstado'])->name('empresa.alumno.actualizarEstado');
+    Route::get('/chat/{userId}', Chat::class)->name('chat');
 });
 
 

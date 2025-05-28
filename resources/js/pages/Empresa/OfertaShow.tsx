@@ -1,7 +1,7 @@
 import { Head, Link } from '@inertiajs/react';
 import { useForm } from '@inertiajs/react';
 import { useEffect } from 'react';
-import AppLayout from '@/layouts/app-layout-alumno';
+import AppLayout from '@/layouts/app-layout-empresa';
 import { BreadcrumbItem } from '@/types';
 import { motion } from 'framer-motion';
 import { useState } from 'react'; // Importa useState

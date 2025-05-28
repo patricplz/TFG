@@ -14,10 +14,44 @@ class Chat extends Component
     public $newMessage;
     public $messages;
 
-    public function mount(){
-    $this->users = User::whereNot("id", Auth::id())->get();
-    $this->selectedUser = $this->users->first();
-    $this->loadMessages();
+    public function mount($userId = null)
+{
+    $authUserId = Auth::id();
+
+    // Obtener los IDs de usuarios con los que se ha intercambiado mensajes
+    $userIds = ChatMessage::where('sender_id', $authUserId)
+                ->orWhere('receiver_id', $authUserId)
+                ->get()
+                ->flatMap(function ($message) use ($authUserId) {
+                    return [
+                        $message->sender_id == $authUserId ? $message->receiver_id : $message->sender_id
+                    ];
+                })
+                ->unique()
+                ->values();
+
+    // Traer usuarios basados en esos IDs
+    $this->users = User::whereIn('id', $userIds)->get();
+
+    if ($userId) {
+        $this->selectedUser = $this->users->firstWhere('id', $userId);
+        if (!$this->selectedUser) {
+            // Si no está en la lista, búscalo directamente y agrégalo
+            $user = User::find($userId);
+            if ($user) {
+                $this->users->push($user);
+                $this->selectedUser = $user;
+            }
+        }
+    } else {
+        $this->selectedUser = $this->users->first();
+    }
+
+    if ($this->selectedUser) {
+        $this->loadMessages();
+    } else {
+        $this->messages = collect(); // vacío
+    }
 }
 
 private function loadMessages(){

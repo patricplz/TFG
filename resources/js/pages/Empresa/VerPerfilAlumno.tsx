@@ -2,8 +2,9 @@ import { Head } from '@inertiajs/react';
 import AppLayout from '@/layouts/app-layout-empresa';
 import { type BreadcrumbItem } from '@/types';
 import { type AlumnoType } from '@/types/alumno';
-import ContactoModal from '@/components/ContactoModal';
 import { useState, useEffect } from 'react';
+import { EnvelopeIcon, PhoneIcon } from '@heroicons/react/24/outline';
+import { MessageCircle } from 'lucide-react';
 
 interface Props {
     alumno: AlumnoType;
@@ -22,7 +23,6 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 export default function VerPerfilAlumno({ alumno, oferta_id }: Props) {
-    const [modalOpen, setModalOpen] = useState(false);
     const [isVisible, setIsVisible] = useState(false);
     const [sectionsVisible, setSectionsVisible] = useState(false);
 
@@ -42,13 +42,6 @@ export default function VerPerfilAlumno({ alumno, oferta_id }: Props) {
         };
     }, []);
 
-    const openModal = () => {
-        setModalOpen(true);
-    };
-
-    const closeModal = () => {
-        setModalOpen(false);
-    };
 
     const handleActualizarEstado = (nuevoEstado: 'seleccionado' | 'rechazado') => {
         const alumnoId = alumno.alumno_id;
@@ -184,33 +177,59 @@ export default function VerPerfilAlumno({ alumno, oferta_id }: Props) {
                                 </div>
                                 
                                 {/* Enlaces de descarga */}
-                                <div className="mt-6 flex flex-wrap gap-3 justify-center md:justify-start">
-                                    {alumno.cv_path && (
-                                        <a
-                                            href={`/storage/${alumno.cv_path}`}
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                            className="group inline-flex items-center px-4 py-2 bg-white/20 backdrop-blur-sm text-white rounded-full text-sm font-medium hover:bg-white/30 transition-all duration-300 border border-white/30 hover:border-white/50 transform hover:scale-105"
-                                        >
-                                            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2 group-hover:rotate-12 transition-transform duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
-                                            </svg>
-                                            Descargar CV
-                                        </a>
-                                    )}
-                                    {alumno.portafolio && (
-                                        <a
-                                            href={alumno.portafolio}
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                            className="group inline-flex items-center px-4 py-2 bg-white/20 backdrop-blur-sm text-white rounded-full text-sm font-medium hover:bg-white/30 transition-all duration-300 border border-white/30 hover:border-white/50 transform hover:scale-105"
-                                        >
-                                            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2 group-hover:rotate-12 transition-transform duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                                            </svg>
-                                            Ver Portafolio
-                                        </a>
-                                    )}
+                                <div className="mt-2 flex flex-col gap-4">
+                                    {/* Email y teléfono lado a lado */}
+                                    <div className="flex flex-wrap gap-4 text-white justify-center md:justify-start">
+                                        {alumno.email ? (
+                                            <p className="flex items-center gap-2">
+                                                <EnvelopeIcon className="h-5 w-5 text-gray-300" />
+                                                {alumno.email}
+                                            </p>
+                                        ) : (
+                                            <p className="text-gray-500 italic">Email no disponible</p>
+                                        )}
+
+                                        {alumno.telefono ? (
+                                            <p className="flex items-center gap-2">
+                                                <PhoneIcon className="h-5 w-5 text-gray-300" />
+                                                {alumno.telefono}
+                                            </p>
+                                        ) : (
+                                            <p className="text-gray-500 italic">Teléfono no disponible</p>
+                                        )}
+                                    </div>
+
+                                    {/* Enlaces lado a lado */}
+                                    <div className="flex flex-wrap gap-3">
+                                        {alumno.cv_path && (
+                                            <a
+                                                href={`/storage/${alumno.cv_path}`}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className="group inline-flex items-center px-4 py-2 bg-white/20 backdrop-blur-sm text-white rounded-full text-sm font-medium hover:bg-white/30 transition-all duration-300 border border-white/30 hover:border-white/50 transform hover:scale-105"
+                                            >
+                                                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2 group-hover:rotate-12 transition-transform duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                                                </svg>
+                                                Descargar CV
+                                            </a>
+                                        )}
+                                        {alumno.portafolio && (
+                                            <a
+                                                href={alumno.portafolio}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className="group inline-flex items-center px-4 py-2 bg-white/20 backdrop-blur-sm text-white rounded-full text-sm font-medium hover:bg-white/30 transition-all duration-300 border border-white/30 hover:border-white/50 transform hover:scale-105"
+                                            >
+                                                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2 group-hover:rotate-12 transition-transform duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                                                </svg>
+                                                Ver Portafolio
+                                            </a>
+                                        )}
+                                    </div>
+
+                                    
                                 </div>
                             </div>
                         </div>
@@ -219,21 +238,17 @@ export default function VerPerfilAlumno({ alumno, oferta_id }: Props) {
                         <div className={`flex flex-col items-end gap-3 mt-4 md:mt-0 transition-all duration-700 delay-600 transform ${
                             isVisible ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-8'
                         }`}>
-                            <button 
-                                onClick={openModal} 
-                                className="group bg-gradient-to-r w-40 from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-bold py-3 px-6 rounded-xl shadow-lg transition-all duration-300 transform hover:scale-105 hover:shadow-2xl focus:outline-none focus:ring-4 focus:ring-green-300 min-w-[140px]"
-                            >
-                                <div className="flex items-center justify-center gap-2">
-                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 group-hover:rotate-12 transition-transform duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                                    </svg>
-                                    Contactar
-                                </div>
-                            </button>
-                            
+                            <a href={`/chat/${alumno.alumno_id}`}>
+                                <button className="group bg-gradient-to-r w-50 from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-bold py-3 px-6 rounded-xl shadow-lg transition-all duration-300 transform hover:scale-105 hover:shadow-2xl focus:outline-none focus:ring-4 focus:ring-green-300 min-w-[140px]">
+                                    <div className="flex items-center justify-center gap-2">
+                                        <MessageCircle className="h-5 w-5 group-hover:rotate-12 transition-transform duration-300"></MessageCircle>
+                                        Enviar mensaje
+                                    </div>
+                                </button>
+                            </a>
                             <button 
                                 onClick={handleSeleccionar} 
-                                className="group bg-gradient-to-r w-40 from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white font-bold py-3 px-6 rounded-xl shadow-lg transition-all duration-300 transform hover:scale-105 hover:shadow-2xl focus:outline-none focus:ring-4 focus:ring-blue-300 min-w-[140px]"
+                                className="group bg-gradient-to-r w-50 from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white font-bold py-3 px-6 rounded-xl shadow-lg transition-all duration-300 transform hover:scale-105 hover:shadow-2xl focus:outline-none focus:ring-4 focus:ring-blue-300 min-w-[140px]"
                             >
                                 <div className="flex items-center justify-center gap-2">
                                     <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 group-hover:scale-110 transition-transform duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -245,7 +260,7 @@ export default function VerPerfilAlumno({ alumno, oferta_id }: Props) {
                             
                             <button 
                                 onClick={handleRechazar} 
-                                className="group bg-gradient-to-r w-40 from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white font-bold py-3 px-6 rounded-xl shadow-lg transition-all duration-300 transform hover:scale-105 hover:shadow-2xl focus:outline-none focus:ring-4 focus:ring-red-300 min-w-[140px]"
+                                className="group bg-gradient-to-r w-50 from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white font-bold py-3 px-6 rounded-xl shadow-lg transition-all duration-300 transform hover:scale-105 hover:shadow-2xl focus:outline-none focus:ring-4 focus:ring-red-300 min-w-[140px]"
                             >
                                 <div className="flex items-center justify-center gap-2">
                                     <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 group-hover:rotate-180 transition-transform duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -255,8 +270,6 @@ export default function VerPerfilAlumno({ alumno, oferta_id }: Props) {
                                 </div>
                             </button>
                         </div>
-                        
-                        {modalOpen && <ContactoModal alumno={alumno} onClose={closeModal} />}
                     </div>         
                     
                     {/* Contenido principal organizado en secciones */}

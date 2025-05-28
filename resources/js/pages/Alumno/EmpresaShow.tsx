@@ -1,5 +1,5 @@
 import { Head } from '@inertiajs/react';
-import AppLayout from '@/layouts/app-layout-empresa';
+import AppLayout from '@/layouts/app-layout-alumno';
 import { type BreadcrumbItem } from '@/types';
 import { type EmpresaType } from '@/types/empresa';
 import { useState, useEffect } from 'react';
