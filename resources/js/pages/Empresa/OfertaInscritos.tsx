@@ -47,7 +47,6 @@ export default function OfertaInscritos({ oferta, alumnosInscritos: initialAlumn
     const [isVisible, setIsVisible] = useState(false);
     const ofertaId = oferta.id;
 
-    // Animación de entrada
     useEffect(() => {
         const timer = setTimeout(() => {
             setIsVisible(true);
@@ -101,7 +100,7 @@ export default function OfertaInscritos({ oferta, alumnosInscritos: initialAlumn
                         <div className={`transform transition-all duration-700 delay-200 ${
                             isVisible ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-4'
                         }`}>
-                            <h1 className="text-4xl font-bold mb-2 bg-gradient-to-r from-blue-600 via-purple-600 to-blue-800 bg-clip-text text-transparent">
+                            <h1 className="text-4xl font-bold mb-2 bg-blue-600 bg-clip-text text-transparent">
                                 Alumnos Inscritos
                             </h1>
                             <div className="flex items-center gap-2 text-lg text-gray-600 dark:text-gray-300">
@@ -110,17 +109,12 @@ export default function OfertaInscritos({ oferta, alumnosInscritos: initialAlumn
                                 <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></div>
                             </div>
                         </div>
-                        
-                        <div className={`mt-4 h-1 bg-gradient-to-r from-blue-500 via-purple-500 to-blue-600 rounded-full transform transition-all duration-1000 delay-400 ${
-                            isVisible ? 'scale-x-100' : 'scale-x-0'
-                        } origin-left`}>
-                        </div>
                     </div>
 
                     <div className={`mb-8 transform transition-all duration-700 delay-300 ${
                         isVisible ? 'opacity-100 scale-100' : 'opacity-0 scale-95'
                     }`}>
-                        <div className="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-gray-800 dark:to-gray-700 rounded-2xl p-6 border border-blue-100 dark:border-gray-600 shadow-lg">
+                        <div className=" dark:bg-gray-800 rounded-2xl p-6 border border-blue-100 dark:border-gray-600 shadow-lg">
                             <div className="flex items-center justify-between">
                                 <div className="flex items-center gap-4">
                                     <div className="w-12 h-12 bg-blue-500 rounded-xl flex items-center justify-center">
@@ -154,7 +148,7 @@ export default function OfertaInscritos({ oferta, alumnosInscritos: initialAlumn
                         }`}>
                             <button
                                 onClick={handleOrdenarConIA}
-                                className="group relative overflow-hidden bg-gradient-to-r from-blue-500 via-purple-500 to-blue-600 hover:from-blue-600 hover:via-purple-600 hover:to-blue-700 text-white font-bold py-4 px-8 rounded-2xl transition-all duration-300 transform hover:scale-105 hover:shadow-2xl focus:outline-none focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-800"
+                                className="group relative overflow-hidden bg-[oklch(0.35_0.02_220)]  text-white font-bold py-4 px-8 rounded-2xl transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-4"
                             >
                                 <span className="relative z-10 flex items-center gap-3">
                                     <svg className="w-5 h-5 transition-transform group-hover:rotate-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -163,7 +157,7 @@ export default function OfertaInscritos({ oferta, alumnosInscritos: initialAlumn
                                     Ordenar con Inteligencia Artificial
                                 </span>
                                 <div className="absolute inset-0 bg-white opacity-0 group-hover:opacity-20 transition-opacity duration-300"></div>
-                                <div className="absolute -inset-1 bg-gradient-to-r from-blue-400 via-purple-400 to-blue-500 rounded-2xl opacity-0 group-hover:opacity-30 blur transition-all duration-300"></div>
+                                <div className="absolute  blur transition-all duration-300"></div>
                             </button>
                         </div>
                     )}
@@ -171,11 +165,7 @@ export default function OfertaInscritos({ oferta, alumnosInscritos: initialAlumn
                     {loadingIA && (
                         <div className="mb-8 space-y-4">
                             <div className="flex items-center gap-3">
-                                <div className="flex space-x-1">
-                                    <div className="w-2 h-2 bg-blue-500 rounded-full animate-bounce"></div>
-                                    <div className="w-2 h-2 bg-purple-500 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
-                                    <div className="w-2 h-2 bg-blue-600 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
-                                </div>
+                            
                                 <span className="text-sm font-medium text-gray-600 dark:text-gray-300">
                                     Analizando compatibilidad con IA...
                                 </span>
@@ -197,7 +187,7 @@ export default function OfertaInscritos({ oferta, alumnosInscritos: initialAlumn
                             >
                                 <Link
                                     href={route('empresa.perfilAlumno.ver', { id: alumno.alumno_id, oferta_id: ofertaId })}
-                                    className="group relative overflow-hidden rounded-2xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-6 block transition-all duration-300 hover:shadow-2xl hover:shadow-blue-500/10 hover:-translate-y-2 hover:scale-105 hover:border-blue-300 dark:hover:border-blue-600"
+                                    className="group relative overflow-hidden rounded-2xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-6 block transition-all duration-300 hover:-translate-y-2 hover:scale-105 hover:border-blue-300 dark:hover:border-blue-600"
                                 >
                                     <div className="absolute inset-0 bg-gradient-to-r from-blue-500/0 via-blue-500/5 to-purple-500/0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                                     
@@ -226,7 +216,7 @@ export default function OfertaInscritos({ oferta, alumnosInscritos: initialAlumn
                                         )}
                                     </div>
                                     
-                                    {/* Información del alumno */}
+                                
                                     <div className="space-y-2">
                                         <h3 className="text-lg font-bold text-center text-gray-800 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors duration-300">
                                             {`${alumno.nombre} ${alumno.apellidos}`}
@@ -234,29 +224,15 @@ export default function OfertaInscritos({ oferta, alumnosInscritos: initialAlumn
                                         
                                         {alumno.formacion && (
                                             <div className="flex items-center justify-center gap-2">
-                                                <div className="w-2 h-2 bg-blue-500 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                                                <p className="text-sm text-center text-gray-600 dark:text-gray-400 group-hover:text-gray-700 dark:group-hover:text-gray-300 transition-colors duration-300">
-                                                    {alumno.formacion}
-                                                </p>
-                                                <div className="w-2 h-2 bg-purple-500 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                                                <p className="text-sm text-center text-gray-600 dark:text-gray-400 group-hover:text-gray-700 dark:group-hover:text-gray-300 transition-colors duration-300">{alumno.formacion}</p>
                                             </div>
                                         )}
                                     </div>
-                                    
-                                    {/* Indicador de hover */}
-                                    <div className="absolute bottom-3 right-3 opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-x-2 group-hover:translate-x-0">
-                                        <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center">
-                                            <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                                            </svg>
-                                        </div>
-                                    </div>
+                                
                                 </Link>
                             </div>
                         ))}
                     </div>
-
-                    {/* Mensaje cuando no hay alumnos */}
                     {initialAlumnosInscritos.length === 0 && (
                         <div className={`text-center py-16 transform transition-all duration-700 delay-300 ${
                             isVisible ? 'opacity-100 scale-100' : 'opacity-0 scale-95'

@@ -1,5 +1,13 @@
 <div>
   <div class="flex h-[550px] text-sm border rounded-xl shadow overflow-hidden bg-gray-300">
+    <button 
+      onclick="window.parent.document.elementFromPoint(10, 10).click()"
+      class="absolute top-3 right-3 z-10 p-2 rounded-full hover:bg-gray-400 transition-colors duration-200 group"
+      aria-label="Close chat">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-700 group-hover:text-gray-900" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+      </svg>
+    </button>
 
     <!-- Left: User List -->
     <div class="w-1/4 border-r bg-gray-300">
@@ -20,16 +28,6 @@
     <div class="w-3/4 flex flex-col">
       <!-- Header -->
       <div class="p-4 border-b bg-gray-300 border-gray-400 flex items-center gap-3">
-        <!-- Flecha atrás -->
-        <button 
-          onclick="history.back()" 
-          class="p-1 rounded hover:bg-gray-400 transition"
-          aria-label="Go back">
-          <!-- Flecha SVG -->
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-900" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
-          </svg>
-        </button>
 
         <div>
           <div class="text-lg font-semibold text-gray-900">{{ $selectedUser->name }}</div>

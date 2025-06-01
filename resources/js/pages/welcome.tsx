@@ -1,5 +1,5 @@
 import { type SharedData } from '@/types';
-import { Head, Link, usePage } from '@inertiajs/react';
+import { Head, usePage } from '@inertiajs/react';
 import { Container, Row, Col, Button, Image } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import styles from '../../css/Welcome.module.css';
@@ -58,12 +58,28 @@ export default function Welcome() {
                             ) : (
                                 <>
                                     <div className='d-flex align-items-center'>
-                                        <Link href={route('login')} className="btn btn-outline-primary me-2" style={{ minWidth: '8em' }}>
-                                            Iniciar Sesión
-                                        </Link>
-                                        <Link href={route('register')} className="btn btn-primary">
+
+                                        <button
+                                            onClick={() =>
+                                                router.visit(route('login'), {
+                                                    onSuccess: () => window.location.reload()
+                                                })
+                                            }
+                                            className="btn btn-outline-primary me-2"
+                                        >
+                                            Iniciar sesión
+                                        </button>
+
+                                        <button
+                                            onClick={() =>
+                                                router.visit(route('register'), {
+                                                    onSuccess: () => window.location.reload()
+                                                })
+                                            }
+                                            className="btn btn-primary"
+                                        >
                                             Registrarse
-                                        </Link>
+                                        </button>
                                     </div>
                                 </>
                             )}
