@@ -5,6 +5,7 @@ import { type AlumnoType } from '@/types/alumno';
 import { useState, useEffect } from 'react';
 import { EnvelopeIcon, PhoneIcon } from '@heroicons/react/24/outline';
 import { MessageCircle } from 'lucide-react';
+import { Link } from '@inertiajs/react';
 
 interface Props {
     alumno: AlumnoType;
@@ -239,13 +240,12 @@ export default function VerPerfilAlumno({ alumno, oferta_id }: Props) {
                             isVisible ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-8'
                         }`}>
                             {/* <a href={`/chat/${alumno.alumno_id}`}> */}
-                                <button onClick={() => window.location.href = `/chat?user=${alumno.alumno_id}`}
-                                    className="group bg-gradient-to-r w-50 from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-bold py-3 px-6 rounded-xl shadow-lg transition-all duration-300 transform hover:scale-105 hover:shadow-2xl focus:outline-none focus:ring-4 focus:ring-green-300 min-w-[140px]">
+                                <Link href={`/chat?user=${alumno.alumno_id}`} className="group bg-gradient-to-r w-50 from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white font-bold py-3 px-6 rounded-xl shadow-lg transition-all duration-300 transform hover:scale-105 hover:shadow-2xl focus:outline-none focus:ring-4 focus:ring-green-300 min-w-[140px]">
                                     <div className="flex items-center justify-center gap-2">
                                         <MessageCircle className="h-5 w-5 group-hover:rotate-12 transition-transform duration-300"></MessageCircle>
                                         Enviar mensaje
                                     </div>
-                                </button>
+                                </Link>
                             {/* </a> */}
                             <button 
                                 onClick={handleSeleccionar} 
