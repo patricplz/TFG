@@ -171,12 +171,7 @@ export default function Welcome() {
                             <h2 className="h3 mb-3 text-info fw-bold">Para Estudiantes</h2>
                             <h3 className="h4 mb-3 text-dark">Encuentra tu práctica perfecta</h3>
                             <div className="mb-4">
-                                <div className="d-flex align-items-start mb-3">
-                                    <span className="text-info me-2">✓</span>
-                                    <div>
-                                        <strong>Búsqueda personalizada:</strong> La IA te muestra las ofertas más relevantes segun tu perfil y estudios, para que no pierdas tiempo revisando cosas que no te interesan.
-                                    </div>
-                                </div>
+                            
                                 <div className="d-flex align-items-start mb-3">
                                     <span className="text-info me-2">✓</span>
                                     <div>

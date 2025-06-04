@@ -16,6 +16,7 @@ class GeminiAIService{
         $this->client = new Client($apiKey);
     }
 
+    //función para obtener la compatibilidad de los alumnos con la empresa
     public function getCompatibilityScores(array $oferta, array $alumnos): array{
         $scores = [];
         $promptBase = $this->formatPromptBase($oferta);
@@ -27,6 +28,7 @@ class GeminiAIService{
 
         foreach (array_chunk($alumnos, 2) as $batch) {
             $prompt = $promptBase . "\n\nAhora vamos a ver estos perfiles de alumnos \n\n**Perfiles de Alumnos:**\n";
+            //Añado la info de los alumnos al prompt
             foreach ($batch as $alumno) {
                 $prompt .= "**Alumno (ID: " . $alumno['alumno_id'] . "):\n";
                 foreach ($alumno as $clave => $valor) {
@@ -39,11 +41,13 @@ class GeminiAIService{
             \Log::info("Prompt enviado a Gemini:", ['prompt' => $prompt]);
             
             try {
+                //uso gemini-1.5-flash para generar la respuesta
                 $response = $this->client->generativeModel('gemini-1.5-flash')->generateContent(new TextPart($prompt));
                 $responseText = $response->text();
 
                 \Log::info("Respuesta de Gemini:", ['response' => $responseText]);
 
+                //formateo el json
                 $start = strpos($responseText, '[');
                 $end = strrpos($responseText, ']');
 
@@ -56,6 +60,7 @@ class GeminiAIService{
                     \Log::warning("No se pudo extraer un JSON válido de la respuesta.");
                     $decodedResponse = null;
                 }
+                //obtengo la calificacion de cada alumno_id y lo devuelvo al controlador
                 if (is_array($decodedResponse)) {
                     foreach ($decodedResponse as $item) {
                         if (isset($item['alumno_id']) && isset($item['calificacion'])) {
@@ -78,6 +83,7 @@ class GeminiAIService{
         return $scores;
     }
 
+    //prompt inicial praa Gemini
     protected function formatPromptBase(array $oferta): string{
         $ofertaTexto = "**Información de la Oferta:**\n";
         foreach ($oferta as $clave => $valor) {

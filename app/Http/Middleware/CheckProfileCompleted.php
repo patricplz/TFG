@@ -19,6 +19,9 @@ class CheckProfileCompleted
      * @param  \Closure(\Illuminate\Http\Request): (\Illuminate\Http\Response|\Illuminate\Http\RedirectResponse)  $next
      * @return \Illuminate\Http\Response|\Illuminate\Http\RedirectResponse
      */
+
+
+     // función para asegurarse de que los usuarios (alumnos y empresas) tienen su perfil completado antes de permitirles acceder a la mayoría de las páginas de la aplicación
     public function handle(Request $request, Closure $next)
     {
         $user = Auth::user();

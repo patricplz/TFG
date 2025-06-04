@@ -9,11 +9,12 @@ use Livewire\Component;
 
 class Chat extends Component
 {
-    public $users;
-    public $selectedUser;
-    public $newMessage;
-    public $messages;
+    public $users; //almacena la lista de usuarios con los que el usuario autenticado ha tenido conversaciones
+    public $selectedUser; //usuario que está seleccionado para ver el chat
+    public $newMessage; //mensaje a enviar
+    public $messages; //colección de mensajes del chat actual
 
+    //función que se carga al iniciar el componente, carga los usuarios con los que el usuario autenticado ha chateado, selecciona un usuario inicial (por ID de URL al enviar un mensaje desde el perfil de un alumno, o el primero de la lista), y carga sus mensajes.
     public function mount()
 {
     $authUserId = Auth::id();
@@ -53,6 +54,7 @@ class Chat extends Component
     }
 }
 
+// obtiene y actualiza la colección de mensajes entre el usuario autenticado y el $selectedUser actual
 private function loadMessages(){
     $this->messages = ChatMessage::query()
         ->where(function($q){
@@ -67,6 +69,7 @@ private function loadMessages(){
         ->get();
 }
 
+//envía un nuevo mensaje
 public function submit(){
     if (!$this->newMessage) return;
 
@@ -81,11 +84,13 @@ public function submit(){
     $this->newMessage = '';
 }
 
+//Cambia el usuario seleccionado por su ID, y luego carga los mensajes correspondientes a la nueva conversación
 public function selectUser($id){
     $this->selectedUser = User::find($id);
     $this->loadMessages(); 
 }
 
+// Renderiza la vista de Blade 
     public function render()
     {
         return view('livewire.chat');

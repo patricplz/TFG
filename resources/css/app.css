@@ -82,74 +82,74 @@
 }
 
 :root {
-    --background: oklch(0.98 0.01 210); /* Gris azulado muy claro */
-    --foreground: oklch(0.22 0.02 230); /* Gris azulado oscuro para el texto */
-    --card: oklch(0.95 0.015 215); /* Gris azulado claro para las tarjetas */
-    --card-foreground: oklch(0.25 0.025 235); /* Gris azulado un poco más oscuro para el texto de las tarjetas */
-    --popover: oklch(0.95 0.015 215); /* Similar a la tarjeta */
-    --popover-foreground: oklch(0.25 0.025 235); /* Similar al texto de la tarjeta */
-    --primary: oklch(0.55 0.1 240); /* Azul primario */
-    --primary-foreground: oklch(0.95 0.01 200); /* Gris muy claro para el texto primario */
-    --secondary: oklch(0.65 0.08 225); /* Azul secundario más suave */
-    --secondary-foreground: oklch(0.18 0.03 245); /* Gris azulado muy oscuro para el texto secundario */
-    --muted: oklch(0.85 0.01 210); /* Gris azulado suave para elementos muted */
-    --muted-foreground: oklch(0.45 0.015 220); /* Gris azulado medio para el texto muted */
-    --accent: oklch(0.60 0.12 250); /* Azul acento */
-    --accent-foreground: oklch(0.97 0.005 205); /* Gris muy claro para el texto de acento */
-    --destructive: oklch(0.50 0.15 20); /* Rojo para destructivo (contraste) */
-    --destructive-foreground: oklch(0.98 0.01 200); /* Gris muy claro para el texto destructivo */
-    --border: oklch(0.75 0.008 210); /* Gris azulado claro para los bordes */
-    --input: oklch(0.92 0.005 205); /* Gris muy claro para los inputs */
-    --ring: oklch(0.50 0.1 240 / 0.3); /* Anillo azulado suave */
-    --chart-1: oklch(0.68 0.15 260); /* Azul más intenso para el gráfico */
-    --chart-2: oklch(0.72 0.12 190); /* Azul más claro para el gráfico */
-    --chart-3: oklch(0.60 0.18 230); /* Azul medio para el gráfico */
-    --chart-4: oklch(0.78 0.10 205); /* Azul claro para el gráfico */
-    --chart-5: oklch(0.65 0.14 245); /* Otro tono de azul para el gráfico */
+    --background: oklch(0.98 0.01 210); 
+    --foreground: oklch(0.22 0.02 230); 
+    --card: oklch(0.95 0.015 215);
+    --card-foreground: oklch(0.25 0.025 235); 
+    --popover: oklch(0.95 0.015 215); 
+    --popover-foreground: oklch(0.25 0.025 235); 
+    --primary: oklch(0.55 0.1 240); 
+    --primary-foreground: oklch(0.95 0.01 200); 
+    --secondary: oklch(0.65 0.08 225);
+    --secondary-foreground: oklch(0.18 0.03 245); 
+    --muted: oklch(0.85 0.01 210); 
+    --muted-foreground: oklch(0.45 0.015 220);
+    --accent: oklch(0.60 0.12 250); 
+    --accent-foreground: oklch(0.97 0.005 205); 
+    --destructive: oklch(0.50 0.15 20); 
+    --destructive-foreground: oklch(0.98 0.01 200);
+    --border: oklch(0.75 0.008 210);
+    --input: oklch(0.92 0.005 205);
+    --ring: oklch(0.50 0.1 240 / 0.3); 
+    --chart-1: oklch(0.68 0.15 260); 
+    --chart-2: oklch(0.72 0.12 190); 
+    --chart-3: oklch(0.60 0.18 230); 
+    --chart-4: oklch(0.78 0.10 205); 
+    --chart-5: oklch(0.65 0.14 245); 
     --radius: 0.625rem;
-    --sidebar: oklch(0.96 0.012 212); /* Gris azulado claro para el sidebar */
-    --sidebar-foreground: oklch(0.28 0.02 232); /* Gris azulado oscuro para el texto del sidebar */
-    --sidebar-primary: oklch(0.58 0.09 242); /* Azul primario para elementos del sidebar */
-    --sidebar-primary-foreground: oklch(0.96 0.01 202); /* Gris muy claro para el texto primario del sidebar */
-    --sidebar-accent: oklch(0.62 0.11 252); /* Azul acento para el sidebar */
-    --sidebar-accent-foreground: oklch(0.98 0.005 207); /* Gris muy claro para el texto de acento del sidebar */
-    --sidebar-border: oklch(0.78 0.007 212); /* Gris azulado claro para el borde del sidebar */
-    --sidebar-ring: oklch(0.52 0.09 242 / 0.3); /* Anillo azulado suave para el sidebar */
+    --sidebar: oklch(0.96 0.012 212); 
+    --sidebar-foreground: oklch(0.28 0.02 232); 
+    --sidebar-primary: oklch(0.58 0.09 242); 
+    --sidebar-primary-foreground: oklch(0.96 0.01 202); 
+    --sidebar-accent: oklch(0.62 0.11 252); 
+    --sidebar-accent-foreground: oklch(0.98 0.005 207);
+    --sidebar-border: oklch(0.78 0.007 212);
+    --sidebar-ring: oklch(0.52 0.09 242 / 0.3); 
 }
 
 .dark {
-    --background: oklch(0.20 0.025 225); /* Gris azulado oscuro */
-    --foreground: oklch(0.95 0.015 210); /* Gris azulado claro para el texto en oscuro */
-    --card: oklch(0.25 0.03 230); /* Gris azulado oscuro para las tarjetas en oscuro */
-    --card-foreground: oklch(0.92 0.02 205); /* Gris azulado claro para el texto de las tarjetas en oscuro */
-    --popover: oklch(0.25 0.03 230); /* Similar a la tarjeta en oscuro */
-    --popover-foreground: oklch(0.92 0.02 205); /* Similar al texto de la tarjeta en oscuro */
-    --primary: oklch(0.65 0.12 245); /* Azul primario más claro en oscuro */
-    --primary-foreground: oklch(0.15 0.02 220); /* Gris azulado muy oscuro para el texto primario en oscuro */
-    --secondary: oklch(0.55 0.09 230); /* Azul secundario más oscuro en oscuro */
-    --secondary-foreground: oklch(0.90 0.025 200); /* Gris azulado claro para el texto secundario en oscuro */
-    --muted: oklch(0.35 0.02 220); /* Gris azulado oscuro para elementos muted en oscuro */
-    --muted-foreground: oklch(0.70 0.018 215); /* Gris azulado medio para el texto muted en oscuro */
-    --accent: oklch(0.70 0.14 255); /* Azul acento más claro en oscuro */
-    --accent-foreground: oklch(0.10 0.015 215); /* Gris azulado muy oscuro para el texto de acento en oscuro */
-    --destructive: oklch(0.60 0.18 25); /* Rojo más claro para destructivo en oscuro */
-    --destructive-foreground: oklch(0.95 0.015 210); /* Gris azulado claro para el texto destructivo en oscuro */
-    --border: oklch(0.40 0.015 225); /* Gris azulado más oscuro para los bordes en oscuro */
-    --input: oklch(0.30 0.01 220); /* Gris azulado oscuro para los inputs en oscuro */
-    --ring: oklch(0.60 0.12 245 / 0.4); /* Anillo azulado más claro en oscuro */
-    --chart-1: oklch(0.75 0.18 265); /* Azul más claro para el gráfico en oscuro */
-    --chart-2: oklch(0.80 0.15 195); /* Azul aún más claro para el gráfico en oscuro */
-    --chart-3: oklch(0.68 0.20 235); /* Azul medio más claro para el gráfico en oscuro */
-    --chart-4: oklch(0.85 0.12 210); /* Azul claro para el gráfico en oscuro */
-    --chart-5: oklch(0.72 0.16 250); /* Otro tono de azul más claro para el gráfico en oscuro */
-    --sidebar: oklch(0.28 0.03 232); /* Gris azulado oscuro para el sidebar en oscuro */
-    --sidebar-foreground: oklch(0.94 0.018 208); /* Gris azulado claro para el texto del sidebar en oscuro */
-    --sidebar-primary: oklch(0.68 0.11 247); /* Azul primario más claro para el sidebar en oscuro */
-    --sidebar-primary-foreground: oklch(0.97 0.012 204); /* Gris muy claro para el texto primario del sidebar en oscuro */
-    --sidebar-accent: oklch(0.72 0.13 257); /* Azul acento más claro para el sidebar en oscuro */
-    --sidebar-accent-foreground: oklch(0.12 0.018 217); /* Gris azulado muy oscuro para el texto de acento del sidebar en oscuro */
-    --sidebar-border: oklch(0.45 0.012 227); /* Gris azulado más oscuro para el borde del sidebar en oscuro */
-    --sidebar-ring: oklch(0.62 0.10 247 / 0.4); /* Anillo azulado más claro para el sidebar en oscuro */
+    --background: oklch(0.20 0.025 225); 
+    --foreground: oklch(0.95 0.015 210); 
+    --card: oklch(0.25 0.03 230);
+    --card-foreground: oklch(0.92 0.02 205);
+    --popover: oklch(0.25 0.03 230); 
+    --popover-foreground: oklch(0.92 0.02 205); 
+    --primary: oklch(0.65 0.12 245); 
+    --primary-foreground: oklch(0.15 0.02 220);
+    --secondary: oklch(0.55 0.09 230);
+    --secondary-foreground: oklch(0.90 0.025 200);
+    --muted: oklch(0.35 0.02 220); 
+    --muted-foreground: oklch(0.70 0.018 215); 
+    --accent: oklch(0.70 0.14 255); 
+    --accent-foreground: oklch(0.10 0.015 215);
+    --destructive: oklch(0.60 0.18 25); 
+    --destructive-foreground: oklch(0.95 0.015 210);
+    --border: oklch(0.40 0.015 225);
+    --input: oklch(0.30 0.01 220); 
+    --ring: oklch(0.60 0.12 245 / 0.4); 
+    --chart-1: oklch(0.75 0.18 265); 
+    --chart-2: oklch(0.80 0.15 195); 
+    --chart-3: oklch(0.68 0.20 235); 
+    --chart-4: oklch(0.85 0.12 210); 
+    --chart-5: oklch(0.72 0.16 250); 
+    --sidebar: oklch(0.28 0.03 232); 
+    --sidebar-foreground: oklch(0.94 0.018 208); 
+    --sidebar-primary: oklch(0.68 0.11 247); 
+    --sidebar-primary-foreground: oklch(0.97 0.012 204); 
+    --sidebar-accent: oklch(0.72 0.13 257);
+    --sidebar-accent-foreground: oklch(0.12 0.018 217); 
+    --sidebar-border: oklch(0.45 0.012 227);
+    --sidebar-ring: oklch(0.62 0.10 247 / 0.4); 
 }
 
 @layer base {

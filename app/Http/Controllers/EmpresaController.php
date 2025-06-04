@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
 class EmpresaController extends Controller{
+    //ofertas creadas por la misma empresa mostradas en el dashboard
     public function index(){
         $empresaId = Auth::id();
         $ofertas = OfertaPractica::where('empresa_id', $empresaId)->latest()->get();
@@ -21,6 +22,7 @@ class EmpresaController extends Controller{
         ]);
     }
 
+    //función para ver el perfil de un alumno
     public function verPerfilAlumno($id, Request $request){
         $alumno = Alumno::findOrFail($id);
         $oferta_id = $request->oferta_id;
@@ -28,11 +30,13 @@ class EmpresaController extends Controller{
         return Inertia::render('Empresa/VerPerfilAlumno', ['alumno' => $alumno, 'oferta_id' => $oferta_id]);
     }
 
+    //función para editar el perfil de empresa
     public function mostrarPerfil(){
         $empresa = Empresa::where('empresa_id', Auth::id())->first();
         return Inertia::render('Empresa/CompleteProfile', ['empresa' => $empresa]);
     }
 
+    //función para guardar el perfil de empresa al editarlo
     public function guardarPerfil(Request $request) {
 
         Validator::make($request->all(), [
@@ -53,6 +57,7 @@ class EmpresaController extends Controller{
         $empresaID = Auth::id();
         $empresa = Empresa::where('empresa_id', $empresaID)->first();
 
+        //si no existe la empresa, se crea, si existe, se edita
         if (!$empresa) {
             $empresa = new Empresa();
             $empresa->empresa_id = $empresaID;

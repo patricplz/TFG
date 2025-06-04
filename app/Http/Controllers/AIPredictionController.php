@@ -14,10 +14,12 @@ class AIPredictionController extends Controller{
         $this->geminiAIService =$geminiAIService;
     }
 
+    //función que recoge información de la oferta y los alumnos inscritos a ella, y devuelve los alumnos ordenados a la página
     public function obtenerPuntuacionesCompatibilidad(Request $request, $ofertaId): JsonResponse{
         $oferta = OfertaPractica::findOrFail($ofertaId);
         $alumnoIds = SolicitudPracticaAlumno::where('practica_id', $ofertaId)->pluck('alumno_id')->toArray();
 
+        //recoge información relevante de la empresa
         $ofertaSeleccionada = [
             'name' => $oferta->name,
             'description' => $oferta->description,
@@ -29,6 +31,7 @@ class AIPredictionController extends Controller{
 
         if (empty($alumnoIds)) return response()->json(['message' => 'no hay solicitudes para esta oferta'], 200);
 
+        //recoge información relevante de los alumnos
         $alumnos = Alumno::whereIn('alumno_id', $alumnoIds)
         ->select(['alumno_id','formacion', 'habilidades_tecnicas', 'habilidades_blandas', 'idiomas', 'intereses', 'certificaciones'])
         ->get()
@@ -38,12 +41,13 @@ class AIPredictionController extends Controller{
         \Log::info("Datos de la oferta:", $ofertaSeleccionada);
         \Log::info("Datos de los alumnos:", $alumnos);
 
+        //los manda a analizar la compatibilidad al servicio de gemini
         $scores = $this->geminiAIService->getCompatibilityScores($ofertaSeleccionada, $alumnos);
         
         \Log::info("Puntuaciones de Gemini:", $scores);
         
-        $matches = [];
-        foreach ($alumnos as $alumno) {
+        $matches = []; 
+        foreach ($alumnos as $alumno) { //coge el alumno y su puntuación
             if (isset($scores[$alumno['alumno_id']])){
                 $matches[] = [
                     'alumno_id' => $alumno['alumno_id'],
@@ -56,7 +60,7 @@ class AIPredictionController extends Controller{
                 ];
             }
         }
-        usort($matches, function ($a, $b) {
+        usort($matches, function ($a, $b) { //ordena la puntuación de mayor a menor
             return ($b['puntuacion'] ?? -1) <=> ($a['puntuacion'] ?? -1); 
         });
 

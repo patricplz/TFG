@@ -8,26 +8,38 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use App\Models\Alumno;
-
+use Illuminate\Validation\ValidationException;
 class SolicitudPracticaController extends Controller
 {
+    //función del alumno para inscribirse a una oferta de prácticas
     public function store(Request $request, $practicaId)
     {
-        $alumnoId = Auth::id();
-        if (SolicitudPracticaAlumno::where('practica_id', $practicaId)->where('alumno_id', $alumnoId)->exists()) {
-            return back()->with('error', 'Ya estás inscrito en esta práctica.');
+        
+            $alumnoId = Auth::id();
+            if (SolicitudPracticaAlumno::where('practica_id', $practicaId)->where('alumno_id', $alumnoId)->exists()) {
+                throw ValidationException::withMessages([
+                    'inscription' => 'Ya estás inscrito en esta práctica.', // 'inscription' es el campo de error
+                ])->status(422);
+            }
+        
+            
+        try{
+            // Crear la solicitud
+            SolicitudPracticaAlumno::create([
+                'practica_id' => $practicaId,
+                'alumno_id' => $alumnoId,
+            ]);
+    
+            // Redirigir al dashboard con un mensaje de éxito
+            return redirect()->route('alumno.dashboard')->with('success', 'Solicitud enviada con éxito.');
+        }catch(\Exception $e){
+            throw ValidationException::withMessages([
+                'auth' => 'Debes completar tu perfil antes de poder inscribirte.',
+            ])->status(401);
         }
- 
-        // Crear la solicitud
-        SolicitudPracticaAlumno::create([
-            'practica_id' => $practicaId,
-            'alumno_id' => $alumnoId,
-        ]);
- 
-        // Redirigir al dashboard con un mensaje de éxito
-        return redirect()->route('alumno.dashboard')->with('success', 'Solicitud enviada con éxito.');
     }
 
+    //lógica para retirar una solicitud de prácticas
     public function retirarSolicitud(SolicitudPracticaAlumno $solicitud)
     {
         if ($solicitud->alumno_id !== auth()->id()) {
@@ -38,8 +50,9 @@ class SolicitudPracticaController extends Controller
 
         $alumnoId = Auth::id();
 
+        //vuelve a cargar las demás solicitudes de prácticas a las que se ha inscrito
         $solicitudes = SolicitudPracticaAlumno::where('alumno_id', $alumnoId)
-            ->with('ofertaPractica') // Carga la información de la práctica relacionada
+            ->with('ofertaPractica') 
             ->latest()
             ->get();
 

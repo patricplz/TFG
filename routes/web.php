@@ -45,7 +45,7 @@ Route::middleware(['auth', 'verified', 'role:alumno'])->group(function () {
     Route::post('/alumno/oferta/{practicaId}/inscribir', [SolicitudPracticaController::class, 'store'])->name('alumno.practica.inscribir');
     Route::get('/alumno/solicitudes', [AlumnoController::class, 'solicitudesInscritas'])->name('alumno.solicitudes');
     Route::delete('/alumno/solicitudes/{solicitud}', [SolicitudPracticaController::class, 'retirarSolicitud'])->name('alumno.solicitudes.retirar');
-    Route::get('/alumno/perfil', [AlumnoController::class, 'perfil'])->name('alumno.perfil');
+    // Route::get('/alumno/perfil', [AlumnoController::class, 'perfil'])->name('alumno.perfil');
     Route::get('/alumno/perfil/editar', [AlumnoController::class, 'mostrarFormularioEditarPerfil'])->name('alumno.perfil.editar');
     Route::post('/alumno/perfil/guardar', [AlumnoController::class, 'guardarPerfil'])->name('alumno.perfil.guardar');
     Route::get('/alumno/empresa/{empresa_id}', [AlumnoController::class, 'verPerfilEmpresa'])->name('alumno.empresa.ver');
@@ -53,7 +53,6 @@ Route::middleware(['auth', 'verified', 'role:alumno'])->group(function () {
 #Ruta para empresas
 Route::middleware(['auth', 'role:empresa'])->get('/empresa/dashboard',[EmpresaController::class, 'index'])->name('empresa.dashboard');
 
- #todo: Juntarlos el de arriba y el de abajo
 Route::middleware(['auth', 'role:empresa'])->group(function () {
     Route::get('/empresa/oferta/crear', [EmpresaOfertaController::class, 'create'])->name('empresa.oferta.create');
     Route::post('/empresa/Oferta', [EmpresaOfertaController::class, 'store'])->name('empresa.oferta.store');

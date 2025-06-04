@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
 class EmpresaOfertaController extends Controller{
+    //eliminar una oferta creada por una empresa
     public function destroy(OfertaPractica $oferta){
         if ($oferta->empresa_id !== Auth::id()) {
             abort(403, 'No estás autorizado a eliminar esta oferta.');
@@ -24,6 +25,7 @@ class EmpresaOfertaController extends Controller{
         return redirect()->route('empresa.dashboard')->with('success', 'Oferta eliminada con éxito');
     }
 
+    //mostrar una oferta de prácticas
     public function show(OfertaPractica $oferta){
         if ($oferta->empresa_id !== Auth::id()) {
             abort(403, 'No estás autorizado para poder ver los detalles de esta oferta');
@@ -34,16 +36,19 @@ class EmpresaOfertaController extends Controller{
         ]);
     }
 
+    //ir a la página para crear una oferta de prácticas
     public function create(){
         return Inertia::render('Empresa/OfertaCreate');
     }
 
+    //ir a la página de editar una oferta de prácticas
     public function edit(OfertaPractica $oferta){
         return Inertia::render('Empresa/OfertaEdit', [
             'oferta' => $oferta,
         ]);
     }
 
+    //guardar/crear una oferta de prácticas
     public function store(Request $request){
         $request->validate([
             'name' => 'required|string|max:255',
@@ -79,11 +84,13 @@ class EmpresaOfertaController extends Controller{
         return redirect()->route('empresa.dashboard')->with('success', 'Oferta creada correctamente');
     }
 
+
+    //updatear una oferta de prácticas
     public function update(Request $request, OfertaPractica $oferta){
         $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'required|string',
-            'image' => 'nullable|image|max:2048', // Validación para la imagen
+            'image' => 'nullable|image|max:2048', 
             'habilidades_blandas_requeridas' => 'nullable|string',
             'habilidades_tecnicas_requeridas' => 'nullable|string',
             'formacion_requerida' => 'nullable|string',
@@ -119,7 +126,7 @@ class EmpresaOfertaController extends Controller{
         return redirect()->route('empresa.dashboard')->with('success', 'Oferta actualizada con éxito.');
     }
 
-
+    //ver los alumnos inscritos a una oferta de prácticas
     public function inscritos(OfertaPractica $oferta){
         if ($oferta->empresa_id !== Auth::id()) {
             abort(403, 'No estás autorizado a ver los alumnos inscritos en esta oferta.');

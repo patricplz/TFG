@@ -12,23 +12,27 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
 
 class AlumnoController extends Controller{
+    //función para mostrar una oferta de prácticas elegida en el dashboard por el alumno
     public function show($id){
         $oferta= OfertaPractica::with('empresa')->findOrFail($id);
 
         return Inertia::render('Alumno/OfertaShow', ['oferta' => $oferta]);
     }
 
+    //función para ver el perfil de una empresa
     public function verPerfilEmpresa($id){
         $empresa = Empresa::findOrFail($id);
         return Inertia::render('Alumno/EmpresaShow', ['empresa'=> $empresa]);
     }
 
+    //función para ver las solicitudes en las que está inscrito el alumno logueado
     public function solicitudesInscritas(){
         $alumnoId = Auth::id();
         $solicitudes = SolicitudPracticaAlumno::where('alumno_id', $alumnoId)->with('ofertaPractica')->latest()->get();
         return Inertia::render('Alumno/SolicitudesInscritas', ['solicitudes' => $solicitudes]);
     }
 
+    //función para guardar el perfil del alumno
     public function guardarPerfil(Request $request){
         Validator::make($request->all(), [
             'cv' => 'nullable|mimes:pdf|max:2048',
@@ -60,6 +64,7 @@ class AlumnoController extends Controller{
         $alumnoId = Auth::id();
         $alumno = Alumno::where('alumno_id', $alumnoId)->firstOrNew(['alumno_id' => $alumnoId]);
 
+        //si tiene un cv anterior (por ejemplo al editar perfil ya tiene el cv subido) lo reemplaza por el nuevo
         if ($request->hasFile('cv')) {
             if ($alumno->cv_path) {
                 Storage::delete($alumno->cv_path);
@@ -68,6 +73,7 @@ class AlumnoController extends Controller{
             $alumno->cv_path = $path;
         }
 
+        //lo mismo para la foto de perfil
         if ($request->hasFile('foto_perfil')) {
             if ($alumno->foto_perfil_path) {
                 Storage::delete($alumno->foto_perfil_path); 
@@ -103,12 +109,15 @@ class AlumnoController extends Controller{
         return redirect()->route('alumno.dashboard')->with('success', 'perfil exitosamente actualizado');
     }
 
-    public function perfil() {
-        $alumno = Alumno::where('alumno_id', Auth::id())->first();
-        return Inertia::render('Alumno/perfil', [
-            'alumno' => $alumno, 
-        ]);
-    }
+    
+    // public function perfil() {
+    //     $alumno = Alumno::where('alumno_id', Auth::id())->first();
+    //     return Inertia::render('Alumno/perfil', [
+    //         'alumno' => $alumno, 
+    //     ]);
+    // }
+
+    //función para entrar a la página "Editar perfil", si ya editó el perfil anteriormente, devuelve la información del alumno para mostrarla en cada apartado
     public function mostrarFormularioEditarPerfil(){
         $alumno = Alumno::where('alumno_id', Auth::id())->first();
         if ($alumno) {

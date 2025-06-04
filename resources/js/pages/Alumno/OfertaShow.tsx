@@ -108,6 +108,15 @@ export default function OfertaShow({ oferta }: { oferta: Oferta}) {
               {mensajeExito}
             </motion.div>
           )}
+
+      {mensajeError && ( 
+        <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="mt-6 p-4 bg-red-100 border-l-4 border-red-500 text-red-700 rounded-md flex items-center">
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            </svg>
+            {mensajeError}
+          </motion.div>
+        )}
       <Head title={oferta.name} />
       
       <motion.div 
@@ -186,18 +195,7 @@ export default function OfertaShow({ oferta }: { oferta: Oferta}) {
 
           
 
-          {mensajeError && (
-            <motion.div
-              initial={{ opacity: 0, y: -20 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="mt-6 p-4 bg-red-100 border-l-4 border-red-500 text-red-700 rounded-md flex items-center"
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-              </svg>
-              {mensajeError}
-            </motion.div>
-          )}
+          
 
           <motion.div
             initial={{ opacity: 0, y: 20 }}

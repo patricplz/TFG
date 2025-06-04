@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Auth;
 
 class RoleMiddleware
 {
+    //verificar el rol de un usuario autenticado
     public function handle(Request $request, Closure $next, $role)
     {
         if (Auth::check() && Auth::user()->role === $role) {
