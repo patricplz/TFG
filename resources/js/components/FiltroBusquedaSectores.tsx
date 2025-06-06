@@ -3,29 +3,33 @@ import { useForm } from '@inertiajs/react';
 import BuscadorPalabraClave from './BuscadorPalabraClave';
 import SelectorSector from './selectorSector';
 
+//props que recibe el componente
 interface Props {
-    sectores: string[],
-    initialSector?: string;
+    sectores: string[], //Sectores disponibles
+    initialSector?: string; //sector seleccionado, opcional
 }
 
+// Interface para definir los parámetros que acepta el método 'get' de Inertia
 interface InertiaGetProps {
     preserveState?: boolean;
     replace?: boolean;
     [key: string]: string | number | boolean | null | undefined; 
 }
 
+
+// Componente principal que muestra los filtros (palabra clave + sector)
 export default function FiltroSectores({ sectores }: Props) {
+
+    //Hook de Inertia para acceder al formulario
     const { data, setData, get } = useForm({
         palabra_clave: '',
         sector: '',
     });
 
+    //useEffect  para realizar la petición al backend cada que cambian los filtros
     useEffect(() => {
-        get(route("alumno.dashboard"), {
-            ...data,
-            preserveState: true,
-            replace: true,
-        } as InertiaGetProps);
+        get(route("alumno.dashboard"), { ...data, preserveState: true, replace: true,} as InertiaGetProps);
+    
     }, [data, get]);
 
     return (

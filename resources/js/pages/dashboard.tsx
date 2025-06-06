@@ -10,6 +10,7 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
 ];
 
+//plantilla para el dashboard que  he utilizado para realizar el dashboard de alumnos y empresas
 export default function Dashboard() {
     return (
         <AppLayout breadcrumbs={breadcrumbs}>

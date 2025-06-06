@@ -27,23 +27,20 @@ export default function VerPerfilAlumno({ alumno, oferta_id }: Props) {
     const [isVisible, setIsVisible] = useState(false);
     const [sectionsVisible, setSectionsVisible] = useState(false);
 
-    // Animaciones de entrada
+    //animación para la entrada con estados, en cada div hay un isVisible? '' : '' para 
+    //aplicar la animación a la entrada
     useEffect(() => {
-        const timer1 = setTimeout(() => {
-            setIsVisible(true);
-        }, 100);
-        
-        const timer2 = setTimeout(() => {
-            setSectionsVisible(true);
-        }, 400);
-        
+        const showMain = setTimeout(() => { setIsVisible(true);}, 100);
+
+        const showSections = setTimeout(() => {setSectionsVisible(true);}, 400);
         return () => {
-            clearTimeout(timer1);
-            clearTimeout(timer2);
+            clearTimeout(showMain);
+            clearTimeout(showSections);
         };
     }, []);
 
 
+    //función para actualizar el estado de la solicitud del alumno
     const handleActualizarEstado = (nuevoEstado: 'seleccionado' | 'rechazado') => {
         const alumnoId = alumno.alumno_id;
         const url = `/empresa/alumno/${oferta_id}/${alumnoId}/actualizarEstado`;
@@ -77,43 +74,61 @@ export default function VerPerfilAlumno({ alumno, oferta_id }: Props) {
         });
     };
 
+    //handle para el botón seleccionar que llama a la petición del backend
     const handleSeleccionar = () => {
         handleActualizarEstado('seleccionado');
     };
 
+    //lo mismo para el botón rechazar
     const handleRechazar = () => {
         handleActualizarEstado('rechazado');
     };
 
-    // Función para mostrar los datos con manejo de valores vacíos
-    const renderField = (value: string | null, defaultText: string = 'No especificado') => {
-        return value && value.trim() !== '' ? value : defaultText;
+    //función utilitaria que se encarga de mostrar un valor si existe, o en su defecto, mostrar un texto alternativo como "no especificado"
+    const renderField = (value: string | number | null | undefined, defaultText: string = 'No especificado') => {
+        if (!value) {
+            return <span className="text-gray-500 italic">{defaultText}</span>;
+        }
+        return value;
     };
 
     console.log('FOTO PERFIL ' + alumno.foto_perfil_path);
     
-    // Convertir cadenas separadas por comas en arrays para mostrarlas como badges
-    const renderTags = (tagString: string) => {
-        if (!tagString || tagString.trim() === '') return <span className="text-gray-500 italic">No especificado</span>;
-        
+    //estas son las etiquetas que salen en el perfil, el usuario,
+    //pone todos sus datos a modo de String, aquí lo "cortamos" y ponemos un tag por dato para que sea más visible y dinámico
+    // como un limpiador y organizador de etiquetas
+    const renderTags = (tagString: string | null | undefined, defaultText: string = 'No especificado') => {
+
+        if (!tagString) {
+            return <span className="text-gray-500 italic">{defaultText}</span>;
+        }
+
+        //coges todos la información (tagString), la slipteas por "," por espacios  y filtras por las que no sean ''
         const tags = tagString.split(',').map(tag => tag.trim()).filter(tag => tag !== '');
-        
+
+        //si es 0 devuelves el defaultText
+        if (tags.length === 0) {
+
+            return <span className="text-gray-500 italic">{defaultText}</span>;
+        }
+
+        //si no, devuleves las etiquetas en si
         return (
             <div className="flex flex-wrap gap-2 mt-1">
                 {tags.map((tag, index) => (
-                    <span 
-                        key={index} 
-                        className="bg-gradient-to-r from-blue-100 to-indigo-100 dark:from-blue-900 dark:to-indigo-900 text-blue-800 dark:text-blue-200 px-3 py-1 rounded-full text-xs font-medium border border-blue-200 dark:border-blue-700 hover:shadow-md transition-all duration-200 transform hover:scale-105"
-                    >
+                    //añado clases tanto para cuando el fondo es claro como oscuro
+                    <span key={index} className="bg-gradient-to-r from-blue-100 to-indigo-100 dark:from-blue-900 dark:to-indigo-900 text-blue-800 dark:text-blue-200 px-3 py-1 rounded-full text-xs font-medium border border-blue-200 dark:border-blue-700 hover:shadow-md transition-all duration-200 transform hover:scale-105" >
                         {tag}
                     </span>
                 ))}
             </div>
         );
+
     };
 
     return (
         <>
+            {/* todos los datos del alumno */}
             <AppLayout breadcrumbs={breadcrumbs}>
                 <Head title={`${alumno.nombre} ${alumno.apellidos}`} />
                 <meta name="csrf-token" content="{{ csrf_token() }}"></meta>
@@ -122,7 +137,7 @@ export default function VerPerfilAlumno({ alumno, oferta_id }: Props) {
                     isVisible ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-8 scale-95'
                 }`}>
                     
-                    {/* Header con foto y datos principales */}
+                    {/* header con foto y datos principales */}
                     <div className={`bg-gradient-to-r from-gray-900 via-blue-900 to-indigo-900 text-white p-6 m-4 rounded-2xl flex md:flex-row items-start justify-between shadow-2xl transition-all duration-700 delay-200 transform ${
                         isVisible ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-8'
                     }`}>
@@ -235,7 +250,7 @@ export default function VerPerfilAlumno({ alumno, oferta_id }: Props) {
                             </div>
                         </div>
                         
-                        {/* Botones de acción */}
+                        {/*botones de acción */}
                         <div className={`flex flex-col items-end gap-3 mt-4 md:mt-0 transition-all duration-700 delay-600 transform ${
                             isVisible ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-8'
                         }`}>
@@ -277,6 +292,7 @@ export default function VerPerfilAlumno({ alumno, oferta_id }: Props) {
                     <div className={`p-6 transition-all duration-700 delay-700 transform ${
                         sectionsVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
                     }`}>
+
                         {/* Acerca de */}
                         <div className={`mb-8 transition-all duration-500 delay-800 transform ${
                             sectionsVisible ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-4'
@@ -301,6 +317,7 @@ export default function VerPerfilAlumno({ alumno, oferta_id }: Props) {
                                     <h2 className="text-xl font-bold text-blue-800 dark:text-blue-400 border-b border-blue-200 dark:border-blue-700 pb-2 mb-4 flex items-center">
                                         <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 mr-3 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                             <path d="M12 14l9-5-9-5-9 5 9 5z" />
+                                          
                                             <path d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z" />
                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14zm-4 6v-7.5l4-2.222" />
                                         </svg>

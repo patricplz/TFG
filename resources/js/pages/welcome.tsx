@@ -23,7 +23,7 @@ export default function Welcome() {
                     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&display=swap" rel="stylesheet" />
                 </Head>
 
-                {/* HEADER */}
+                {/* ENCABEZADO */}
                 <Row>
                     <Col xs={12}>   
                         <header className="d-flex justify-between h-20 align-items-center px-10 text-end justify-items-center items-center" style={{ backgroundColor: 'rgba(28, 23, 44, 0.62)' }}>
@@ -121,7 +121,7 @@ export default function Welcome() {
                     </Row>
                 </Container>
 
-                {/* FEATURES SECTION */}
+                {/* SECCION */}
                 <Container className="py-5 bg-light rounded my-5" id='moreInfo'>
                     <Row className="text-center mb-5">
                         <Col>

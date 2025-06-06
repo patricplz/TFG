@@ -32,8 +32,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get("chat", Chat::class)->name("chat");
 });
 
-
-
 #Ruta para alumnos
 
 Route::middleware(['auth', 'verified', 'role:alumno'])->group(function () {
@@ -50,10 +48,13 @@ Route::middleware(['auth', 'verified', 'role:alumno'])->group(function () {
     Route::post('/alumno/perfil/guardar', [AlumnoController::class, 'guardarPerfil'])->name('alumno.perfil.guardar');
     Route::get('/alumno/empresa/{empresa_id}', [AlumnoController::class, 'verPerfilEmpresa'])->name('alumno.empresa.ver');
 });
+
+
 #Ruta para empresas
-Route::middleware(['auth', 'role:empresa'])->get('/empresa/dashboard',[EmpresaController::class, 'index'])->name('empresa.dashboard');
+// Route::middleware(['auth', 'role:empresa'])->get('/empresa/dashboard',[EmpresaController::class, 'index'])->name('empresa.dashboard');
 
 Route::middleware(['auth', 'role:empresa'])->group(function () {
+    Route::get('/empresa/dashboard',[EmpresaController::class, 'index'])->name('empresa.dashboard');
     Route::get('/empresa/oferta/crear', [EmpresaOfertaController::class, 'create'])->name('empresa.oferta.create');
     Route::post('/empresa/Oferta', [EmpresaOfertaController::class, 'store'])->name('empresa.oferta.store');
     Route::get('/empresa/oferta/{oferta}/editar', [EmpresaOfertaController::class, 'edit'])->name('empresa.oferta.edit');
@@ -67,7 +68,6 @@ Route::middleware(['auth', 'role:empresa'])->group(function () {
     Route::get('/api/ofertas/{ofertaId}/compatibilidad-ia', [AIPredictionController::class, 'obtenerPuntuacionesCompatibilidad'])->name('api.ofertas.compatibilidad-ia');
     Route::post('/empresa/alumno/{oferta}/{alumno}/actualizarEstado', [SolicitudPracticaController::class, 'actualizarEstado'])->name('empresa.alumno.actualizarEstado');
     // Route::get('chat/{userId}', Chat::class)->name('chat');
-    
 });
 
 

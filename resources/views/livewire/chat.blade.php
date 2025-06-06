@@ -11,8 +11,10 @@
 
         <div class="w-1/4 border-r bg-gray-300">
             <div class="p-4 font-bold text-gray-900 border-b border-gray-400">Usuarios</div>
+
             <div class="divide-y divide-gray-400">
                 @forelse ($users as $user)
+
                     <div wire:click="selectUser({{ $user->id }})"
                          class="p-3 cursor-pointer hover:bg-blue-200 transition
                                  {{ $selectedUser && $selectedUser->id === $user->id ? 'bg-blue-200 font-semibold text-gray-900' : 'text-gray-800'}}">
@@ -28,9 +30,12 @@
 
         <div class="w-3/4 flex flex-col">
             <div class="p-4 border-b bg-gray-300 border-gray-400 flex items-center gap-3">
+              
                 @if ($selectedUser) 
                     <div>
+
                         <div class="text-lg font-semibold text-gray-900">{{ $selectedUser->name }}</div>
+                       
                         <div class="text-xs text-gray-700">{{ $selectedUser->email }}</div>
                     </div>
                 @else
@@ -46,7 +51,8 @@
                 @if ($selectedUser) {{-- Solo muestra los mensajes si hay un usuario seleccionado --}}
                     @foreach ($messages as $message)
                         <div class="flex {{ $message->sender_id === auth()->id() ? 'justify-end' : 'justify-start' }}">
-                            <div class="max-w-xs px-4 py-2 rounded-2xl shadow
+               
+                        <div class="max-w-xs px-4 py-2 rounded-2xl shadow
                                     {{ $message->sender_id === auth()->id()
                                         ? 'bg-blue-600 text-white'
                                         : 'bg-gray-400 text-gray-900' }}">
@@ -74,10 +80,7 @@
                         class="flex-1 border border-gray-500 rounded-full px-4 py-2 text-sm text-gray-900 bg-gray-300 focus:outline-none"
                         placeholder="Escribe tu mensaje..."
                     />
-                    <button
-                        type="submit"
-                        class="bg-blue-600 hover:bg-blue-700 text-white text-sm px-4 py-2 rounded-full transition"
-                    >
+                    <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white text-sm px-4 py-2 rounded-full transition">
                         Enviar
                     </button>
                 </form>

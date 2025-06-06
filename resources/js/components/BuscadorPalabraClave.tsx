@@ -1,13 +1,18 @@
 import React from 'react';
 
 interface Props {
-    setData: (key: string, value: string) => void; // Define el tipo de setData como una función
-    initialValue?: string;
+    setData: (key: string, value: string) => void; // Función para actualizar el estado del formulario
+    initialValue?: string; //valor inicial del input
+
 }
 
+
+//campo de búsqueda por palabra clave
 export default function BuscadorPalabraClave({ setData, initialValue = '' }: Props) {
+    //handle que se ejecuta cada que el usuario escribe algo en el input y actualiza el setData con la clave y el nuevo valor
     const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setData('palabra_clave', event.target.value);
+        
     };
 
     return (

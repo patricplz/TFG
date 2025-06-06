@@ -47,18 +47,18 @@ export default function OfertaInscritos({ oferta, alumnosInscritos: initialAlumn
     const [isVisible, setIsVisible] = useState(false);
     const ofertaId = oferta.id;
 
+    //timer para las animaciones del comienzo
     useEffect(() => {
-        const timer = setTimeout(() => {
-            setIsVisible(true);
-        }, 100);
+        const timer = setTimeout(() => {setIsVisible(true);}, 100);
         return () => clearTimeout(timer);
     }, []);
 
+    //handler para ordenar con ia al pulsar el botón
     const handleOrdenarConIA = () => {
-        setLoadingIA(true);
-        setMostrarBotonIA(false);
+        setLoadingIA(true); //carga el loading para el usuario
+        setMostrarBotonIA(false); //se quita el botón de "ordenar con IA"
 
-        fetch(route('api.ofertas.compatibilidad-ia', { ofertaId: ofertaId }))
+        fetch(route('api.ofertas.compatibilidad-ia', { ofertaId: ofertaId })) //llamamos al controlador, mandando la ofertaId
             .then(response => {
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
@@ -67,12 +67,12 @@ export default function OfertaInscritos({ oferta, alumnosInscritos: initialAlumn
             })
             .then(data => {
                 setLoadingIA(false);
-                if (Array.isArray(data)) {
-                    const alumnosConPuntuacion = initialAlumnosInscritos.map(alumno => {
-                        const match = data.find(item => item.alumno_id === alumno.alumno_id);
-                        return { ...alumno, puntuacion: match ? match.puntuacion : null };
-                    }).sort((a, b) => (b.puntuacion ?? -1) - (a.puntuacion ?? -1));
-                    setAlumnosOrdenadosIA(alumnosConPuntuacion);
+                if (Array.isArray(data)) { //si recibo un array ejecuto la ordenación de los alumnos
+                    const alumnosConPuntuacion = initialAlumnosInscritos.map(alumno => { // creamos un nuevo array basado en los alumnos iniciales, a cada alumno le agregamos la puntuación correspondiente si existe
+                        const match = data.find(item => item.alumno_id === alumno.alumno_id); //buscamos si hay un objeto en 'data' que tenga el mismo alumno_id
+                        return { ...alumno, puntuacion: match ? match.puntuacion : null }; //devolvemos una copia del alumno, agregando la puntuación si la encontramos, si no hay puntuación, le ponemos null
+                    }).sort((a, b) => (b.puntuacion ?? -1) - (a.puntuacion ?? -1)); //ordenamos el array descendente por puntuación (de mayor a menor)
+                    setAlumnosOrdenadosIA(alumnosConPuntuacion); // guardamos el nuevo array ordenado en el estado
                 } else {
                     console.error('Respuesta de la IA inválida:', data);
                     alert('Error al obtener las puntuaciones de la IA.');
@@ -87,6 +87,7 @@ export default function OfertaInscritos({ oferta, alumnosInscritos: initialAlumn
             });
     };
 
+    //array para mostrar los alumnos, aquí se guardan los alumnos a mostrar, si los ordenados con ia son mayor que 0, significa que se ha pulsado el botón y salen ordenados
     const alumnosAMostrar = alumnosOrdenadosIA.length > 0 ? alumnosOrdenadosIA : initialAlumnosInscritos;
 
     return (
@@ -94,12 +95,10 @@ export default function OfertaInscritos({ oferta, alumnosInscritos: initialAlumn
             <AppLayout breadcrumbs={breadcrumbs}>
                 <Head title={`Alumnos Inscritos en ${oferta.name}`} />
                 <div className={`max-w-7xl mx-auto p-6 transition-all duration-1000 transform ${
-                    isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
-                }`}>
+                    isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
                     <div className="mb-8">
                         <div className={`transform transition-all duration-700 delay-200 ${
-                            isVisible ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-4'
-                        }`}>
+                            isVisible ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-4'}`}>
                             <h1 className="text-4xl font-bold mb-2 bg-blue-600 bg-clip-text text-transparent">
                                 Alumnos Inscritos
                             </h1>
@@ -112,8 +111,7 @@ export default function OfertaInscritos({ oferta, alumnosInscritos: initialAlumn
                     </div>
 
                     <div className={`mb-8 transform transition-all duration-700 delay-300 ${
-                        isVisible ? 'opacity-100 scale-100' : 'opacity-0 scale-95'
-                    }`}>
+                        isVisible ? 'opacity-100 scale-100' : 'opacity-0 scale-95'}`}>
                         <div className=" dark:bg-gray-800 rounded-2xl p-6 border border-blue-100 dark:border-gray-600 shadow-lg">
                             <div className="flex items-center justify-between">
                                 <div className="flex items-center gap-4">
@@ -144,18 +142,17 @@ export default function OfertaInscritos({ oferta, alumnosInscritos: initialAlumn
 
                     {mostrarBotonIA && initialAlumnosInscritos.length > 0 && (
                         <div className={`mb-8 transform transition-all duration-700 delay-500 ${
-                            isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
-                        }`}>
+                            isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
                             <button
                                 onClick={handleOrdenarConIA}
-                                className="group relative overflow-hidden bg-[oklch(0.35_0.02_220)]  text-white font-bold py-4 px-8 rounded-2xl transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-4"
-                            >
+                                className="group relative overflow-hidden bg-[oklch(0.35_0.02_220)]  text-white font-bold py-4 px-8 rounded-2xl transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-4">
                                 <span className="relative z-10 flex items-center gap-3">
                                     <svg className="w-5 h-5 transition-transform group-hover:rotate-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
                                     </svg>
                                     Ordenar con Inteligencia Artificial
                                 </span>
+
                                 <div className="absolute inset-0 bg-white opacity-0 group-hover:opacity-20 transition-opacity duration-300"></div>
                                 <div className="absolute  blur transition-all duration-300"></div>
                             </button>
@@ -181,8 +178,7 @@ export default function OfertaInscritos({ oferta, alumnosInscritos: initialAlumn
                                 className={`transform transition-all duration-700 ${
                                     isVisible 
                                         ? 'opacity-100 translate-y-0 scale-100' 
-                                        : 'opacity-0 translate-y-8 scale-95'
-                                }`}
+                                        : 'opacity-0 translate-y-8 scale-95'}`}
                                 style={{ transitionDelay: `${600 + index * 100}ms` }}
                             >
                                 <Link

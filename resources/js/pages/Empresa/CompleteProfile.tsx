@@ -4,11 +4,13 @@ import { EmpresaType } from '@/types/empresa';
 import AppLayout from '@/layouts/app-layout-empresa';
 import { type BreadcrumbItem } from '@/types';
 
+// // Esta interfaz define las props esperadas: una empresa que puede ser null si no hay datos aún
 interface Props {
     empresa: EmpresaType | null;
 }
 
 // Componentes reutilizables
+// se trada de un campo de entrada estándar, reutilizable en formularios, para no repetir código
 interface InputFieldProps {
     id: string;
     label: string;
@@ -22,6 +24,7 @@ interface InputFieldProps {
     disabled?: boolean;
 }
 
+//implementaciñon del input, para tipo texto
 const InputField: React.FC<InputFieldProps> = ({ 
     id, 
     label, 
@@ -56,6 +59,7 @@ const InputField: React.FC<InputFieldProps> = ({
     );
 };
 
+//implementación de un input para tipo textArea, para descripciones más grandes
 interface TextAreaFieldProps {
     id: string;
     label: string;
@@ -66,7 +70,6 @@ interface TextAreaFieldProps {
     rows?: number;
     placeholder?: string;
 }
-
 const TextAreaField: React.FC<TextAreaFieldProps> = ({ 
     id, 
     label, 
@@ -77,6 +80,7 @@ const TextAreaField: React.FC<TextAreaFieldProps> = ({
     rows = 3,
     placeholder
 }) => {
+
     return (
         <div>
             <label htmlFor={id} className="mb-1 block text-sm font-medium text-white">
@@ -95,6 +99,7 @@ const TextAreaField: React.FC<TextAreaFieldProps> = ({
             {error && <p className="mt-1 text-xs text-red-500">{error}</p>}
         </div>
     );
+
 };
 
 interface CheckboxFieldProps {
@@ -104,7 +109,7 @@ interface CheckboxFieldProps {
     onChange: (checked: boolean) => void;
     error?: string;
 }
-
+// Campo tipo checkbox reutilizable
 const CheckboxField: React.FC<CheckboxFieldProps> = ({ 
     id, 
     label, 
@@ -112,7 +117,9 @@ const CheckboxField: React.FC<CheckboxFieldProps> = ({
     onChange, 
     error 
 }) => {
+
     return (
+
         <div className="flex items-center">
             <input
                 type="checkbox"
@@ -125,12 +132,15 @@ const CheckboxField: React.FC<CheckboxFieldProps> = ({
             <label htmlFor={id} className="text-sm font-medium text-white">
                 {label}
             </label>
+
+
             {error && <p className="mt-1 ml-2 text-xs text-red-500">{error}</p>}
+
         </div>
     );
 };
 
-// Definición de secciones para agrupar campos relacionados
+// Componente para agrupar campos en secciones visuales con título e ícono
 interface SectionProps {
     title: string;
     icon: React.ReactNode;
@@ -146,6 +156,7 @@ const Section: React.FC<SectionProps> = ({ title, icon, children }) => {
             </h2>
             <div className="grid gap-4 md:grid-cols-2">
                 {children}
+
             </div>
         </div>
     );
@@ -161,6 +172,8 @@ const breadcrumbs: BreadcrumbItem[] = [
 export default function CompletaPerfil({ empresa }: Props) {
     const formRef = useRef<HTMLFormElement>(null);
     
+
+    // hook de formulario de Inertia, inicializando campos con valores si la empresa ya existe
     const { data, setData, post, processing, errors, recentlySuccessful } = useForm({
         nombre: empresa?.nombre || '',
         cif_nif: empresa?.cif_nif || '',
@@ -176,7 +189,7 @@ export default function CompletaPerfil({ empresa }: Props) {
         areas_practicas: empresa?.areas_practicas || '',
         foto_perfil_path: empresa?.foto_perfil_path ||'',
     });
-
+ // estado para la barra de progreso del formulario
     const [progress, setProgress] = useState<number>(0);
 
     const submit = (e: React.FormEvent) => {
@@ -184,30 +197,34 @@ export default function CompletaPerfil({ empresa }: Props) {
         post(route('empresa.perfil.guardar'));
     };
 
+    // bloquear edición del CIF si ya hay una empresa
     const isDisabledCif = !!empresa; 
     const isRequiredCif = !empresa; 
 
+    // efecto para actualizar el progreso del formulario conforme el usuario completa los campos
     useEffect(() => {
         const form = formRef.current;
         if (form) {
-            const inputs = Array.from(form.querySelectorAll('input:not([type="checkbox"]), textarea'));
+
+            const inputs = Array.from(form.querySelectorAll('input:not([type="checkbox"]), textarea')); //cojo todos los inputs excepto el checkbox que es opcional
             const totalFields = inputs.length; 
             let filledFields = 0;
 
             inputs.forEach((input) => {
                 if ((input as HTMLInputElement | HTMLTextAreaElement).value.trim() !== '') {
-                    filledFields++;
+                    filledFields++; //por cada input no vacío sumo filledFields
                 }
             });
 
             // Considerar el checkbox
             if (data.practicas_remuneradas) filledFields++;
 
-            const newProgress = totalFields > 0 ? Math.round((filledFields / totalFields) * 100) : 0;
-            setProgress(newProgress);
+            const newProgress = totalFields > 0 ? Math.round((filledFields / totalFields) * 100) : 0; //saco procentaje de filledFields con respecto a totalFields
+            setProgress(newProgress); //aumentas el progeso de la barra
         }
     }, [data]);
 
+    // Clase dinámica para color de la barra de progreso
     const progressBarColorClass = progress < 30 ? 'bg-red-500' : progress < 70 ? 'bg-yellow-500' : 'bg-green-500';
 
     // Iconos para las secciones
@@ -281,8 +298,7 @@ export default function CompletaPerfil({ empresa }: Props) {
                                             className="h-24 w-24 text-white/20"
                                             fill="currentColor"
                                             xmlns="http://www.w3.org/2000/svg"
-                                            viewBox="0 0 24 24"
-                                        >
+                                            viewBox="0 0 24 24">
                                             <path d="M12 7V3H2v18h20V7H12zM6 19H4v-2h2v2zm0-4H4v-2h2v2zm0-4H4V9h2v2zm0-4H4V5h2v2zm4 12H8v-2h2v2zm0-4H8v-2h2v2zm0-4H8V9h2v2zm0-4H8V5h2v2zm10 12h-8v-2h2v-2h-2v-2h2v-2h-2V9h8v10zm-2-8h-2v2h2v-2zm0 4h-2v2h2v-2z" />
                                         </svg>
                                     </div>
@@ -293,8 +309,7 @@ export default function CompletaPerfil({ empresa }: Props) {
                                     <div
                                         className={`${progressBarColorClass} h-2.5 rounded-full transition-all duration-500`}
                                         style={{ width: `${progress}%` }}
-                                        id="progress-bar"
-                                    ></div>
+                                        id="progress-bar"></div>
                                 </div>
                             </div>
                             
@@ -308,8 +323,7 @@ export default function CompletaPerfil({ empresa }: Props) {
                                             value={data.nombre}
                                             onChange={(value) => setData('nombre', value)}
                                             required={true}
-                                            error={errors.nombre}
-                                        />
+                                            error={errors.nombre}/>
                                         <InputField
                                             id="cif_nif"
                                             label="CIF/NIF"
@@ -317,8 +331,7 @@ export default function CompletaPerfil({ empresa }: Props) {
                                             onChange={(value) => setData('cif_nif', value)}
                                             required={isRequiredCif}
                                             error={errors.cif_nif}
-                                            disabled={isDisabledCif}
-                                        />
+                                            disabled={isDisabledCif}/>
                                         
                                         <InputField
                                             id="sector_actividad"
@@ -326,16 +339,14 @@ export default function CompletaPerfil({ empresa }: Props) {
                                             value={data.sector_actividad}
                                             onChange={(value) => setData('sector_actividad', value)}
                                             required={true}
-                                            error={errors.sector_actividad}
-                                        />
+                                            error={errors.sector_actividad}/>
                                         
                                         <InputField
                                             id="ubicacion"
                                             label="Ubicación (Dirección)"
                                             value={data.ubicacion}
                                             onChange={(value) => setData('ubicacion', value)}
-                                            error={errors.ubicacion}
-                                        />
+                                            error={errors.ubicacion}/>
                                         
                                         <InputField
                                             id="sitio_web"
@@ -343,8 +354,7 @@ export default function CompletaPerfil({ empresa }: Props) {
                                             value={data.sitio_web}
                                             onChange={(value) => setData('sitio_web', value)}
                                             type="url"
-                                            error={errors.sitio_web}
-                                        />
+                                            error={errors.sitio_web}/>
                                         
                                         <InputField
                                             id="num_empleados"
@@ -403,8 +413,7 @@ export default function CompletaPerfil({ empresa }: Props) {
                                                 label="¿Ofrecen prácticas remuneradas?"
                                                 checked={data.practicas_remuneradas}
                                                 onChange={(checked) => setData('practicas_remuneradas', checked)}
-                                                error={errors.practicas_remuneradas}
-                                            />
+                                                error={errors.practicas_remuneradas}/>
                                         </div>
                                         
                                         <div className="md:col-span-2">

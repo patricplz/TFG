@@ -23,51 +23,58 @@ export default function VerPerfilempresa({ empresa }: Props) {
     const [isVisible, setIsVisible] = useState(false);
     const [sectionsVisible, setSectionsVisible] = useState(false);
 
+
+    //animación para la entrada con estados, en cada div hay un isVisible? '' : '' para 
+    //aplicar la animación a la entrada
     useEffect(() => {
-        const timer1 = setTimeout(() => {
-            setIsVisible(true);
-        }, 100);
+        const showMain = setTimeout(() => { setIsVisible(true);}, 100);
 
-        const timer2 = setTimeout(() => {
-            setSectionsVisible(true);
-        }, 400);
-
+        const showSections = setTimeout(() => {setSectionsVisible(true);}, 400);
         return () => {
-            clearTimeout(timer1);
-            clearTimeout(timer2);
+            clearTimeout(showMain);
+            clearTimeout(showSections);
         };
     }, []);
 
+
+    //función utilitaria que se encarga de mostrar un valor si existe, o en su defecto, mostrar un texto alternativo como "no especificado"
     const renderField = (value: string | number | null | undefined, defaultText: string = 'No especificado') => {
-        if (value === null || value === undefined || (typeof value === 'string' && value.trim() === '')) {
+        if (!value) {
             return <span className="text-gray-500 italic">{defaultText}</span>;
         }
         return value;
     };
 
+    //estas son las etiquetas que salen en el perfil, el usuario (esto está pensado para alumnos, pero lo he reutilizado para las empresas),
+    //pone todos sus datos a modo de String, aquí lo "cortamos" y ponemos un tag por dato para que sea más visible y dinámico
+    // como un limpiador y organizador de etiquetas
     const renderTags = (tagString: string | null | undefined, defaultText: string = 'No especificado') => {
-        if (!tagString || tagString.trim() === '') {
+
+        if (!tagString) {
             return <span className="text-gray-500 italic">{defaultText}</span>;
         }
 
+        //coges todos la información (tagString), la slipteas por "," por espacios  y filtras por las que no sean ''
         const tags = tagString.split(',').map(tag => tag.trim()).filter(tag => tag !== '');
 
+        //si es 0 devuelves el defaultText
         if (tags.length === 0) {
+
             return <span className="text-gray-500 italic">{defaultText}</span>;
         }
 
+        //si no, devuleves las etiquetas en si
         return (
             <div className="flex flex-wrap gap-2 mt-1">
                 {tags.map((tag, index) => (
-                    <span
-                        key={index}
-                        className="bg-gradient-to-r from-blue-100 to-indigo-100 dark:from-blue-900 dark:to-indigo-900 text-blue-800 dark:text-blue-200 px-3 py-1 rounded-full text-xs font-medium border border-blue-200 dark:border-blue-700 hover:shadow-md transition-all duration-200 transform hover:scale-105"
-                    >
+                    //añado clases tanto para cuando el fondo es claro como oscuro
+                    <span key={index} className="bg-gradient-to-r from-blue-100 to-indigo-100 dark:from-blue-900 dark:to-indigo-900 text-blue-800 dark:text-blue-200 px-3 py-1 rounded-full text-xs font-medium border border-blue-200 dark:border-blue-700 hover:shadow-md transition-all duration-200 transform hover:scale-105" >
                         {tag}
                     </span>
                 ))}
             </div>
         );
+
     };
 
     return (

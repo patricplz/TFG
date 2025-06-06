@@ -1,17 +1,22 @@
 import React from 'react';
-import StyledSelect from './StyledSelect'; // Asegúrate de que la ruta al componente StyledSelect sea correcta
+import StyledSelect from './StyledSelect';
 
 interface Props {
-  sectoresFP: string[];
-  setData: (key: 'sector', value: string) => void;
-  initialValue?: string;
+  //props que recibe
+  sectoresFP: string[]; //lista de sectores disponibles para seleccionar
+  setData: (key: 'sector', value: string) => void; //función para actualizar estado del form
+  initialValue?: string; //valor inicial del sector, es opcional, al principio no hay ninguno seleccionado
 }
 
 export default function SelectorSector({ sectoresFP, setData, initialValue = '' }: Props) {
+
+  //manejador / handle que se activa cuando el usuario selecciona una opción del Select
   const handleSelectChange = (selectedOption: { value: string; label: string }) => {
     setData('sector', selectedOption.value);
+
   };
 
+  //opciones del Select en el formato que este espera
   const options = sectoresFP.map((sector) => ({
     value: sector,
     label: sector,
@@ -21,6 +26,7 @@ export default function SelectorSector({ sectoresFP, setData, initialValue = '' 
     hoverStyle: 'text-black',
   }));
 
+  //Opcion seleccionada inicial
   const initialSelectedOption = options.find(option => option.value === initialValue);
 
   return (

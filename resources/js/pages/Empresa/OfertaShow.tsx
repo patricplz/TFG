@@ -33,24 +33,25 @@ interface Props {
     oferta: Oferta;
 }
 
+//recibo la oferta por prop y la muestro
 export default function OfertaShow({ oferta }: Props) {
     const { delete: destroy, processing } = useForm({});
-    const [showDetails, setShowDetails] = useState(true); // Ejemplo de estado para mostrar/ocultar detalles
+    const [showDetails, setShowDetails] = useState(false); 
 
     useEffect(() => {
     // Mostrar detalles con un pequeño retraso para la animación
-    const timer = setTimeout(() => {
-        setShowDetails(true);
-    }, 300);
+    const timer = setTimeout(() => {setShowDetails(true);}, 300);
     return () => clearTimeout(timer);
     }, []);
 
+    //handle para eliminar la oferta
     const handleDelete = () => {
         if (confirm(`¿Estás seguro de que deseas eliminar la oferta "${oferta.name}"?`)) {
             destroy(route('empresa.oferta.destroy', oferta.id));
         }
     };
 
+    //componente reutilizable para mostrar la información
     const InfoSection = ({ title, content }: { title: string, content: string | null }) => {
         if (!content) return null;
 
@@ -76,14 +77,12 @@ export default function OfertaShow({ oferta }: Props) {
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     transition={{ duration: 0.6 }}
-                    className="max-w-4xl w-full mx-auto p-6"
-                >
+                    className="max-w-4xl w-full mx-auto p-6">
                     <motion.div
                         initial={{ scale: 0.95 }}
                         animate={{ scale: 1 }}
                         transition={{ duration: 0.5 }}
-                        className="relative overflow-hidden rounded-xl shadow-lg mb-6"
-                    >
+                        className="relative overflow-hidden rounded-xl shadow-lg mb-6">
                         <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent z-10"></div>
                         <img
                             src={oferta.image_path ? `/storage/${oferta.image_path}` : '/images/default-image.jpg'}
@@ -94,8 +93,7 @@ export default function OfertaShow({ oferta }: Props) {
                             initial={{ y: 20, opacity: 0 }}
                             animate={{ y: 0, opacity: 1 }}
                             transition={{ delay: 0.2, duration: 0.7 }}
-                            className="absolute bottom-0 left-0 right-0 p-6 z-20"
-                        >
+                            className="absolute bottom-0 left-0 right-0 p-6 z-20">
                             <h1 className="text-3xl font-bold text-white mb-2 drop-shadow-lg">{oferta.name}</h1>
                         </motion.div>
                     </motion.div>
@@ -105,8 +103,7 @@ export default function OfertaShow({ oferta }: Props) {
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ duration: 0.5 }}
-                            className="prose dark:prose-invert max-w-none mb-8"
-                        >
+                            className="prose dark:prose-invert max-w-none mb-8">
                             <p className="text-lg">{oferta.description}</p>
                             <br></br>
                             <p className="text-lg"><span className='text-bold'>Ubicación de la oferta: </span>{oferta.ubicacion}</p>
@@ -119,8 +116,7 @@ export default function OfertaShow({ oferta }: Props) {
                                 initial={{ opacity: 0 }}
                                 animate={{ opacity: 1 }}
                                 transition={{ staggerChildren: 0.1, delayChildren: 0.2 }}
-                                className="mt-8 space-y-2"
-                            >
+                                className="mt-8 space-y-2">
                                 <h2 className="text-xl font-bold mb-4 text-neutral-800 dark:text-neutral-200">Requisitos de la Oferta</h2>
 
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -136,7 +132,6 @@ export default function OfertaShow({ oferta }: Props) {
                             </motion.div>
                         )}
 
-                        {/* ... muestra aquí los demás detalles de la oferta ... */}
 
                         {/* Opciones para la empresa: */}
                         <Link href={route('empresa.oferta.edit', oferta.id)} className="inline-block bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-600 mr-2">
@@ -145,8 +140,7 @@ export default function OfertaShow({ oferta }: Props) {
                         <button
                             className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
                             onClick={handleDelete}
-                            disabled={processing}
-                        >
+                            disabled={processing}>
                             Eliminar
                         </button>
                     </div>

@@ -3,6 +3,7 @@ import { type BreadcrumbItem } from '@/types';
 import { Head, Link } from '@inertiajs/react';
 import { motion } from 'framer-motion';
 
+//información que me interesa mostrar de la oferta
 interface Oferta {
     id: number;
     name: string;
@@ -21,39 +22,36 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
 ];
 
+//recibe las ofertas de la empresa logueada como prop, y las muestra
 export default function Dashboard({ ofertas }: Props) {
+
+
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Dashboard" />
             <div className="flex h-full flex-1 flex-col gap-4 rounded-xl p-4">
                 <h1 className="text-2xl font-bold mb-4">Tus Ofertas Publicadas</h1>
 
-                {ofertas.length === 0 ? (
+                {ofertas.length === 0 ? ( //si no hay ofertas publicadas te anima  a crear una
                     <div className="border-sidebar-border/70 dark:border-sidebar-border rounded-xl border bg-white dark:bg-[oklch(0.28_0.03_232)] p-6 shadow-md">
                         <p className="mb-4">No has publicado ninguna oferta de prácticas.</p>
                         <Link 
                             href='http://127.0.0.1:8000/empresa/oferta/crear'
-                            className="inline-block px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors duration-300"
-                        >
+                            className="inline-block px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors duration-300">
                             Crear nueva oferta
                         </Link>
                     </div>
-                ) : (
+                ) : ( //si hay las muestra
                     <motion.div 
                         className="grid auto-rows-min gap-4 md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3"
                         initial={{ opacity: 0, scale: 0.9 }}
                         animate={{ opacity: 1, scale: 1 }}
-                        transition={{ duration: 0.5 }}
-                        >
-                        {ofertas.map((oferta, index) => (
-                            <div 
-                                key={oferta.id} 
-                                className={` transition-transform duration-300 hover:scale-104 border-sidebar-border/70 dark:border-sidebar-border rounded-xl border bg-white dark:bg-[oklch(0.28_0.03_232)] p-6 shadow-md hover:shadow-lg transition-all duration-500 transform`}
-                                style={{ 
-                                    transitionDelay: `${index * 100}ms` 
-                                }}
-                            >
+                        transition={{ duration: 0.5 }}>
+                        {ofertas.map((oferta) => (
+
+                            <div key={oferta.id}  className={` transition-transform duration-300 hover:scale-104 border-sidebar-border/70 dark:border-sidebar-border rounded-xl border bg-white dark:bg-[oklch(0.28_0.03_232)] p-6 shadow-md hover:shadow-lg transition-all duration-500 transform`}>
                                 <h2 className="text-xl font-semibold mb-2">{oferta.name}</h2>
+
                                 {oferta.image_path && (
                                     <div className="overflow-hidden rounded-md mb-2">
                                         <img
@@ -68,14 +66,12 @@ export default function Dashboard({ ofertas }: Props) {
                                 <div className="flex flex-wrap gap-2 mt-4">
                                     <Link 
                                         href={route('empresa.oferta.show', oferta.id)} 
-                                        className="flex-1 text-center px-3 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors duration-300"
-                                    >
+                                        className="flex-1 text-center px-3 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors duration-300">
                                         Ver detalles
                                     </Link>
                                     <Link 
                                         href={`/empresa/oferta/${oferta.id}/alumnos`} 
-                                        className="flex-1 text-center px-3 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 transition-colors duration-300"
-                                    >
+                                        className="flex-1 text-center px-3 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 transition-colors duration-300">
                                         Ver alumnos
                                     </Link>
                                 </div>

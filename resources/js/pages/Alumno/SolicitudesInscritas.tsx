@@ -3,6 +3,7 @@ import { Link } from '@inertiajs/react';
 import AppLayout from '@/layouts/app-layout-alumno';
 import { BreadcrumbItem } from '@/types';
 
+//información que necesito sobre la solicitud, y la oferta para poder ir a ella en "ver detalles"
 interface Solicitud {
   id: number;
   practica_id: number;
@@ -14,7 +15,6 @@ interface Solicitud {
     id: number;
     name: string;
     description: string;
-    // Otros campos de la oferta
   };
 }
 
@@ -29,10 +29,14 @@ interface Props {
   solicitudes: Solicitud[];
 }
 
+//recibo las solicitudes como prop
 export default function SolicitudesInscritas({ solicitudes }: Props) {
 
+  // Extraemos el método delete de useForm y lo renombramos a "destroy"
+  // porque "delete" es una palabra reservada en javaScript
   const { delete: destroy, processing} = useForm({});
 
+  //función para retirar la solicitud
   const handleRetirarSolicitud = (solicitudId: number) => {
       if (confirm('¿Estás seguro de que deseas retirar esta solicitud?')) {
           destroy(route('alumno.solicitudes.retirar', { solicitud: solicitudId }));
@@ -61,12 +65,15 @@ export default function SolicitudesInscritas({ solicitudes }: Props) {
                     <p className="text-neutral-700 dark:text-neutral-300 mb-2">
                       {solicitud.oferta_practica.description.substring(0, 100)}...
                     </p>
+
                     <p className="text-sm text-gray-500">
                       Solicitado el: {new Date(solicitud.created_at).toLocaleDateString()}
                     </p>
+
                     <p className="text-sm mt-1">
                       Estado: <span className="font-bold text-blue-600 dark:text-blue-400">{solicitud.estado}</span>
                     </p>
+
                   </div>
 
                   <div className="flex flex-col space-y-2 min-w-fit">
@@ -79,8 +86,7 @@ export default function SolicitudesInscritas({ solicitudes }: Props) {
                     <button
                       onClick={() => handleRetirarSolicitud(solicitud.id)}
                       className="bg-red-500 hover:bg-red-600 text-white font-medium py-2 px-4 rounded-md transition transform hover:scale-105 text-sm"
-                      disabled={processing}
-                    >
+                      disabled={processing}>
                       Retirar
                     </button>
                   </div>

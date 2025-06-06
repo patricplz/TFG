@@ -8,8 +8,10 @@ use App\Models\OfertaPractica;
 use App\Models\User;
 use App\Models\SolicitudPracticaAlumno;
 use App\Models\Alumno;
+use App\Models\Empresa;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\ValidationException;
 
 class EmpresaOfertaController extends Controller{
     //eliminar una oferta creada por una empresa
@@ -65,6 +67,14 @@ class EmpresaOfertaController extends Controller{
         ]);
 
         $path = $request->file('image')?->store('Ofertas', 'public');
+        $empresaId = auth()->id();
+        $empresa = Empresa::where('empresa_id', $empresaId)->first();
+
+        if (!$empresa) { //si no tiene el perfil completado como empresa no debe poder crear una oferta
+            throw ValidationException::withMessages([
+                'auth' => 'Debes completar tu perfil antes de poder inscribirte.',
+            ]);
+        }
 
         OfertaPractica::create([
             'empresa_id' => auth()->id(),
@@ -81,6 +91,7 @@ class EmpresaOfertaController extends Controller{
             'sector_interes_requerido' => $request->sector_interes_requerido,
         ]);
 
+        
         return redirect()->route('empresa.dashboard')->with('success', 'Oferta creada correctamente');
     }
 

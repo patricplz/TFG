@@ -15,11 +15,14 @@ const breadcrumbs: BreadcrumbItem[] = [
     }
 ];
 
-const OfertaCreate = () => {
-    const [currentTab, setCurrentTab] = useState('informacion');
-    const [isLoaded, setIsLoaded] = useState(false);
-    const [previewImage, setPreviewImage] = useState<string | null>(null);
 
+// componente para crear una nueva oferta de prácticas
+const OfertaCreate = () => {
+    const [currentTab, setCurrentTab] = useState('informacion'); //estado para cambiar el apartado/pestaña, por defecto 'información'
+    const [isLoaded, setIsLoaded] = useState(false); //para animación de entrada
+    const [previewImage, setPreviewImage] = useState<string | null>(null); //para cuando pones una imagen que se previsualice
+
+    // Estado del formulario con Inertia
     const { data, setData, post, processing, errors } = useForm({
         name: '',
         description: '',
@@ -36,18 +39,26 @@ const OfertaCreate = () => {
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        if (currentTab === 'extras') {
-            post(route('empresa.oferta.store'), {
+        if (currentTab === 'extras') { //que se submitee solo cuando estemos en la última pestaña de completar la información
+            post(route('empresa.oferta.store'), { //hacemos el post
                 forceFormData: true,
+                onError: (errors) => { //en caso de error que muestre el alert
+
+                if (errors.auth) {
+                    alert(errors.auth); 
+                }
+            }
             });
         }
     };
 
+        // Manejar selección de imagen y previsualizarla
     const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0] || null;
         setData('image', file);
         
         if (file) {
+
             const reader = new FileReader();
             reader.onload = (e) => {
                 setPreviewImage(e.target?.result as string);
@@ -55,15 +66,14 @@ const OfertaCreate = () => {
             reader.readAsDataURL(file);
         }
     };
-
+    // carga inicial para animaciones
     useEffect(() => {
-        const timer = setTimeout(() => {
-            setIsLoaded(true);
-        }, 100);
+        const timer = setTimeout(() => {setIsLoaded(true);}, 100);
         
         return () => clearTimeout(timer);
     }, []);
 
+    // estilo dinámico para la elección de pestañas, para que resalte más la que esta seleccionada
     const tabClass = (tab: string) => {
         return `px-4 py-2 font-medium rounded-t-lg transition-colors duration-300 border-b-2 ${
             currentTab === tab 
@@ -72,6 +82,7 @@ const OfertaCreate = () => {
         }`;
     };
 
+    // campo de entrada común (texto o textarea), igual que en CompleteProfile
     const renderInputField = (
         id: string, 
         label: string, 
@@ -112,6 +123,7 @@ const OfertaCreate = () => {
         );
     };
 
+    // campo de selección con opciones (select)
     const renderSelectField = (
         id: string,
         label: string,
@@ -132,8 +144,7 @@ const OfertaCreate = () => {
                     className="w-full border border-gray-300 dark:border-gray-700 rounded-lg p-3 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all duration-300 dark:bg-gray-800 dark:text-white"
                     value={value}
                     onChange={onChange}
-                    required={isRequired}
-                >
+                    required={isRequired}>
                     <option value="">{placeholder}</option>
                     {options.map((option) => (
                         <option key={option} value={option}>
@@ -158,20 +169,17 @@ const OfertaCreate = () => {
                         <div className="flex border-b border-gray-200 dark:border-gray-700">
                             <button
                                 onClick={() => setCurrentTab('informacion')}
-                                className={tabClass('informacion')}
-                            >
+                                className={tabClass('informacion')}>
                                 Información General
                             </button>
                             <button
                                 onClick={() => setCurrentTab('requisitos')}
-                                className={tabClass('requisitos')}
-                            >
+                                className={tabClass('requisitos')}>
                                 Requisitos
                             </button>
                             <button
                                 onClick={() => setCurrentTab('extras')}
-                                className={tabClass('extras')}
-                            >
+                                className={tabClass('extras')}>
                                 Detalles Adicionales
                             </button>
                         </div>

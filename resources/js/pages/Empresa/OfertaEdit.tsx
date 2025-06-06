@@ -6,6 +6,7 @@ import { Head } from '@inertiajs/react';
 import AppLayout from '@/layouts/app-layout-empresa';
 import { type BreadcrumbItem } from '@/types';
 
+//datos que me interesan de la oferta (todos)
 interface Oferta {
     id: number;
     name: string;
@@ -20,7 +21,6 @@ interface Oferta {
     idiomas_requeridos: string | null;
     sector_interes_requerido: string | null;
     ubicacion: string | null;
-    // ... otras propiedades
 }
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -38,9 +38,11 @@ interface Props {
 }
 
 const OfertaEdit = ({ oferta }: Props) => {
-    const [currentTab, setCurrentTab] = useState('informacion');
+    const [currentTab, setCurrentTab] = useState('informacion'); //la edición de la oferta se divide en 3 apartados, comienza por el primero
     const [isLoaded, setIsLoaded] = useState(false);
     const [previewImage, setPreviewImage] = useState<string | null>(oferta.image_path ? `/storage/${oferta.image_path}` : null);
+
+ // useForm inicializa con los datos actuales de la oferta
 
     const { data, setData, put, processing, errors } = useForm({
         name: oferta.name,
@@ -59,7 +61,7 @@ const OfertaEdit = ({ oferta }: Props) => {
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        if (currentTab === 'extras') {
+        if (currentTab === 'extras') { //el formulario se envía solo si estamos en el último apartado "extras"
             put(route('empresa.oferta.update', oferta.id), {
                 method: 'put',
             });
@@ -67,7 +69,7 @@ const OfertaEdit = ({ oferta }: Props) => {
     };
 
     
-
+// Cuando se selecciona una nueva imagen, la guardamos y mostramos una vista previa
     const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0] || null;
         setData('image', file);
@@ -81,14 +83,14 @@ const OfertaEdit = ({ oferta }: Props) => {
         }
     };
 
+    //timer inicial para la animación de la entrada
     useEffect(() => {
-        const timer = setTimeout(() => {
-            setIsLoaded(true);
-        }, 100);
+        const timer = setTimeout(() => { setIsLoaded(true);}, 100);
         
         return () => clearTimeout(timer);
     }, []);
 
+    // clase para pestañas activas/inactivas    
     const tabClass = (tab: string) => {
         return `px-4 py-2 font-medium rounded-t-lg transition-colors duration-300 border-b-2 ${
             currentTab === tab 
@@ -97,6 +99,7 @@ const OfertaEdit = ({ oferta }: Props) => {
         }`;
     };
 
+    // Campo de texto o textarea reutilizable
     const renderInputField = (
         id: string, 
         label: string, 
@@ -131,10 +134,7 @@ const OfertaEdit = ({ oferta }: Props) => {
                 )}
             </div>
         );
-    };
-
-
-    
+    };  
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <div className={`max-w-4xl w-full m-3 mx-auto bg-white dark:bg-[oklch(0.28_0.03_232)] rounded-xl shadow-lg transition-all duration-500 transform ${isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
@@ -174,6 +174,7 @@ const OfertaEdit = ({ oferta }: Props) => {
                                 <p className="text-sm text-gray-600 dark:text-gray-400">Edita los datos básicos de tu oferta de prácticas.</p>
                             </div>
 
+
                             {renderInputField('name', 'Nombre de la Oferta', data.name, (e) => setData('name', e.target.value), 'Ej: Prácticas de Desarrollo Web')}
                             
                             {renderInputField('description', 'Descripción Detallada', data.description, (e) => setData('description', e.target.value), 'Describe la oferta de prácticas y las tareas a realizar...', true)}
@@ -195,6 +196,7 @@ const OfertaEdit = ({ oferta }: Props) => {
                                                     <span className="text-white text-xs">Previsualización</span>
                                                 </div>
                                             </div>
+
                                         )}
                                     </div>
                                     <div className="flex-grow">
@@ -263,8 +265,7 @@ const OfertaEdit = ({ oferta }: Props) => {
                                     <button
                                         type="button"
                                         className="bg-gray-500 text-white px-6 py-3 rounded-lg hover:bg-gray-600 transition-colors duration-300"
-                                        onClick={() => setCurrentTab(currentTab === 'requisitos' ? 'informacion' : 'requisitos')}
-                                    >
+                                        onClick={() => setCurrentTab(currentTab === 'requisitos' ? 'informacion' : 'requisitos')}>
                                         Anterior
                                     </button>
                                 )}
@@ -281,10 +282,8 @@ const OfertaEdit = ({ oferta }: Props) => {
                                                 setCurrentTab('extras');
                                             }
                                         }
-                                    }
-                                    >
-                                        Siguiente
-                                    </button>
+                                    }>
+                                        Siguiente</button>
                                 ) : (
                                     <button
                                         type="submit"

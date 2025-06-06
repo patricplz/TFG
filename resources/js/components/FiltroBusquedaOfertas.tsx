@@ -5,10 +5,13 @@ import { useForm } from '@inertiajs/react';
 import BuscadorPalabraClave from './BuscadorPalabraClave';
 import SelectorModalidad from './SelectorModalidad';
 
+//props que recibe el componente
 interface Props {
     modalidades: string[];
     sector: string;
 }
+
+// Interface para definir los parámetros que acepta el método 'get' de Inertia
 
 interface InertiaGetProps {
     preserveState?: boolean;
@@ -16,12 +19,19 @@ interface InertiaGetProps {
     [key: string]: string | number | boolean | null | undefined;
 }
 
+// Componente principal que muestra los filtros (palabra clave + modalidad)
 export default function FiltroOfertas({ modalidades, sector }: Props) {
+
+    //Hook de Inertia para acceder al formulario
+
     const { data, setData, get } = useForm({
         palabra_clave: '',
         modalidad: '',
         sector: sector || '',
     });
+
+
+    //useEffect  para realizar la petición al backend cada que cambian los filtros
 
     useEffect(() => {
         get(route("alumno.dashboard.sector", { sector: data.sector }), { 

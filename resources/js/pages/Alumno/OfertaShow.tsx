@@ -4,11 +4,13 @@ import AppLayout from '@/layouts/app-layout-alumno';
 import { BreadcrumbItem } from '@/types';
 import { motion } from 'framer-motion';
 
+//los datos que necesito de la empresa
 interface Empresa {
   empresa_id: number;
   nombre: string;
 }
 
+//los datos que necesito de la oferta de prácticas
 interface Oferta {
   id: number;
   name: string;
@@ -25,6 +27,7 @@ interface Oferta {
   empresa: Empresa | null;
 }
 
+//la ruta de navegación
 const breadcrumbs: BreadcrumbItem[] = [
   {
     title: 'Dashboard',
@@ -37,38 +40,43 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 export default function OfertaShow({ oferta }: { oferta: Oferta}) {
+    // Obtenemos el token CSRF desde la etiqueta meta del HTML para poder hacer peticiones seguras
   const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '';
+
+   // Estado para manejar mensajes de éxito o error tras intentar inscribirse
   const [mensajeExito, setMensajeExito] = useState<string | null>(null);
   const [mensajeError, setMensajeError] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [showDetails, setShowDetails] = useState<boolean>(false);
-
+  const [isLoading, setIsLoading] = useState<boolean>(false); //  Indicador de carga durante el envío del formulario
+  const [showDetails, setShowDetails] = useState<boolean>(false); // Controla si se deben mostrar los detalles animadamente después de un pequeño retraso
+  
+  
+  // Si no hay empresa, mostramos un nombre por defecto
   const nombreEmpresa = oferta.empresa ? oferta.empresa.nombre : 'Empresa Desconocida';
 
+  // Efecto para mostrar los detalles con un pequeño delay y dar sensación de carga suave
   useEffect(() => {
-
-    const timer = setTimeout(() => {
-      setShowDetails(true);
-    }, 300);
+    const timer = setTimeout(() => { setShowDetails(true); }, 300);
     return () => clearTimeout(timer);
   }, []);
 
+
+   // Función que maneja el envío del formulario de inscripción a la práctica
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
     setMensajeError(null);
-    setIsLoading(true);
+    setIsLoading(true); // Activamos el spinner de carga
 
     router.post(route('alumno.practica.inscribir', oferta.id), {
       _token: csrfToken,
     }, {
-      onSuccess: () => {
+      onSuccess: () => { //si funciona correctamente sale el mensaje de exito y redirige a alumno.dashboard
         setMensajeExito('¡Solicitud enviada con éxito!');
         setTimeout(() => {
           setMensajeExito(null);
           router.visit(route('alumno.dashboard'));
         }, 1500);
       },
-      onError: (errors) => {
+      onError: (errors) => { //si falla algo salta un mensaje de error
         console.error('Error al inscribirse:', errors);
         const errorMessages = Object.values(errors).flat().join(', ');
         setMensajeError(`Error al inscribirse: ${errorMessages}`);
@@ -77,7 +85,7 @@ export default function OfertaShow({ oferta }: { oferta: Oferta}) {
     });
   };
 
-  // Define el componente de información con animaciones
+  // Div de información, le pasas un título y el contenido y lo aplica solo, utilizo un motion.div para añadir animación, con esto no se repite códio
   const InfoSection = ({ title, content }: { title: string, content: string | null }) => {
     if (!content) return null;
     
@@ -96,7 +104,7 @@ export default function OfertaShow({ oferta }: { oferta: Oferta}) {
 
   return (
     <AppLayout breadcrumbs={breadcrumbs}>
-      {mensajeExito && (
+      {mensajeExito && ( //si existe mensaje exito que salga el aviso
             <motion.div
               initial={{ opacity: 0, y: -20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -109,7 +117,7 @@ export default function OfertaShow({ oferta }: { oferta: Oferta}) {
             </motion.div>
           )}
 
-      {mensajeError && ( 
+      {mensajeError && ( //si existe mensajeError que salga el aviso procedente
         <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="mt-6 p-4 bg-red-100 border-l-4 border-red-500 text-red-700 rounded-md flex items-center">
             <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -123,14 +131,12 @@ export default function OfertaShow({ oferta }: { oferta: Oferta}) {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.6 }}
-        className="max-w-4xl w-full mx-auto p-6"
-      >
+        className="max-w-4xl w-full mx-auto p-6">
         <motion.div
           initial={{ scale: 0.95 }}
           animate={{ scale: 1 }}
           transition={{ duration: 0.5 }}
-          className="relative overflow-hidden rounded-xl shadow-lg mb-6"
-        >
+          className="relative overflow-hidden rounded-xl shadow-lg mb-6">
           <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent z-10"></div>
           <img
             src={oferta.image_path ? `/storage/${oferta.image_path}` : '/images/default-image.jpg'}
@@ -153,7 +159,7 @@ export default function OfertaShow({ oferta }: { oferta: Oferta}) {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
             className="prose dark:prose-invert max-w-none mb-8">
-            {oferta.empresa?.nombre ? (
+            {oferta.empresa?.nombre ? ( //si existe la empresa
               <a
                 href={`/alumno/empresa/${oferta.empresa?.empresa_id}`}
                 className="group inline-block relative w-full"
@@ -165,7 +171,7 @@ export default function OfertaShow({ oferta }: { oferta: Oferta}) {
                   Ver empresa
                 </span>
               </a>
-            ) : (
+            ) : ( //si no existe la empresa, aunque esto no debería pasar, ya que una empresa desconocida no puede subir una oferta, lo manejo, 
               <span className="text-lg text-gray-400 italic">Empresa desconocida</span>
             )}
             <p className="text-lg">{oferta.description}</p>
@@ -181,6 +187,8 @@ export default function OfertaShow({ oferta }: { oferta: Oferta}) {
               <h2 className="text-xl font-bold mb-4 text-neutral-800 dark:text-neutral-200">Requisitos de la Oferta</h2>
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+
                 <InfoSection title="Habilidades Blandas" content={oferta.habilidades_blandas_requeridas} />
                 <InfoSection title="Habilidades Técnicas" content={oferta.habilidades_tecnicas_requeridas} />
                 <InfoSection title="Formación" content={oferta.formacion_requerida} />
@@ -201,8 +209,7 @@ export default function OfertaShow({ oferta }: { oferta: Oferta}) {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.5, duration: 0.5 }}
-            className="mt-8 flex justify-center"
-          >
+            className="mt-8 flex justify-center">
             <form onSubmit={handleSubmit} method="POST" className="w-full">
               <input type="hidden" name="_token" value={csrfToken} />
 
@@ -210,10 +217,7 @@ export default function OfertaShow({ oferta }: { oferta: Oferta}) {
                 type="submit"
                 disabled={isLoading}
                 className={`w-full md:w-auto px-8 py-3 rounded-lg text-white font-medium transition-all duration-300 
-                  ${isLoading 
-                    ? 'bg-blue-400 cursor-not-allowed' 
-                    : 'bg-blue-600 hover:bg-blue-700 hover:shadow-lg active:scale-95'}`}
-              >
+                  ${isLoading ? 'bg-blue-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700 hover:shadow-lg active:scale-95'}`}>
                 {isLoading ? (
                   <span className="flex items-center justify-center">
                     <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
@@ -232,6 +236,7 @@ export default function OfertaShow({ oferta }: { oferta: Oferta}) {
                 )}
               </button>
             </form>
+            
           </motion.div>
         </div>
       </motion.div>
