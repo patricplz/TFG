@@ -1,5 +1,6 @@
 ## Dependencias
 
+```json
 {
   "dependencies": {
     "@headlessui/react": "^2.2.0",
@@ -42,7 +43,7 @@
     "vite": "^6.0"
   }
 }
-
+```
 Ejecutar 'npm install --production' para instalar
 
 ## Licencia
