@@ -1,5 +1,32 @@
-##
-Iniciar proyecto poniendo "composer dev" en la terminal
+## Proyecto TFG - React + Laravel
+Instalación y puesta en marcha
+Clona el repositorio:
+
+``` bash
+git clone https://github.com/patricplz/TFG.git
+cd TFG
+```
+
+Instala las dependencias de backend (Laravel):
+```bash
+composer install
+```
+
+Instala las dependencias de frontend (React):
+```bash
+npm install
+```
+
+Construye el frontend con Vite:
+
+```bash
+npm run buildç
+```
+
+Ejecuta el proyecto en modo desarrollo (backend + frontend):
+```bash
+composer dev
+```
 
 ## Dependencias
 
