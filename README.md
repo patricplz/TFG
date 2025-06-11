@@ -104,3 +104,21 @@ Este proyecto está licenciado bajo la
 [Licencia Creative Commons Atribución-CompartirIgual 4.0 Internacional](https://creativecommons.org/licenses/by-sa/4.0/deed.es).
 
 ![Licencia CC-BY-SA](https://licensebuttons.net/l/by-sa/4.0/88x31.png)
+
+## Imágenes y almacenamiento
+Las imágenes del proyecto se almacenan en storage/app/public/images, y se sirven públicamente a través de public/storage mediante un enlace simbólico.
+Si las imágenes no se cargan correctamente en la aplicación, sigue estos pasos:
+En la terminal, ejecuta:
+```
+bash
+rm -rf public/storage
+```
+Si estás en Windows, puedes eliminar manualmente la carpeta public/storage.
+
+Vuelve a crear el enlace simbólico
+Ejecuta:
+```
+bash
+php artisan storage:link
+```
+Por último, recarga la web.
