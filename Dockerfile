@@ -1,50 +1,47 @@
-FROM php:8.2-fpm-alpine 
+FROM php:8.2-fpm-alpine
 
-
+# Instala dependencias del sistema y extensiones PHP
 RUN apk update && apk add --no-cache \
     nginx \
     supervisor \
     mysql-client \
-    php82-mysqlnd \
-    php82-pdo_mysql \
-    php82-tokenizer \
-    php82-json \
-    php82-xml \
-    php82-mbstring \
-    php82-zip \
-    php82-xmlwriter \
-    php82-xmlreader \
-    php82-gd \
-    php82-curl \
-    php82-fileinfo
+    nodejs \
+    npm \
+    curl \
+    git \
+    unzip \
+    libzip-dev \
+    oniguruma-dev \
+    zlib-dev \
+    libpng-dev
 
-RUN apk add --no-cache nodejs npm
+# Instala extensiones de PHP oficiales
+RUN docker-php-ext-install pdo_mysql mbstring zip exif pcntl bcmath
 
-RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" && \ php -r "if (hash_file('sha384', 'composer-setup.php') === 'e21205b207c3ffce031862d29b8d88e7afad34d0590822b397be03ea1dbdbb4ddcdb08a1') { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); exit(1); }" && \ php composer-setup.php --install-dir=/usr/local/bin --filename=composer && \ php -r "unlink('composer-setup.php');"
+# Instala Composer de forma segura
+RUN curl -sS https://getcomposer.org/installer | php && \
+    mv composer.phar /usr/local/bin/composer
 
 WORKDIR /var/www/html
 
-
+# Copia todo el proyecto
 COPY . .
 
-
+# Instala dependencias de PHP
 RUN composer install --no-dev --optimize-autoloader
 
-
-COPY docker/nginx.conf /etc/nginx/conf.d/default.conf
-
-# Copia los archivos de configuración de Supervisor (para ejecutar PHP-FPM y Nginx)
-COPY docker/supervisor.conf /etc/supervisor.d/supervisord.conf
-
-# Crea el enlace simbólico para el almacenamiento público
+# Crea el enlace simbólico de storage
 RUN php artisan storage:link
 
-# Compila los assets de React para producción
-RUN npm install
-RUN npm run build
+# Construye assets de React
+RUN npm install && npm run build
 
-# Expon el puerto 80 (para Nginx)
+# Copia configuración de nginx y supervisor
+COPY docker/nginx.conf /etc/nginx/conf.d/default.conf
+COPY docker/supervisor.conf /etc/supervisor.d/supervisord.conf
+
+# Expone el puerto 80
 EXPOSE 80
 
-# Inicia Supervisor (que a su vez inicia Nginx y PHP-FPM)
+# Inicia supervisord que arranca PHP-FPM + Nginx
 CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor.conf"]
