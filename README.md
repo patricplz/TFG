@@ -1,5 +1,6 @@
 ## Proyecto TFG - React + Laravel
 Instalación y puesta en marcha
+
 Clona el repositorio:
 
 ``` bash
@@ -20,7 +21,7 @@ npm install
 Construye el frontend con Vite:
 
 ```bash
-npm run buildç
+npm run build
 ```
 
 Ejecuta el proyecto en modo desarrollo (backend + frontend):
