@@ -1,6 +1,6 @@
-FROM php:8.2-fpm-alpine # Usa la versión de PHP que necesitas
+FROM php:8.2-fpm-alpine 
 
-# Instala las extensiones PHP necesarias (adapta según tu proyecto)
+
 RUN apk update && apk add --no-cache \
     nginx \
     supervisor \
@@ -18,19 +18,18 @@ RUN apk update && apk add --no-cache \
     php82-curl \
     php82-fileinfo
 
-# Instala Node.js y NPM (necesario para React)
 RUN apk add --no-cache nodejs npm
 
-# Establece el directorio de trabajo
+
 WORKDIR /var/www/html
 
-# Copia los archivos de la aplicación
+
 COPY . .
 
-# Instala las dependencias de Composer
+
 RUN composer install --no-dev --optimize-autoloader
 
-# Copia los archivos de configuración de Nginx
+
 COPY docker/nginx.conf /etc/nginx/conf.d/default.conf
 
 # Copia los archivos de configuración de Supervisor (para ejecutar PHP-FPM y Nginx)
