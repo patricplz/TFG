@@ -1,3 +1,6 @@
+##
+Iniciar proyecto poniendo "composer dev" en la terminal
+
 ## Dependencias
 
 ```json
@@ -45,6 +48,25 @@
 }
 ```
 Ejecutar 'npm install --production' para instalar
+
+## Base de datos
+La base de datos se encuentra integrada en el proyecto en /database/database.sqlite
+
+alumnos:
+
+email | contraseña
+patri2@gmail.com | 12345678
+rosa@gmail.com | 12345678
+alex@gmail.com | 12345678
+aleksandra@gmail.com | 12345678
+
+empresas:
+
+email | contraseña
+empresa@gmail.com | 12345678
+empresa2@gmail.com | 12345678
+empresa3@gmail.com | 12345678
+
 
 ## Licencia
 
