@@ -20,10 +20,7 @@ RUN apk update && apk add --no-cache \
 
 RUN apk add --no-cache nodejs npm
 
-RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" && \
-    php -r "if (hash_file('sha384', 'composer-setup.php') === 'e21205b207c3ffce031862d29b8d88e7afad34d0590822b397be03ea1dbdbb4ddcdb08a1') { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); exit(1); }" && \
-    php composer-setup.php --install-dir=/usr/local/bin --filename=composer && \
-    php -r "unlink('composer-setup.php');"
+RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" && \ php -r "if (hash_file('sha384', 'composer-setup.php') === 'e21205b207c3ffce031862d29b8d88e7afad34d0590822b397be03ea1dbdbb4ddcdb08a1') { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); exit(1); }" && \ php composer-setup.php --install-dir=/usr/local/bin --filename=composer && \ php -r "unlink('composer-setup.php');"
 
 WORKDIR /var/www/html
 
