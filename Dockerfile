@@ -20,6 +20,10 @@ RUN apk update && apk add --no-cache \
 
 RUN apk add --no-cache nodejs npm
 
+RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" && \
+    php -r "if (hash_file('sha384', 'composer-setup.php') === 'e21205b207c3ffce031862d29b8d88e7afad34d05 رؤية
+    php composer-setup.php --install-dir=/usr/local/bin --filename=composer && \
+    php -r "unlink('composer-setup.php');"
 
 WORKDIR /var/www/html
 
