@@ -109,15 +109,13 @@ Este proyecto está licenciado bajo la
 Las imágenes del proyecto se almacenan en storage/app/public/images, y se sirven públicamente a través de public/storage mediante un enlace simbólico.
 Si las imágenes no se cargan correctamente en la aplicación, sigue estos pasos:
 En la terminal, ejecuta:
-```
-bash
+```bash
 rm -rf public/storage
 ```
 En Windows, puedes eliminar manualmente la carpeta public/storage.
 
 Vuelve a crear el enlace simbólico, ejecutar:
-```
-bash
+```bash
 php artisan storage:link
 ```
 Por último, recarga la web.
