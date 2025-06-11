@@ -38,7 +38,7 @@ RUN npm install && npm run build
 
 # Copia configuración de nginx y supervisor
 COPY docker/nginx.conf /etc/nginx/conf.d/default.conf
-COPY docker/supervisor.conf /etc/supervisor.d/supervisord.conf
+COPY docker/supervisor.conf /etc/supervisor.conf
 
 # Expone el puerto 80
 EXPOSE 80
