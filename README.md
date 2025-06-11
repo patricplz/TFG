@@ -113,10 +113,9 @@ En la terminal, ejecuta:
 bash
 rm -rf public/storage
 ```
-Si estás en Windows, puedes eliminar manualmente la carpeta public/storage.
+En Windows, puedes eliminar manualmente la carpeta public/storage.
 
-Vuelve a crear el enlace simbólico
-Ejecuta:
+Vuelve a crear el enlace simbólico, ejecutar:
 ```
 bash
 php artisan storage:link
