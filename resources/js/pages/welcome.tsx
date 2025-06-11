@@ -257,7 +257,12 @@ export default function Welcome() {
                                         ConectaPro
                                     </span>
                                 </div>
-                                <p className="text-muted">La plataforma que conecta estudiantes con oportunidades profesionales.</p>
+                                <p> La plataforma que conecta estudiantes con oportunidades profesionales.</p>
+                                <p>Este proyecto está licenciado bajo una Licencia Creative Commons Atribución-CompartirIgual 4.0 Internacional. </p>
+                                <a rel="license" href="https://creativecommons.org/licenses/by-sa/4.0/">
+                                    <img alt="Licencia de Creative Commons"
+                                        src="https://licensebuttons.net/l/by-sa/4.0/88x31.png" />
+                                </a>
                             </Col>
                             <Col md={6} className="text-md-end">
                                 <p className="mb-0">&copy; 2025 ConectaPro. Todos los derechos reservados.</p>
