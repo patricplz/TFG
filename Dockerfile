@@ -36,8 +36,9 @@ RUN php artisan storage:link
 # Construye assets de React
 RUN npm install && npm run build
 
-# Copia configuración de nginx y supervisor
-COPY docker/nginx.conf /etc/nginx/conf.d/default.conf
+RUN rm -f /etc/nginx/conf.d/default.conf
+
+COPY docker/nginx.conf /etc/nginx/http.d/default.conf
 COPY docker/supervisor.conf /etc/supervisor.conf
 
 # Expone el puerto 80
