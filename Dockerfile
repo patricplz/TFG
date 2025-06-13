@@ -45,4 +45,4 @@ COPY docker/supervisor.conf /etc/supervisor.conf
 EXPOSE 80
 
 # Inicia supervisord que arranca PHP-FPM + Nginx
-CMD ["/bin/sh", "-c", "/usr/sbin/nginx -g 'daemon off;' && sleep infinity"]
+CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor.conf"]
