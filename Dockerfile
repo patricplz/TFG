@@ -13,7 +13,8 @@ RUN apk update && apk add --no-cache \
     libzip-dev \
     oniguruma-dev \
     zlib-dev \
-    libpng-dev
+    libpng-dev \
+    gettext
 
 # Instala extensiones de PHP oficiales
 RUN docker-php-ext-install pdo_mysql mbstring zip exif pcntl bcmath
@@ -41,6 +42,7 @@ RUN rm -f /etc/nginx/conf.d/default.conf
 COPY docker/nginx.conf /etc/nginx/http.d/default.conf
 COPY docker/supervisor.conf /etc/supervisor.conf
 
+RUN envsubst < /etc/nginx/http.d/default.conf > /etc/nginx/http.d/default.conf
 # Expone el puerto 80
 EXPOSE 80
 
