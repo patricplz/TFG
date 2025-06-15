@@ -37,6 +37,5 @@ COPY docker/supervisor.conf /etc/supervisor.conf
 
 RUN envsubst < /etc/nginx/http.d/default.conf > /etc/nginx/http.d/default.conf
 
-EXPOSE 80
 
 CMD ["sh", "-c", "/usr/bin/supervisord -c /etc/supervisor.conf || echo 'Supervisor failed to start' && sleep infinity"]
