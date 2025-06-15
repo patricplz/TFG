@@ -38,13 +38,12 @@ RUN php artisan storage:link
 RUN npm install && npm run build
 
 RUN rm -f /etc/nginx/conf.d/default.conf
-
 COPY docker/nginx.conf /etc/nginx/http.d/default.conf
+
 COPY docker/supervisor.conf /etc/supervisor.conf
 
-RUN envsubst < /etc/nginx/http.d/default.conf > /etc/nginx/http.d/default.conf
 # Expone el puerto 80
 EXPOSE 80
 
 # Inicia supervisord que arranca PHP-FPM + Nginx
-CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor.conf"]
+CMD ["/usr/sbin/nginx", "-g", "daemon off;"]
